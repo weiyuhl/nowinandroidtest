@@ -1,6 +1,6 @@
 # 架构学习之旅
 
-在此学习之旅中，你将了解 Now in Android 应用的架构：它的分层、关键类以及它们之间的交互。
+在此学习之旅中，你将了解 nowtest 应用的架构：它的分层、关键类以及它们之间的交互。
 
 ## 目标与需求
 
@@ -21,7 +21,7 @@
 </center>
 
 > [!NOTE]
-> 官方 Android 架构与其他架构（如"Clean Architecture"）有所不同。其他架构的概念可能在此处不适用，或以不同的方式应用。[更多讨论见此](https://github.com/android/nowinandroid/discussions/1273)。
+> 官方 Android 架构与其他架构（如"Clean Architecture"）有所不同。其他架构的概念可能在此处不适用，或以不同的方式应用。[更多讨论见此](https://github.com/weiyuhl/nowinandroidtest/discussions/1273)。
 
 该架构遵循响应式编程模型，采用[单向数据流](https://developer.android.com/jetpack/guide/ui-layer#udf)。以数据层为底层，关键概念是：
 
@@ -71,7 +71,7 @@
    </td>
    <td>用户数据仓库从基于 Proto DataStore 的本地数据源获取 <code>UserData</code> 对象流。
    </td>
-   <td><code>NiaPreferencesDataSource.userData</code>
+   <td><code>NtPreferencesDataSource.userData</code>
    </td>
   </tr>
   <tr>
@@ -85,7 +85,7 @@
   <tr>
    <td>5
    </td>
-   <td><code>OfflineFirstNewsRepository</code> 调用 <code>RetrofitNiaNetwork</code>，通过 <a href="https://square.github.io/retrofit/">Retrofit</a> 执行实际的 API 请求。
+   <td><code>OfflineFirstNewsRepository</code> 调用 <code>RetrofitNtNetwork</code>，通过 <a href="https://square.github.io/retrofit/">Retrofit</a> 执行实际的 API 请求。
    </td>
    <td><code>OfflineFirstNewsRepository.syncWith</code>
    </td>
@@ -93,17 +93,17 @@
   <tr>
    <td>6
    </td>
-   <td><code>RetrofitNiaNetwork</code> 调用远程服务器上的 REST API。
+   <td><code>RetrofitNtNetwork</code> 调用远程服务器上的 REST API。
    </td>
-   <td><code>RetrofitNiaNetwork.getNewsResources</code>
+   <td><code>RetrofitNtNetwork.getNewsResources</code>
    </td>
   </tr>
   <tr>
    <td>7
    </td>
-   <td><code>RetrofitNiaNetwork</code> 接收来自远程服务器的网络响应。
+   <td><code>RetrofitNtNetwork</code> 接收来自远程服务器的网络响应。
    </td>
-   <td><code>RetrofitNiaNetwork.getNewsResources</code>
+   <td><code>RetrofitNtNetwork.getNewsResources</code>
    </td>
   </tr>
   <tr>
@@ -202,7 +202,7 @@ _示例：关注一个主题_
    </td>
   </tr>
   <tr>
-   <td>NiaPreferencesDataSource
+   <td>NtPreferencesDataSource
    </td>
    <td><a href="https://developer.android.com/topic/libraries/architecture/datastore">Proto DataStore</a>
    </td>
@@ -210,7 +210,7 @@ _示例：关注一个主题_
    </td>
   </tr>
   <tr>
-   <td>NiaNetworkDataSource
+   <td>NtNetworkDataSource
    </td>
    <td>使用 Retrofit 访问的远程 API
    </td>
@@ -236,7 +236,7 @@ _示例：关注一个主题_
 
 例如，`GetUserNewsResourcesUseCase` 将来自 `NewsRepository` 的 `NewsResource` 流（使用 `Flow` 实现）与来自 `UserDataRepository` 的 `UserData` 对象流组合，创建 `UserNewsResource` 流。此流被各种 ViewModel 用于在屏幕上显示带有收藏状态的新闻资源。
 
-值得注意的是，Now in Android 中的领域层目前_不包含_任何用于事件处理的用例。事件由 UI 层直接调用仓库的方法来处理。
+值得注意的是，nowtest 中的领域层目前_不包含_任何用于事件处理的用例。事件由 UI 层直接调用仓库的方法来处理。
 
 ## UI 层
 

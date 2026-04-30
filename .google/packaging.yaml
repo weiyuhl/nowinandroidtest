@@ -24,6 +24,6 @@ solutions:
   - JetpackWorkManager
   - JetpackLifecycle
 languages:    [Kotlin]
-github:       android/nowinandroid
+github:       weiyuhl/nowinandroidtest
 level:        ADVANCED
 license: apache2

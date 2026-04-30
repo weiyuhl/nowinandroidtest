@@ -20,10 +20,10 @@
 
 当前的约定插件列表：
 
-- [`nowinandroid.android.application`](convention/src/main/kotlin/AndroidApplicationConventionPlugin.kt)、
-  [`nowinandroid.android.library`](convention/src/main/kotlin/AndroidLibraryConventionPlugin.kt)、
-  [`nowinandroid.android.test`](convention/src/main/kotlin/AndroidTestConventionPlugin.kt)：
+- [`nowtest.android.application`](convention/src/main/kotlin/AndroidApplicationConventionPlugin.kt)、
+  [`nowtest.android.library`](convention/src/main/kotlin/AndroidLibraryConventionPlugin.kt)、
+  [`nowtest.android.test`](convention/src/main/kotlin/AndroidTestConventionPlugin.kt)：
   配置通用的 Android 和 Kotlin 选项。
-- [`nowinandroid.android.application.compose`](convention/src/main/kotlin/AndroidApplicationComposeConventionPlugin.kt)、
-  [`nowinandroid.android.library.compose`](convention/src/main/kotlin/AndroidLibraryComposeConventionPlugin.kt)：
+- [`nowtest.android.application.compose`](convention/src/main/kotlin/AndroidApplicationComposeConventionPlugin.kt)、
+  [`nowtest.android.library.compose`](convention/src/main/kotlin/AndroidLibraryComposeConventionPlugin.kt)：
   配置 Jetpack Compose 选项

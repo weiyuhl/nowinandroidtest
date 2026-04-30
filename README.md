@@ -1,23 +1,23 @@
-![Now in Android](docs/images/nia-splash.jpg "Now in Android")
+![nowtest](docs/images/nt-splash.jpg "nowtest")
 
-<a href="https://play.google.com/store/apps/details?id=com.google.samples.apps.nowinandroid"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="70"></a>
+<a href="https://play.google.com/store/apps/details?id=com.lhzkml.nowtest"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="70"></a>
 
-Now in Android 应用
+nowtest 应用
 ==================
 
-**通过[设计案例分析](https://goo.gle/nia-figma)、[架构学习之旅](docs/ArchitectureLearningJourney.md)和[模块化学习之旅](docs/ModularizationLearningJourney.md)了解此应用的设计与构建过程。**
+**通过[设计案例分析](https://goo.gle/nt-figma)、[架构学习之旅](docs/ArchitectureLearningJourney.md)和[模块化学习之旅](docs/ModularizationLearningJourney.md)了解此应用的设计与构建过程。**
 
-这是 [Now in Android](https://developer.android.com/series/now-in-android)
+这是 [nowtest](https://developer.android.com/series/now-in-android)
 应用的代码仓库。目前仍在 **开发中** 🚧。
 
-**Now in Android** 是一款完全使用 Kotlin 和 Jetpack Compose 构建的功能齐全的 Android 应用。它遵循 Android 设计和开发的最佳实践，旨在为开发者提供有价值的参考。作为一款运行中的应用，它帮助开发者通过定期提供新闻更新来了解 Android 开发的最新动态。
+**nowtest** 是一款完全使用 Kotlin 和 Jetpack Compose 构建的功能齐全的 Android 应用。它遵循 Android 设计和开发的最佳实践，旨在为开发者提供有价值的参考。作为一款运行中的应用，它帮助开发者通过定期提供新闻更新来了解 Android 开发的最新动态。
 
-该应用目前正在开发中。`prodRelease` 变体已[在 Play Store 上架](https://play.google.com/store/apps/details?id=com.google.samples.apps.nowinandroid)。
+该应用目前正在开发中。`prodRelease` 变体已[在 Play Store 上架](https://play.google.com/store/apps/details?id=com.lhzkml.nowtest)。
 
 # 功能特性
 
-**Now in Android** 展示来自
-[Now in Android](https://developer.android.com/series/now-in-android) 系列的内容。用户可以浏览最近视频、文章和其他内容的链接。用户还可以关注自己感兴趣的主题，并在匹配其关注兴趣的新内容发布时收到通知。
+**nowtest** 展示来自
+[nowtest](https://developer.android.com/series/now-in-android) 系列的内容。用户可以浏览最近视频、文章和其他内容的链接。用户还可以关注自己感兴趣的主题，并在匹配其关注兴趣的新内容发布时收到通知。
 
 ## 截图
 
@@ -25,7 +25,7 @@ Now in Android 应用
 
 # 开发环境
 
-**Now in Android** 使用 Gradle 构建系统，可直接导入 Android Studio（请确保使用最新稳定版，可在[此处](https://developer.android.com/studio)获取）。
+**nowtest** 使用 Gradle 构建系统，可直接导入 Android Studio（请确保使用最新稳定版，可在[此处](https://developer.android.com/studio)获取）。
 
 将运行配置改为 `app`。
 
@@ -39,13 +39,13 @@ Now in Android 应用
 
 # 架构
 
-**Now in Android** 应用遵循
+**nowtest** 应用遵循
 [官方架构指南](https://developer.android.com/topic/architecture)，
 详情见[架构学习之旅](docs/ArchitectureLearningJourney.md)。
 
 # 模块化
 
-**Now in Android** 应用已完全模块化，详细的指导和模块化策略说明见
+**nowtest** 应用已完全模块化，详细的指导和模块化策略说明见
 [模块化学习之旅](docs/ModularizationLearningJourney.md)。
 
 # 构建
@@ -54,7 +54,7 @@ Now in Android 应用
 
 此外，`app` 的 `benchmark` 变体用于测试启动性能并生成基线配置文件（详见下文）。
 
-`app-nia-catalog` 是一个独立应用，展示 **Now in Android** 风格化的组件列表。
+`app-nt-catalog` 是一个独立应用，展示 **nowtest** 风格化的组件列表。
 
 该应用还使用
 [产品风味](https://developer.android.com/studio/build/build-variants#product-flavors)来控制应用内容的加载来源。
@@ -67,9 +67,9 @@ Now in Android 应用
 
 # 测试
 
-为了方便组件测试，**Now in Android** 使用 [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) 进行依赖注入。
+为了方便组件测试，**nowtest** 使用 [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) 进行依赖注入。
 
-大多数数据层组件以接口形式定义。然后，具体的实现（具有各种依赖）被绑定以向应用中的其他组件提供这些接口。在测试中，**Now in Android** 明确**不**使用任何 Mock 框架。相反，可以使用 Hilt 的测试 API（或通过 ViewModel 测试的手动构造函数注入）将生产实现替换为测试替身。
+大多数数据层组件以接口形式定义。然后，具体的实现（具有各种依赖）被绑定以向应用中的其他组件提供这些接口。在测试中，**nowtest** 明确**不**使用任何 Mock 框架。相反，可以使用 Hilt 的测试 API（或通过 ViewModel 测试的手动构造函数注入）将生产实现替换为测试替身。
 
 这些测试替身实现了与生产实现相同的接口，并且通常提供简化（但仍然真实）的实现以及额外的测试钩子。这使得测试更加健壮，能覆盖更多的生产代码，而不仅仅是验证对 Mock 的特定调用。
 
@@ -89,9 +89,9 @@ Now in Android 应用
 ## 截图测试
 截图测试对应用内的屏幕或 UI 组件进行截图，并将其与之前录制的已知正确截图进行对比。
 
-例如，Now in Android 有[截图测试](https://github.com/android/nowinandroid/blob/main/app/src/testDemo/kotlin/com/google/samples/apps/nowinandroid/ui/NiaAppScreenSizesScreenshotTests.kt)来验证导航在不同屏幕尺寸下是否正确显示（[已知正确的截图](https://github.com/android/nowinandroid/tree/main/app/src/testDemo/screenshots)）。
+例如，nowtest 有[截图测试](https://github.com/weiyuhl/nowinandroidtest/blob/main/app/src/testDemo/kotlin/com/lhzkml/nowtest/ui/NtAppScreenSizesScreenshotTests.kt)来验证导航在不同屏幕尺寸下是否正确显示（[已知正确的截图](https://github.com/weiyuhl/nowinandroidtest/tree/main/app/src/testDemo/screenshots)）。
 
-Now In Android 使用 [Roborazzi](https://github.com/takahirom/roborazzi) 对某些屏幕和 UI 组件进行截图测试。使用截图测试时，以下 Gradle 任务非常有用：
+nowtest 使用 [Roborazzi](https://github.com/takahirom/roborazzi) 对某些屏幕和 UI 组件进行截图测试。使用截图测试时，以下 Gradle 任务非常有用：
 
 - `verifyRoborazziDemoDebug` 运行所有截图测试，将截图与已知正确的截图进行对比验证。
 - `recordRoborazziDemoDebug` 录制新的"已知正确"截图。当你对 UI 进行了更改并手动确认渲染正确后使用此命令。截图将存储在 `modulename/src/test/screenshots`。
@@ -104,7 +104,7 @@ Now In Android 使用 [Roborazzi](https://github.com/takahirom/roborazzi) 对某
 有关截图测试的更多信息，请[查看此演讲](https://www.droidcon.com/2023/11/15/easy-screenshot-testing-with-compose/)。
 
 # UI
-该应用使用 [Material 3 指南](https://m3.material.io/)进行设计。在 [Now in Android Material 3 案例分析](https://goo.gle/nia-figma)中了解更多设计过程并获取设计文件（设计资源[也可作为 PDF 获取](docs/Now-In-Android-Design-File.pdf)）。
+该应用使用 [Material 3 指南](https://m3.material.io/)进行设计。在 [nowtest Material 3 案例分析](https://goo.gle/nt-figma)中了解更多设计过程并获取设计文件（设计资源[也可作为 PDF 获取](docs/Now-In-Android-Design-File.pdf)）。
 
 屏幕和 UI 元素完全使用 [Jetpack Compose](https://developer.android.com/jetpack/compose) 构建。
 
@@ -148,4 +148,4 @@ Now In Android 使用 [Roborazzi](https://github.com/takahirom/roborazzi) 对某
 
 # 许可证
 
-**Now in Android** 按照 Apache License（版本 2.0）的条款分发。详情请参阅[许可证](LICENSE)。
+**nowtest** 按照 Apache License（版本 2.0）的条款分发。详情请参阅[许可证](LICENSE)。

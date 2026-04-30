@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="app_name">Now in Android</string>
+    <string name="app_name">nowtest</string>
     <string name="not_connected">⚠️ You aren’t connected to the internet</string>
 </resources>

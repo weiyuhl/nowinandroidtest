@@ -1,12 +1,12 @@
 plugins {
-    alias(libs.plugins.nowinandroid.android.library)
-    alias(libs.plugins.nowinandroid.android.library.jacoco)
-    alias(libs.plugins.nowinandroid.android.room)
-    alias(libs.plugins.nowinandroid.hilt)
+    alias(libs.plugins.nowtest.android.library)
+    alias(libs.plugins.nowtest.android.library.jacoco)
+    alias(libs.plugins.nowtest.android.room)
+    alias(libs.plugins.nowtest.hilt)
 }
 
 android {
-    namespace = "com.google.samples.apps.nowinandroid.core.database"
+    namespace = "com.lhzkml.nowtest.core.database"
 }
 
 dependencies {

@@ -1,12 +1,12 @@
-import com.google.samples.apps.nowinandroid.configureFlavors
+import com.lhzkml.nowtest.configureFlavors
 
 plugins {
     alias(libs.plugins.baselineprofile)
-    alias(libs.plugins.nowinandroid.android.test)
+    alias(libs.plugins.nowtest.android.test)
 }
 
 android {
-    namespace = "com.google.samples.apps.nowinandroid.benchmarks"
+    namespace = "com.lhzkml.nowtest.benchmarks"
 
     defaultConfig {
         minSdk = 28

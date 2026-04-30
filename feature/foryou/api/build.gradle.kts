@@ -1,9 +1,9 @@
 plugins {
-    alias(libs.plugins.nowinandroid.android.feature.api)
+    alias(libs.plugins.nowtest.android.feature.api)
 }
 
 android {
-    namespace = "com.google.samples.apps.nowinandroid.feature.foryou.api"
+    namespace = "com.lhzkml.nowtest.feature.foryou.api"
 }
 
 dependencies {

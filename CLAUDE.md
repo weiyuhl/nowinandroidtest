@@ -7,7 +7,7 @@
 - 构建：`./gradlew assembleDemoDebug`
 - 修复格式/代码检查：`./gradlew spotlessApply`
 - 运行所有本地测试：`./gradlew testDemoDebug`
-- 运行单个测试类：`./gradlew testDemoDebug --tests "com.google.samples.apps.nowinandroid.MyTestClass"`
+- 运行单个测试类：`./gradlew testDemoDebug --tests "com.lhzkml.nowtest.MyTestClass"`
 - 运行所有插桩测试：`./gradlew connectedDemoDebugAndroidTest`
 - 截图测试（验证）：`./gradlew verifyRoborazziDemoDebug`
 - 截图测试（录制新基线）：`./gradlew recordRoborazziDemoDebug`
@@ -27,11 +27,11 @@
 
 ## 模块结构
 
-- `app/` — 应用模块：`MainActivity`、`NiaApp`、`NiaNavHost`、顶层导航。依赖所有 feature 模块。
+- `app/` — 应用模块：`MainActivity`、`NtApp`、`NtNavHost`、顶层导航。依赖所有 feature 模块。
 - `feature/<name>/api` — 功能的公开接口（仅包含导航键）。不得依赖其他 feature 的 `api` 或 `impl` 模块。
 - `feature/<name>/impl` — 功能实现。可以依赖其他 feature 的 `api` 模块。
 - `core/<name>` — 共享库。不得依赖 feature 或 app 模块。包括 `data`、`database`、`network`、`model`（纯 JVM 库）、`designsystem`、`ui`、`navigation`、`domain`、`testing`、`analytics`、`notifications` 等。
-- `build-logic/` — 包含约定插件的复合构建（如 `nowinandroid.android.application`、`nowinandroid.android.library.compose` 等），用于共享 Gradle 配置。
+- `build-logic/` — 包含约定插件的复合构建（如 `nowtest.android.application`、`nowtest.android.library.compose` 等），用于共享 Gradle 配置。
 - `sync/work` — WorkManager 同步逻辑。
 - `benchmarks/` — 宏基准测试和基线配置文件生成。
 

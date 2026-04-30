@@ -1,11 +1,11 @@
 plugins {
-    alias(libs.plugins.nowinandroid.android.library)
-    alias(libs.plugins.nowinandroid.android.library.compose)
-    alias(libs.plugins.nowinandroid.hilt)
+    alias(libs.plugins.nowtest.android.library)
+    alias(libs.plugins.nowtest.android.library.compose)
+    alias(libs.plugins.nowtest.hilt)
 }
 
 android {
-    namespace = "com.google.samples.apps.nowinandroid.core.screenshottesting"
+    namespace = "com.lhzkml.nowtest.core.screenshottesting"
 }
 
 dependencies {

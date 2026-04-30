@@ -16,7 +16,7 @@
 
 我们需要知道你做了什么以及为什么这样做。包括你的 Pull Request 包含的内容摘要，以及你进行这些更改的原因。包含它修复的任何相关 Issue 的链接。
 
-[此处为示例](https://github.com/android/nowinandroid/pull/1257)。
+[此处为示例](https://github.com/weiyuhl/nowinandroidtest/pull/1257)。
 
 **现在删除本行及以上的所有内容**
 

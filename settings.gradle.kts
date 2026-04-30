@@ -26,11 +26,11 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "nowinandroid"
+rootProject.name = "nowtest"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
-include(":app-nia-catalog")
+include(":app-nt-catalog")
 include(":benchmarks")
 include(":core:analytics")
 include(":core:common")
@@ -68,7 +68,7 @@ include(":ui-test-hilt-manifest")
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """
-    Now in Android requires JDK 17+ but it is currently using JDK ${JavaVersion.current()}.
+    nowtest requires JDK 17+ but it is currently using JDK ${JavaVersion.current()}.
     Java Home: [${System.getProperty("java.home")}]
     https://developer.android.com/build/jdks#jdk-config-in-studio
     """.trimIndent()

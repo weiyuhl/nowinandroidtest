@@ -1,14 +1,14 @@
 plugins {
-    alias(libs.plugins.nowinandroid.android.library)
-    alias(libs.plugins.nowinandroid.android.library.jacoco)
-    alias(libs.plugins.nowinandroid.hilt)
+    alias(libs.plugins.nowtest.android.library)
+    alias(libs.plugins.nowtest.android.library.jacoco)
+    alias(libs.plugins.nowtest.hilt)
 }
 
 android {
     defaultConfig {
-        testInstrumentationRunner = "com.google.samples.apps.nowinandroid.core.testing.NiaTestRunner"
+        testInstrumentationRunner = "com.lhzkml.nowtest.core.testing.NtTestRunner"
     }
-    namespace = "com.google.samples.apps.nowinandroid.sync"
+    namespace = "com.lhzkml.nowtest.sync"
 }
 
 dependencies {

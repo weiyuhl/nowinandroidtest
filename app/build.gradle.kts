@@ -1,12 +1,12 @@
-import com.google.samples.apps.nowinandroid.NiaBuildType
+import com.lhzkml.nowtest.NtBuildType
 
 plugins {
-    alias(libs.plugins.nowinandroid.android.application)
-    alias(libs.plugins.nowinandroid.android.application.compose)
-    alias(libs.plugins.nowinandroid.android.application.flavors)
-    alias(libs.plugins.nowinandroid.android.application.jacoco)
-    alias(libs.plugins.nowinandroid.android.application.firebase)
-    alias(libs.plugins.nowinandroid.hilt)
+    alias(libs.plugins.nowtest.android.application)
+    alias(libs.plugins.nowtest.android.application.compose)
+    alias(libs.plugins.nowtest.android.application.flavors)
+    alias(libs.plugins.nowtest.android.application.jacoco)
+    alias(libs.plugins.nowtest.android.application.firebase)
+    alias(libs.plugins.nowtest.hilt)
     alias(libs.plugins.google.osslicenses)
     alias(libs.plugins.baselineprofile)
     alias(libs.plugins.roborazzi)
@@ -15,22 +15,22 @@ plugins {
 
 android {
     defaultConfig {
-        applicationId = "com.google.samples.apps.nowinandroid"
+        applicationId = "com.lhzkml.nowtest"
         versionCode = 8
         versionName = "0.1.2" // X.Y.Z; X = Major, Y = minor, Z = Patch level
 
         // Custom test runner to set up Hilt dependency graph
-        testInstrumentationRunner = "com.google.samples.apps.nowinandroid.core.testing.NiaTestRunner"
+        testInstrumentationRunner = "com.lhzkml.nowtest.core.testing.NtTestRunner"
     }
 
     buildTypes {
         debug {
-            applicationIdSuffix = NiaBuildType.DEBUG.applicationIdSuffix
+            applicationIdSuffix = NtBuildType.DEBUG.applicationIdSuffix
         }
         release {
             isMinifyEnabled = providers.gradleProperty("minifyWithR8")
                 .map(String::toBooleanStrict).getOrElse(true)
-            applicationIdSuffix = NiaBuildType.RELEASE.applicationIdSuffix
+            applicationIdSuffix = NtBuildType.RELEASE.applicationIdSuffix
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
                           "proguard-rules.pro")
 
@@ -49,7 +49,7 @@ android {
         }
     }
     testOptions.unitTests.isIncludeAndroidResources = true
-    namespace = "com.google.samples.apps.nowinandroid"
+    namespace = "com.lhzkml.nowtest"
 }
 
 dependencies {

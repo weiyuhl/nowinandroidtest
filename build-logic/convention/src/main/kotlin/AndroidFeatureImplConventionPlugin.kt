@@ -1,6 +1,6 @@
 import com.android.build.api.dsl.LibraryExtension
-import com.google.samples.apps.nowinandroid.configureGradleManagedDevices
-import com.google.samples.apps.nowinandroid.libs
+import com.lhzkml.nowtest.configureGradleManagedDevices
+import com.lhzkml.nowtest.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -10,8 +10,8 @@ import org.gradle.kotlin.dsl.dependencies
 class AndroidFeatureImplConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            apply(plugin = "nowinandroid.android.library")
-            apply(plugin = "nowinandroid.hilt")
+            apply(plugin = "nowtest.android.library")
+            apply(plugin = "nowtest.hilt")
 
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true

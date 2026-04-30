@@ -1,6 +1,6 @@
-# Now in Android 项目
+# nowtest 项目
 
-Now in Android 是一款使用 Kotlin 编写的原生 Android 移动应用。它提供关于 Android 开发的定期新闻。用户可以选择关注主题、在有新内容时收到通知以及收藏项目。
+nowtest 是一款使用 Kotlin 编写的原生 Android 移动应用。它提供关于 Android 开发的定期新闻。用户可以选择关注主题、在有新内容时收到通知以及收藏项目。
 
 ## 架构
 
@@ -53,4 +53,4 @@ Now in Android 是一款使用 Kotlin 编写的原生 Android 移动应用。它
 
 ## 版本控制与代码位置
 
-- 项目使用 git，托管在 https://github.com/android/nowinandroid。
+- 项目使用 git，托管在 https://github.com/weiyuhl/nowinandroidtest。

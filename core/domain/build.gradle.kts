@@ -1,11 +1,11 @@
 plugins {
-    alias(libs.plugins.nowinandroid.android.library)
-    alias(libs.plugins.nowinandroid.android.library.jacoco)
+    alias(libs.plugins.nowtest.android.library)
+    alias(libs.plugins.nowtest.android.library.jacoco)
     id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.google.samples.apps.nowinandroid.core.domain"
+    namespace = "com.lhzkml.nowtest.core.domain"
 }
 
 dependencies {

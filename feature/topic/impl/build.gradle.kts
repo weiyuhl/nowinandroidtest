@@ -1,11 +1,11 @@
 plugins {
-    alias(libs.plugins.nowinandroid.android.feature.impl)
-    alias(libs.plugins.nowinandroid.android.library.compose)
-    alias(libs.plugins.nowinandroid.android.library.jacoco)
+    alias(libs.plugins.nowtest.android.feature.impl)
+    alias(libs.plugins.nowtest.android.library.compose)
+    alias(libs.plugins.nowtest.android.library.jacoco)
 }
 
 android {
-    namespace = "com.google.samples.apps.nowinandroid.feature.topic.impl"
+    namespace = "com.lhzkml.nowtest.feature.topic.impl"
 }
 
 dependencies {

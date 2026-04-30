@@ -1,12 +1,12 @@
 plugins {
-    alias(libs.plugins.nowinandroid.android.library)
-    alias(libs.plugins.nowinandroid.android.library.compose)
-    alias(libs.plugins.nowinandroid.android.library.jacoco)
+    alias(libs.plugins.nowtest.android.library)
+    alias(libs.plugins.nowtest.android.library.compose)
+    alias(libs.plugins.nowtest.android.library.jacoco)
     alias(libs.plugins.roborazzi)
 }
 
 android {
-    namespace = "com.google.samples.apps.nowinandroid.core.designsystem"
+    namespace = "com.lhzkml.nowtest.core.designsystem"
     testOptions.unitTests.isIncludeAndroidResources = true
 }
 

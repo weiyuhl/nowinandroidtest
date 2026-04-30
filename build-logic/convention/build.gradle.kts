@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.android.lint)
 }
 
-group = "com.google.samples.apps.nowinandroid.buildlogic"
+group = "com.lhzkml.nowtest.buildlogic"
 
 // Configure the build-logic plugins to target JDK 17
 // This matches the JDK used to build the project, and is not related to what is running on device.
@@ -44,67 +44,67 @@ tasks {
 gradlePlugin {
     plugins {
         register("androidApplicationCompose") {
-            id = libs.plugins.nowinandroid.android.application.compose.get().pluginId
+            id = libs.plugins.nowtest.android.application.compose.get().pluginId
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
         register("androidApplication") {
-            id = libs.plugins.nowinandroid.android.application.asProvider().get().pluginId
+            id = libs.plugins.nowtest.android.application.asProvider().get().pluginId
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidApplicationJacoco") {
-            id = libs.plugins.nowinandroid.android.application.jacoco.get().pluginId
+            id = libs.plugins.nowtest.android.application.jacoco.get().pluginId
             implementationClass = "AndroidApplicationJacocoConventionPlugin"
         }
         register("androidLibraryCompose") {
-            id = libs.plugins.nowinandroid.android.library.compose.get().pluginId
+            id = libs.plugins.nowtest.android.library.compose.get().pluginId
             implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidLibrary") {
-            id = libs.plugins.nowinandroid.android.library.asProvider().get().pluginId
+            id = libs.plugins.nowtest.android.library.asProvider().get().pluginId
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidFeatureImpl") {
-            id = libs.plugins.nowinandroid.android.feature.impl.get().pluginId
+            id = libs.plugins.nowtest.android.feature.impl.get().pluginId
             implementationClass = "AndroidFeatureImplConventionPlugin"
         }
         register("androidFeatureApi") {
-            id = libs.plugins.nowinandroid.android.feature.api.get().pluginId
+            id = libs.plugins.nowtest.android.feature.api.get().pluginId
             implementationClass = "AndroidFeatureApiConventionPlugin"
         }
         register("androidLibraryJacoco") {
-            id = libs.plugins.nowinandroid.android.library.jacoco.get().pluginId
+            id = libs.plugins.nowtest.android.library.jacoco.get().pluginId
             implementationClass = "AndroidLibraryJacocoConventionPlugin"
         }
         register("androidTest") {
-            id = libs.plugins.nowinandroid.android.test.get().pluginId
+            id = libs.plugins.nowtest.android.test.get().pluginId
             implementationClass = "AndroidTestConventionPlugin"
         }
         register("hilt") {
-            id = libs.plugins.nowinandroid.hilt.get().pluginId
+            id = libs.plugins.nowtest.hilt.get().pluginId
             implementationClass = "HiltConventionPlugin"
         }
         register("androidRoom") {
-            id = libs.plugins.nowinandroid.android.room.get().pluginId
+            id = libs.plugins.nowtest.android.room.get().pluginId
             implementationClass = "AndroidRoomConventionPlugin"
         }
         register("androidFirebase") {
-            id = libs.plugins.nowinandroid.android.application.firebase.get().pluginId
+            id = libs.plugins.nowtest.android.application.firebase.get().pluginId
             implementationClass = "AndroidApplicationFirebaseConventionPlugin"
         }
         register("androidFlavors") {
-            id = libs.plugins.nowinandroid.android.application.flavors.get().pluginId
+            id = libs.plugins.nowtest.android.application.flavors.get().pluginId
             implementationClass = "AndroidApplicationFlavorsConventionPlugin"
         }
         register("androidLint") {
-            id = libs.plugins.nowinandroid.android.lint.get().pluginId
+            id = libs.plugins.nowtest.android.lint.get().pluginId
             implementationClass = "AndroidLintConventionPlugin"
         }
         register("jvmLibrary") {
-            id = libs.plugins.nowinandroid.jvm.library.get().pluginId
+            id = libs.plugins.nowtest.jvm.library.get().pluginId
             implementationClass = "JvmLibraryConventionPlugin"
         }
         register("root") {
-            id = libs.plugins.nowinandroid.root.get().pluginId
+            id = libs.plugins.nowtest.root.get().pluginId
             implementationClass = "RootPlugin"
         }
     }
