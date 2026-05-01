@@ -187,10 +187,10 @@ private fun SearchResultItem(
 ) {
     ListItem(
         headlineContent = {
-            Text(text = result.title)
+            Text(text = stringResource(id = result.titleResId))
         },
         supportingContent = {
-            Text(text = result.description)
+            Text(text = stringResource(id = result.descriptionResId))
         },
         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         modifier = modifier

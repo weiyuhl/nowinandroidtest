@@ -4,20 +4,30 @@
 
     <!-- Allows us to override night specific attributes in the
          values-night folder. -->
-    <style name="NightAdjusted.Theme.Nt" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="NightAdjusted.Theme.Nt" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <!-- The final theme we use -->
     <style name="Theme.Nt" parent="NightAdjusted.Theme.Nt">
         <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
     </style>
 
-    <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen">
+    <style name="NightAdjusted.Theme.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
     <style name="Theme.Nt.Splash" parent="NightAdjusted.Theme.Splash">
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenBackground">?android:colorBackground</item>
+        <item name="windowSplashScreenAnimationDuration">0</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/ic_splash</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">?android:colorBackground</item>
+        <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="31">0</item>
         <item name="postSplashScreenTheme">@style/Theme.Nt</item>
     </style>
 

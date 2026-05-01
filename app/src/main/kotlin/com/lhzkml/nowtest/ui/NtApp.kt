@@ -37,6 +37,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigationevent.compose.LocalNavigationEventDispatcherOwner
+import androidx.navigationevent.compose.rememberNavigationEventDispatcherOwner
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
@@ -104,121 +106,124 @@ internal fun NtAppContent(
     val snackbarHostState = LocalSnackbarHostState.current
 
     val navigator = remember { Navigator(appState.navigationState) }
+    val navigationEventDispatcherOwner = rememberNavigationEventDispatcherOwner(parent = null)
 
-    NtNavigationSuiteScaffold(
-        navigationSuiteItems = {
-            TOP_LEVEL_NAV_ITEMS.forEach { (navKey, navItem) ->
-                val selected = navKey == appState.navigationState.currentTopLevelKey
-                item(
-                    selected = selected,
-                    onClick = { navigator.navigate(navKey) },
-                    icon = {
-                        Icon(
-                            imageVector = navItem.unselectedIcon,
-                            contentDescription = null,
-                        )
-                    },
-                    selectedIcon = {
-                        Icon(
-                            imageVector = navItem.selectedIcon,
-                            contentDescription = null,
-                        )
-                    },
-                    label = { Text(stringResource(navItem.iconTextId)) },
-                    modifier = Modifier
-                        .testTag("NtNavItem"),
-                )
-            }
-        },
-        windowAdaptiveInfo = windowAdaptiveInfo,
-    ) {
-        Scaffold(
-            modifier = modifier.semantics {
-                testTagsAsResourceId = true
-            },
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            snackbarHost = {
-                SnackbarHost(
-                    snackbarHostState,
-                    modifier = Modifier.windowInsetsPadding(
-                        WindowInsets.safeDrawing.exclude(
-                            WindowInsets.ime,
-                        ),
-                    ),
-                )
-            },
-        ) { padding ->
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
-                    .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
-                            WindowInsetsSides.Horizontal,
-                        ),
-                    ),
-            ) {
-                // Only show the top navigation bar on top level destinations.
-                var shouldShowTopNavigationBar = false
-
-                if (appState.navigationState.currentKey in appState.navigationState.topLevelKeys) {
-                    shouldShowTopNavigationBar = true
-
-                    val topNavigationDestinations = listOf<NtTopNavigationDestination<NavKey>>(
-                        NtTopNavigationDestination(
-                            key = SearchNavKey,
-                            icon = NtIcons.Search,
-                            contentDescription = stringResource(
-                                id = R.string.top_navigation_search_content_description,
-                            ),
-                        ),
-                        NtTopNavigationDestination(
-                            key = SettingsNavKey,
-                            icon = NtIcons.Settings,
-                            contentDescription = stringResource(
-                                id = R.string.top_navigation_settings_content_description,
-                            ),
-                        ),
-                    )
-
-                    NtTopNavigationBar(
-                        destinations = topNavigationDestinations,
-                        onNavigateToDestination = navigator::navigate,
+    CompositionLocalProvider(LocalNavigationEventDispatcherOwner provides navigationEventDispatcherOwner) {
+        NtNavigationSuiteScaffold(
+            navigationSuiteItems = {
+                TOP_LEVEL_NAV_ITEMS.forEach { (navKey, navItem) ->
+                    val selected = navKey == appState.navigationState.currentTopLevelKey
+                    item(
+                        selected = selected,
+                        onClick = { navigator.navigate(navKey) },
+                        icon = {
+                            Icon(
+                                imageVector = navItem.unselectedIcon,
+                                contentDescription = null,
+                            )
+                        },
+                        selectedIcon = {
+                            Icon(
+                                imageVector = navItem.selectedIcon,
+                                contentDescription = null,
+                            )
+                        },
+                        label = { Text(stringResource(navItem.iconTextId)) },
+                        modifier = Modifier
+                            .testTag("NtNavItem"),
                     )
                 }
-
-                Box(
-                    // Workaround for https://issuetracker.google.com/338478720
-                    modifier = Modifier.consumeWindowInsets(
-                        if (shouldShowTopNavigationBar) {
-                            WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
-                        } else {
-                            WindowInsets(0, 0, 0, 0)
-                        },
-                    ),
+            },
+            windowAdaptiveInfo = windowAdaptiveInfo,
+        ) {
+            Scaffold(
+                modifier = modifier.semantics {
+                    testTagsAsResourceId = true
+                },
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                contentWindowInsets = WindowInsets(0, 0, 0, 0),
+                snackbarHost = {
+                    SnackbarHost(
+                        snackbarHostState,
+                        modifier = Modifier.windowInsetsPadding(
+                            WindowInsets.safeDrawing.exclude(
+                                WindowInsets.ime,
+                            ),
+                        ),
+                    )
+                },
+            ) { padding ->
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .consumeWindowInsets(padding)
+                        .windowInsetsPadding(
+                            WindowInsets.safeDrawing.only(
+                                WindowInsetsSides.Horizontal,
+                            ),
+                        ),
                 ) {
-                    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
+                    // Only show the top navigation bar on top level destinations.
+                    var shouldShowTopNavigationBar = false
 
-                    val entryProvider = entryProvider {
-                        forYouEntry()
-                        bookmarksEntry()
-                        interestsEntry()
-                        searchEntry(navigator)
-                        settingsEntry(navigator)
+                    if (appState.navigationState.currentKey in appState.navigationState.topLevelKeys) {
+                        shouldShowTopNavigationBar = true
+
+                        val topNavigationDestinations = listOf<NtTopNavigationDestination<NavKey>>(
+                            NtTopNavigationDestination(
+                                key = SearchNavKey,
+                                icon = NtIcons.Search,
+                                contentDescription = stringResource(
+                                    id = R.string.top_navigation_search_content_description,
+                                ),
+                            ),
+                            NtTopNavigationDestination(
+                                key = SettingsNavKey,
+                                icon = NtIcons.Settings,
+                                contentDescription = stringResource(
+                                    id = R.string.top_navigation_settings_content_description,
+                                ),
+                            ),
+                        )
+
+                        NtTopNavigationBar(
+                            destinations = topNavigationDestinations,
+                            onNavigateToDestination = navigator::navigate,
+                        )
                     }
 
-                    NavDisplay(
-                        entries = appState.navigationState.toEntries(entryProvider),
-                        sceneStrategy = listDetailStrategy,
-                        onBack = { navigator.goBack() },
-                    )
-                }
+                    Box(
+                        // Workaround for https://issuetracker.google.com/338478720
+                        modifier = Modifier.consumeWindowInsets(
+                            if (shouldShowTopNavigationBar) {
+                                WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                            } else {
+                                WindowInsets(0, 0, 0, 0)
+                            },
+                        ),
+                    ) {
+                        val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
 
-                // TODO: We may want to add padding or spacer when the snackbar is shown so that
-                //  content doesn't display behind it.
+                        val entryProvider = entryProvider {
+                            forYouEntry()
+                            bookmarksEntry()
+                            interestsEntry()
+                            searchEntry(navigator)
+                            settingsEntry(navigator)
+                        }
+
+                        NavDisplay(
+                            entries = appState.navigationState.toEntries(entryProvider),
+                            sceneStrategy = listDetailStrategy,
+                            onBack = { navigator.goBack() },
+                        )
+                    }
+
+                    // TODO: We may want to add padding or spacer when the snackbar is shown so that
+                    //  content doesn't display behind it.
+                }
             }
         }
     }

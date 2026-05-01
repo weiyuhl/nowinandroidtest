@@ -1,21 +1,26 @@
 package com.lhzkml.nowtest.feature.search.impl
 
+import com.lhzkml.nowtest.feature.search.api.R as searchR
+
 data class SearchTestContent(
     val id: String,
-    val title: String,
-    val description: String,
+    val titleResId: Int,
+    val descriptionResId: Int,
+    val searchTerms: List<String>,
 )
 
 internal val localSearchTestContents = listOf(
     SearchTestContent(
         id = "test-content-1234",
-        title = "1234 test content",
-        description = "Local search test item containing 1234.",
+        titleResId = searchR.string.feature_search_api_test_content_1234_title,
+        descriptionResId = searchR.string.feature_search_api_test_content_1234_description,
+        searchTerms = listOf("1234", "test content"),
     ),
     SearchTestContent(
         id = "test-content-compose",
-        title = "Compose test content",
-        description = "Local search test item for Compose.",
+        titleResId = searchR.string.feature_search_api_test_content_compose_title,
+        descriptionResId = searchR.string.feature_search_api_test_content_compose_description,
+        searchTerms = listOf("compose", "test content"),
     ),
 )
 
@@ -25,8 +30,9 @@ internal fun searchLocalTestContents(query: String): List<SearchTestContent> {
 
     return localSearchTestContents.filter { content ->
         content.id.contains(normalizedQuery, ignoreCase = true) ||
-            content.title.contains(normalizedQuery, ignoreCase = true) ||
-            content.description.contains(normalizedQuery, ignoreCase = true)
+            content.searchTerms.any { term ->
+                term.contains(normalizedQuery, ignoreCase = true)
+            }
     }
 }
 

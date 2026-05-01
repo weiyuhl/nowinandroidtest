@@ -7,6 +7,8 @@ import com.lhzkml.nowtest.core.testing.util.MainDispatcherRule
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Loading
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Success
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -21,12 +23,13 @@ class SettingsViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val userDataRepository = TestUserDataRepository()
+    private val appLanguageRepository = FakeAppLanguageRepository()
 
     private lateinit var viewModel: SettingsViewModel
 
     @Before
     fun setup() {
-        viewModel = SettingsViewModel(userDataRepository)
+        viewModel = SettingsViewModel(userDataRepository, appLanguageRepository)
     }
 
     @Test
@@ -51,5 +54,44 @@ class SettingsViewModelTest {
             ),
             viewModel.settingsUiState.value,
         )
+    }
+
+    @Test
+    fun stateIncludesCurrentAppLanguage() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.settingsUiState.collect() }
+
+        userDataRepository.setDarkThemeConfig(DARK)
+        appLanguageRepository.setAppLanguage(AppLanguage.SIMPLIFIED_CHINESE)
+
+        val settings = (viewModel.settingsUiState.value as Success).settings
+        assertEquals(AppLanguage.SIMPLIFIED_CHINESE, settings.appLanguage)
+    }
+
+    @Test
+    fun updateLanguage_changesAppLanguageRepository() = runTest {
+        viewModel.updateLanguage(AppLanguage.ENGLISH)
+
+        assertEquals(AppLanguage.ENGLISH, appLanguageRepository.appLanguage.value)
+    }
+
+    @Test
+    fun updateLanguage_updatesSettingsUiState() = runTest {
+        backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.settingsUiState.collect() }
+
+        userDataRepository.setDarkThemeConfig(DARK)
+        viewModel.updateLanguage(AppLanguage.SIMPLIFIED_CHINESE)
+
+        val settings = (viewModel.settingsUiState.value as Success).settings
+        assertEquals(AppLanguage.SIMPLIFIED_CHINESE, settings.appLanguage)
+    }
+
+    private class FakeAppLanguageRepository : AppLanguageRepository {
+        private val mutableAppLanguage = MutableStateFlow(AppLanguage.SYSTEM_DEFAULT)
+
+        override val appLanguage: StateFlow<AppLanguage> = mutableAppLanguage
+
+        override fun setAppLanguage(appLanguage: AppLanguage) {
+            mutableAppLanguage.value = appLanguage
+        }
     }
 }

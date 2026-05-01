@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig.DARK
 import com.lhzkml.nowtest.core.model.data.ThemeBrand.ANDROID
 import com.lhzkml.nowtest.core.model.data.ThemeBrand.DEFAULT
@@ -11,6 +12,7 @@ import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Loading
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Success
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class SettingsScreenTest {
 
@@ -60,10 +62,48 @@ class SettingsScreenTest {
         ).assertExists()
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_dark_mode_config_light)).assertExists()
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_dark_mode_config_dark)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_language_preference)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_language_system_default)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_language_english)).assertExists()
+        composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_language_simplified_chinese)).assertExists()
 
         // Check that the correct settings are selected.
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_brand_android)).assertIsSelected()
         composeTestRule.onNodeWithText(getString(R.string.feature_settings_impl_dark_mode_config_dark)).assertIsSelected()
+    }
+
+    @Test
+    fun whenStateIsSuccess_selectedLanguageIsDisplayedAndCanBeChanged() {
+        var changedLanguage: AppLanguage? = null
+
+        composeTestRule.setContent {
+            SettingsScreen(
+                settingsUiState = Success(
+                    UserEditableSettings(
+                        brand = ANDROID,
+                        darkThemeConfig = DARK,
+                        useDynamicColor = false,
+                        appLanguage = AppLanguage.ENGLISH,
+                    ),
+                ),
+                onChangeDynamicColorPreference = {},
+                onChangeThemeBrand = {},
+                onChangeDarkThemeConfig = {},
+                onChangeLanguage = { changedLanguage = it },
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(getString(R.string.feature_settings_impl_language_english))
+            .assertIsSelected()
+
+        composeTestRule
+            .onNodeWithText(getString(R.string.feature_settings_impl_language_simplified_chinese))
+            .performClick()
+
+        composeTestRule.runOnIdle {
+            assertEquals(AppLanguage.SIMPLIFIED_CHINESE, changedLanguage)
+        }
     }
 
     @Test

@@ -10,7 +10,7 @@ import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,18 +19,22 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val userDataRepository: UserDataRepository,
+    private val appLanguageRepository: AppLanguageRepository,
 ) : ViewModel() {
     val settingsUiState: StateFlow<SettingsUiState> =
-        userDataRepository.userData
-            .map { userData ->
-                Success(
-                    settings = UserEditableSettings(
-                        brand = userData.themeBrand,
-                        useDynamicColor = userData.useDynamicColor,
-                        darkThemeConfig = userData.darkThemeConfig,
-                    ),
-                )
-            }
+        combine(
+            userDataRepository.userData,
+            appLanguageRepository.appLanguage,
+        ) { userData, appLanguage ->
+            Success(
+                settings = UserEditableSettings(
+                    brand = userData.themeBrand,
+                    useDynamicColor = userData.useDynamicColor,
+                    darkThemeConfig = userData.darkThemeConfig,
+                    appLanguage = appLanguage,
+                ),
+            )
+        }
             .stateIn(
                 scope = viewModelScope,
                 started = WhileSubscribed(5.seconds.inWholeMilliseconds),
@@ -54,6 +58,10 @@ class SettingsViewModel @Inject constructor(
             userDataRepository.setDynamicColorPreference(useDynamicColor)
         }
     }
+
+    fun updateLanguage(appLanguage: AppLanguage) {
+        appLanguageRepository.setAppLanguage(appLanguage)
+    }
 }
 
 /**
@@ -63,6 +71,7 @@ data class UserEditableSettings(
     val brand: ThemeBrand,
     val useDynamicColor: Boolean,
     val darkThemeConfig: DarkThemeConfig,
+    val appLanguage: AppLanguage = AppLanguage.SYSTEM_DEFAULT,
 )
 
 sealed interface SettingsUiState {

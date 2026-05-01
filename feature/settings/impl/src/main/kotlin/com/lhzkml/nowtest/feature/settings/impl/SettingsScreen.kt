@@ -73,6 +73,7 @@ fun SettingsScreen(
         onChangeThemeBrand = viewModel::updateThemeBrand,
         onChangeDynamicColorPreference = viewModel::updateDynamicColorPreference,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
+        onChangeLanguage = viewModel::updateLanguage,
     )
 }
 
@@ -84,6 +85,7 @@ fun SettingsScreen(
     onChangeThemeBrand: (themeBrand: ThemeBrand) -> Unit,
     onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    onChangeLanguage: (appLanguage: AppLanguage) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     TrackScreenViewEvent(screenName = "Settings")
@@ -97,6 +99,7 @@ fun SettingsScreen(
             onChangeThemeBrand = onChangeThemeBrand,
             onChangeDynamicColorPreference = onChangeDynamicColorPreference,
             onChangeDarkThemeConfig = onChangeDarkThemeConfig,
+            onChangeLanguage = onChangeLanguage,
         )
         Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
     }
@@ -131,6 +134,7 @@ private fun ColumnScope.SettingsContent(
     onChangeThemeBrand: (themeBrand: ThemeBrand) -> Unit,
     onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    onChangeLanguage: (appLanguage: AppLanguage) -> Unit,
 ) {
     Column(
         Modifier
@@ -153,6 +157,7 @@ private fun ColumnScope.SettingsContent(
                     onChangeThemeBrand = onChangeThemeBrand,
                     onChangeDynamicColorPreference = onChangeDynamicColorPreference,
                     onChangeDarkThemeConfig = onChangeDarkThemeConfig,
+                    onChangeLanguage = onChangeLanguage,
                 )
             }
         }
@@ -169,6 +174,7 @@ private fun ColumnScope.SettingsPanel(
     onChangeThemeBrand: (themeBrand: ThemeBrand) -> Unit,
     onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    onChangeLanguage: (appLanguage: AppLanguage) -> Unit,
 ) {
     SettingsSectionTitle(text = stringResource(string.feature_settings_impl_theme))
     Column(Modifier.selectableGroup()) {
@@ -216,6 +222,24 @@ private fun ColumnScope.SettingsPanel(
             text = stringResource(string.feature_settings_impl_dark_mode_config_dark),
             selected = settings.darkThemeConfig == DARK,
             onClick = { onChangeDarkThemeConfig(DARK) },
+        )
+    }
+    SettingsSectionTitle(text = stringResource(string.feature_settings_impl_language_preference))
+    Column(Modifier.selectableGroup()) {
+        SettingsThemeChooserRow(
+            text = stringResource(string.feature_settings_impl_language_system_default),
+            selected = settings.appLanguage == AppLanguage.SYSTEM_DEFAULT,
+            onClick = { onChangeLanguage(AppLanguage.SYSTEM_DEFAULT) },
+        )
+        SettingsThemeChooserRow(
+            text = stringResource(string.feature_settings_impl_language_english),
+            selected = settings.appLanguage == AppLanguage.ENGLISH,
+            onClick = { onChangeLanguage(AppLanguage.ENGLISH) },
+        )
+        SettingsThemeChooserRow(
+            text = stringResource(string.feature_settings_impl_language_simplified_chinese),
+            selected = settings.appLanguage == AppLanguage.SIMPLIFIED_CHINESE,
+            onClick = { onChangeLanguage(AppLanguage.SIMPLIFIED_CHINESE) },
         )
     }
 }

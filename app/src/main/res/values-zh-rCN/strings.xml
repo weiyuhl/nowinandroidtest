@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">nowtest</string>
+    <string name="not_connected">⚠️ 当前没有连接到互联网</string>
+    <string name="top_navigation_search_content_description">搜索</string>
+    <string name="top_navigation_settings_content_description">设置</string>
+</resources>

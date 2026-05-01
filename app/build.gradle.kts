@@ -48,6 +48,10 @@ android {
         }
     }
     testOptions.unitTests.isIncludeAndroidResources = true
+    androidResources {
+        generateLocaleConfig = true
+        localeFilters += setOf("en", "zh-rCN")
+    }
     namespace = "com.lhzkml.nowtest"
 }
 
@@ -71,6 +75,7 @@ dependencies {
     implementation(projects.core.analytics)
 
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.compose.material3.adaptive)

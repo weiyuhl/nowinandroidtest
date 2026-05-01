@@ -23,6 +23,10 @@ android {
         }
     }
     namespace = "com.lhzkml.nowtest.catalog"
+    androidResources {
+        generateLocaleConfig = true
+        localeFilters += setOf("en", "zh-rCN")
+    }
 
     buildTypes {
         release {

@@ -24,6 +24,8 @@ class NtApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
+        DebugCrashLogInstaller.install(this)
+
         setStrictModePolicy()
 
         profileVerifierLogger()

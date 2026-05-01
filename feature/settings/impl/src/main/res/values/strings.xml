@@ -17,4 +17,8 @@
     <string name="feature_settings_impl_dynamic_color_preference">Use Dynamic Color</string>
     <string name="feature_settings_impl_dynamic_color_yes">Yes</string>
     <string name="feature_settings_impl_dynamic_color_no">No</string>
+    <string name="feature_settings_impl_language_preference">Language</string>
+    <string name="feature_settings_impl_language_system_default">System default</string>
+    <string name="feature_settings_impl_language_english">English</string>
+    <string name="feature_settings_impl_language_simplified_chinese">Simplified Chinese</string>
 </resources>
