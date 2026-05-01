@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.nowtest.android.application.compose)
     alias(libs.plugins.nowtest.android.application.flavors)
     alias(libs.plugins.nowtest.android.application.jacoco)
-    alias(libs.plugins.nowtest.android.application.firebase)
     alias(libs.plugins.nowtest.hilt)
     alias(libs.plugins.google.osslicenses)
     alias(libs.plugins.baselineprofile)

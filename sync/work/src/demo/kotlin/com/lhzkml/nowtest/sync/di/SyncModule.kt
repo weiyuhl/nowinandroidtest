@@ -1,8 +1,6 @@
 package com.lhzkml.nowtest.sync.di
 
 import com.lhzkml.nowtest.core.data.util.SyncManager
-import com.lhzkml.nowtest.sync.status.StubSyncSubscriber
-import com.lhzkml.nowtest.sync.status.SyncSubscriber
 import com.lhzkml.nowtest.sync.status.WorkManagerSyncManager
 import dagger.Binds
 import dagger.Module
@@ -16,9 +14,4 @@ abstract class SyncModule {
     internal abstract fun bindsSyncStatusMonitor(
         syncStatusMonitor: WorkManagerSyncManager,
     ): SyncManager
-
-    @Binds
-    internal abstract fun bindsSyncSubscriber(
-        syncSubscriber: StubSyncSubscriber,
-    ): SyncSubscriber
 }

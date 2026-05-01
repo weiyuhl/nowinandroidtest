@@ -13,7 +13,6 @@ import com.lhzkml.nowtest.core.common.network.Dispatcher
 import com.lhzkml.nowtest.core.common.network.NtDispatchers.IO
 import com.lhzkml.nowtest.sync.initializers.SyncConstraints
 import com.lhzkml.nowtest.sync.initializers.syncForegroundInfo
-import com.lhzkml.nowtest.sync.status.SyncSubscriber
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -28,7 +27,6 @@ internal class SyncWorker @AssistedInject constructor(
     @Assisted workerParams: WorkerParameters,
     @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
-    private val syncSubscriber: SyncSubscriber,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun getForegroundInfo(): ForegroundInfo =
@@ -37,8 +35,6 @@ internal class SyncWorker @AssistedInject constructor(
     override suspend fun doWork(): Result = withContext(ioDispatcher) {
         traceAsync("Sync", 0) {
             analyticsHelper.logSyncStarted()
-
-            syncSubscriber.subscribe()
 
             val syncedSuccessfully = true
 

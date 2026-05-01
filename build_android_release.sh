@@ -11,16 +11,13 @@ echo "JAVA_HOME=$JAVA_HOME"
 export ANDROID_HOME="$(cd $DIR/../../../prebuilts/fullsdk/linux && pwd )"
 echo "ANDROID_HOME=$ANDROID_HOME"
 
-echo "Copying google-services.json"
-cp $DIR/../nowtest-prebuilts/google-services.json $DIR/app
-
 echo "Copying local.properties"
 cp $DIR/../nowtest-prebuilts/local.properties $DIR
 
 cd $DIR
 
 # Build the prodRelease variant
-GRADLE_PARAMS=" --stacktrace -Puse-google-services"
+GRADLE_PARAMS=" --stacktrace"
 $DIR/gradlew :app:clean :app:assembleProdRelease :app:bundleProdRelease ${GRADLE_PARAMS}
 BUILD_RESULT=$?
 
