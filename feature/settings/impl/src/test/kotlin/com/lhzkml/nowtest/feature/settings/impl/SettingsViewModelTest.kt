@@ -6,9 +6,9 @@ import com.lhzkml.nowtest.core.testing.repository.TestUserDataRepository
 import com.lhzkml.nowtest.core.testing.util.MainDispatcherRule
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Loading
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Success
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
