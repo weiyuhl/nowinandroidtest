@@ -69,12 +69,6 @@ class ForYouViewModel @Inject constructor(
                 initialValue = NewsFeedUiState.Loading,
             )
 
-    fun updateNewsResourceSaved(newsResourceId: String, isChecked: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setNewsResourceBookmarked(newsResourceId, isChecked)
-        }
-    }
-
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
             userDataRepository.setNewsResourceViewed(newsResourceId, viewed)

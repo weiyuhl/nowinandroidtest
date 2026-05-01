@@ -97,7 +97,6 @@ internal fun SearchScreen(
         onSearchQueryChanged = searchViewModel::onSearchQueryChanged,
         onSearchTriggered = searchViewModel::onSearchTriggered,
         onClearRecentSearches = searchViewModel::clearRecentSearches,
-        onNewsResourcesCheckedChanged = searchViewModel::setNewsResourceBookmarked,
         onNewsResourceViewed = { searchViewModel.setNewsResourceViewed(it, true) },
         onBackClick = onBackClick,
         onTopicClick = onTopicClick,
@@ -113,7 +112,6 @@ internal fun SearchScreen(
     onSearchQueryChanged: (String) -> Unit = {},
     onSearchTriggered: (String) -> Unit = {},
     onClearRecentSearches: () -> Unit = {},
-    onNewsResourcesCheckedChanged: (String, Boolean) -> Unit = { _, _ -> },
     onNewsResourceViewed: (String) -> Unit = {},
     onBackClick: () -> Unit = {},
     onTopicClick: (String) -> Unit = {},
@@ -169,7 +167,6 @@ internal fun SearchScreen(
                         newsResources = searchResultUiState.newsResources,
                         onSearchTriggered = onSearchTriggered,
                         onTopicClick = onTopicClick,
-                        onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
                         onNewsResourceViewed = onNewsResourceViewed,
                     )
                 }
@@ -229,7 +226,6 @@ private fun SearchResultBody(
     newsResources: List<UserNewsResource>,
     onSearchTriggered: (String) -> Unit,
     onTopicClick: (String) -> Unit,
-    onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
 ) {
     val state = rememberLazyStaggeredGridState()
@@ -293,7 +289,6 @@ private fun SearchResultBody(
 
                 newsFeed(
                     feedState = Success(feed = newsResources),
-                    onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
                     onNewsResourceViewed = onNewsResourceViewed,
                     onTopicClick = onTopicClick,
                     onExpandedCardClick = {

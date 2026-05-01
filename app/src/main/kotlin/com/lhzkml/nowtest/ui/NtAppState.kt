@@ -11,13 +11,11 @@ import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
 import com.lhzkml.nowtest.core.navigation.NavigationState
 import com.lhzkml.nowtest.core.navigation.rememberNavigationState
 import com.lhzkml.nowtest.core.ui.TrackDisposableJank
-import com.lhzkml.nowtest.feature.bookmarks.api.navigation.BookmarksNavKey
 import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
 import com.lhzkml.nowtest.navigation.TOP_LEVEL_NAV_ITEMS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.TimeZone
@@ -71,10 +69,9 @@ class NtAppState(
      */
     val topLevelNavKeysWithUnreadResources: StateFlow<Set<NavKey>> =
         userNewsResourceRepository.observeAll()
-            .combine(userNewsResourceRepository.observeAllBookmarked()) { forYouNewsResources, bookmarkedNewsResources ->
+            .map { forYouNewsResources ->
                 setOfNotNull(
                     ForYouNavKey.takeIf { forYouNewsResources.any { !it.hasBeenViewed } },
-                    BookmarksNavKey.takeIf { bookmarkedNewsResources.any { !it.hasBeenViewed } },
                 )
             }
             .stateIn(

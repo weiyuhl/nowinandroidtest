@@ -30,7 +30,6 @@ import com.lhzkml.nowtest.core.model.data.UserNewsResource
  */
 fun LazyStaggeredGridScope.newsFeed(
     feedState: NewsFeedUiState,
-    onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onExpandedCardClick: () -> Unit = {},
@@ -49,7 +48,6 @@ fun LazyStaggeredGridScope.newsFeed(
 
                 NewsResourceCardExpanded(
                     userNewsResource = userNewsResource,
-                    isBookmarked = userNewsResource.isSaved,
                     onClick = {
                         onExpandedCardClick()
                         analyticsHelper.logNewsResourceOpened(
@@ -60,12 +58,6 @@ fun LazyStaggeredGridScope.newsFeed(
                         onNewsResourceViewed(userNewsResource.id)
                     },
                     hasBeenViewed = userNewsResource.hasBeenViewed,
-                    onToggleBookmark = {
-                        onNewsResourcesCheckedChanged(
-                            userNewsResource.id,
-                            !userNewsResource.isSaved,
-                        )
-                    },
                     onTopicClick = onTopicClick,
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
@@ -113,7 +105,6 @@ private fun NewsFeedLoadingPreview() {
         LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(300.dp)) {
             newsFeed(
                 feedState = NewsFeedUiState.Loading,
-                onNewsResourcesCheckedChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
             )
@@ -132,7 +123,6 @@ private fun NewsFeedContentPreview(
         LazyVerticalStaggeredGrid(columns = StaggeredGridCells.Adaptive(300.dp)) {
             newsFeed(
                 feedState = NewsFeedUiState.Success(userNewsResources),
-                onNewsResourcesCheckedChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
             )

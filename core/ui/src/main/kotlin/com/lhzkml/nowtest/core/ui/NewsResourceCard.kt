@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -51,9 +50,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.lhzkml.nowtest.core.designsystem.R.drawable
-import com.lhzkml.nowtest.core.designsystem.component.NtIconToggleButton
 import com.lhzkml.nowtest.core.designsystem.component.NtTopicTag
-import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
 import com.lhzkml.nowtest.core.model.data.NewsResource
 import com.lhzkml.nowtest.core.model.data.Topic
@@ -66,16 +63,14 @@ import java.time.format.FormatStyle
 import java.util.Locale
 
 /**
- * [NewsResource] card used on the following screens: For You, Saved
+ * [NewsResource] card used on news feeds.
  */
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NewsResourceCardExpanded(
     userNewsResource: UserNewsResource,
-    isBookmarked: Boolean,
     hasBeenViewed: Boolean,
-    onToggleBookmark: () -> Unit,
     onClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -132,8 +127,6 @@ fun NewsResourceCardExpanded(
                                     )
                                 },
                         )
-                        Spacer(modifier = Modifier.weight(1f))
-                        BookmarkButton(isBookmarked, onToggleBookmark)
                     }
                     Spacer(modifier = Modifier.height(14.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -212,31 +205,6 @@ fun NewsResourceTitle(
     modifier: Modifier = Modifier,
 ) {
     Text(newsResourceTitle, style = MaterialTheme.typography.headlineSmall, modifier = modifier)
-}
-
-@Composable
-fun BookmarkButton(
-    isBookmarked: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    NtIconToggleButton(
-        checked = isBookmarked,
-        onCheckedChange = { onClick() },
-        modifier = modifier,
-        icon = {
-            Icon(
-                imageVector = NtIcons.BookmarkBorder,
-                contentDescription = stringResource(R.string.core_ui_bookmark),
-            )
-        },
-        checkedIcon = {
-            Icon(
-                imageVector = NtIcons.Bookmark,
-                contentDescription = stringResource(R.string.core_ui_unbookmark),
-            )
-        },
-    )
 }
 
 @Composable
@@ -321,26 +289,6 @@ fun NewsResourceTopics(
     }
 }
 
-@Preview("Bookmark Button")
-@Composable
-private fun BookmarkButtonPreview() {
-    NtTheme {
-        Surface {
-            BookmarkButton(isBookmarked = false, onClick = { })
-        }
-    }
-}
-
-@Preview("Bookmark Button Bookmarked")
-@Composable
-private fun BookmarkButtonBookmarkedPreview() {
-    NtTheme {
-        Surface {
-            BookmarkButton(isBookmarked = true, onClick = { })
-        }
-    }
-}
-
 @Preview("NewsResourceCardExpanded")
 @Composable
 private fun ExpandedNewsResourcePreview(
@@ -354,9 +302,7 @@ private fun ExpandedNewsResourcePreview(
             Surface {
                 NewsResourceCardExpanded(
                     userNewsResource = userNewsResources[0],
-                    isBookmarked = true,
                     hasBeenViewed = false,
-                    onToggleBookmark = {},
                     onClick = {},
                     onTopicClick = {},
                 )

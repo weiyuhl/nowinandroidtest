@@ -25,10 +25,10 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,7 +59,6 @@ import com.lhzkml.nowtest.core.ui.TrackScrollJank
 import com.lhzkml.nowtest.core.ui.UserNewsResourcePreviewParameterProvider
 import com.lhzkml.nowtest.core.ui.launchCustomChromeTab
 import com.lhzkml.nowtest.core.ui.newsFeed
-import com.lhzkml.nowtest.feature.foryou.api.R
 
 @Composable
 fun ForYouScreen(
@@ -77,7 +76,6 @@ fun ForYouScreen(
         deepLinkedUserNewsResource = deepLinkedUserNewsResource,
         onDeepLinkOpened = viewModel::onDeepLinkOpened,
         onTopicClick = onTopicClick,
-        onNewsResourcesCheckedChanged = viewModel::updateNewsResourceSaved,
         onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
         modifier = modifier,
     )
@@ -90,7 +88,6 @@ internal fun ForYouScreen(
     deepLinkedUserNewsResource: UserNewsResource?,
     onTopicClick: (String) -> Unit,
     onDeepLinkOpened: (String) -> Unit,
-    onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -124,7 +121,6 @@ internal fun ForYouScreen(
         ) {
             newsFeed(
                 feedState = feedState,
-                onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
                 onNewsResourceViewed = onNewsResourceViewed,
                 onTopicClick = onTopicClick,
             )
@@ -228,7 +224,6 @@ fun ForYouScreenPopulatedFeed(
                 feed = userNewsResources,
             ),
             deepLinkedUserNewsResource = null,
-            onNewsResourcesCheckedChanged = { _, _ -> },
             onNewsResourceViewed = {},
             onTopicClick = {},
             onDeepLinkOpened = {},
@@ -244,7 +239,6 @@ fun ForYouScreenLoading() {
             isSyncing = false,
             feedState = NewsFeedUiState.Loading,
             deepLinkedUserNewsResource = null,
-            onNewsResourcesCheckedChanged = { _, _ -> },
             onNewsResourceViewed = {},
             onTopicClick = {},
             onDeepLinkOpened = {},
@@ -265,7 +259,6 @@ fun ForYouScreenPopulatedAndLoading(
                 feed = userNewsResources,
             ),
             deepLinkedUserNewsResource = null,
-            onNewsResourcesCheckedChanged = { _, _ -> },
             onNewsResourceViewed = {},
             onTopicClick = {},
             onDeepLinkOpened = {},

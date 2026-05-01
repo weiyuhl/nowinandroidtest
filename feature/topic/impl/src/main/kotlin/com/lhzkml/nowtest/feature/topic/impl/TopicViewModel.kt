@@ -17,7 +17,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -41,7 +40,6 @@ class TopicViewModel @AssistedInject constructor(
 
     val newsUiState: StateFlow<NewsUiState> = newsUiState(
         topicId = topicId,
-        userDataRepository = userDataRepository,
         userNewsResourceRepository = userNewsResourceRepository,
     )
         .stateIn(
@@ -49,12 +47,6 @@ class TopicViewModel @AssistedInject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = NewsUiState.Loading,
         )
-
-    fun bookmarkNews(newsResourceId: String, bookmarked: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setNewsResourceBookmarked(newsResourceId, bookmarked)
-        }
-    }
 
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
@@ -88,20 +80,14 @@ private fun topicUiState(
 private fun newsUiState(
     topicId: String,
     userNewsResourceRepository: UserNewsResourceRepository,
-    userDataRepository: UserDataRepository,
 ): Flow<NewsUiState> {
-    val newsStream: Flow<List<UserNewsResource>> = userNewsResourceRepository.observeAll(
+    return userNewsResourceRepository.observeAll(
         NewsResourceQuery(filterTopicIds = setOf(element = topicId)),
     )
-
-    val bookmark: Flow<Set<String>> = userDataRepository.userData
-        .map { it.bookmarkedNewsResources }
-
-    return combine(newsStream, bookmark, ::Pair)
         .asResult()
-        .map { newsToBookmarksResult ->
-            when (newsToBookmarksResult) {
-                is Result.Success -> NewsUiState.Success(newsToBookmarksResult.data.first)
+        .map { result ->
+            when (result) {
+                is Result.Success -> NewsUiState.Success(result.data)
                 is Result.Loading -> NewsUiState.Loading
                 is Result.Error -> NewsUiState.Error
             }

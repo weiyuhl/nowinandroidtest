@@ -38,7 +38,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lhzkml.nowtest.core.designsystem.component.DynamicAsyncImage
 import com.lhzkml.nowtest.core.designsystem.component.NtBackground
-import com.lhzkml.nowtest.core.designsystem.component.NtFilterChip
 import com.lhzkml.nowtest.core.designsystem.component.NtLoadingWheel
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.rememberDraggableScroller
@@ -73,7 +72,6 @@ fun TopicScreen(
         modifier = modifier.testTag("topic:${viewModel.topicId}"),
         showBackButton = showBackButton,
         onBackClick = onBackClick,
-        onBookmarkChanged = viewModel::bookmarkNews,
         onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
         onTopicClick = onTopicClick,
     )
@@ -87,7 +85,6 @@ internal fun TopicScreen(
     showBackButton: Boolean,
     onBackClick: () -> Unit,
     onTopicClick: (String) -> Unit,
-    onBookmarkChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -125,7 +122,6 @@ internal fun TopicScreen(
                         description = topicUiState.topic.longDescription,
                         news = newsUiState,
                         imageUrl = topicUiState.topic.imageUrl,
-                        onBookmarkChanged = onBookmarkChanged,
                         onNewsResourceViewed = onNewsResourceViewed,
                         onTopicClick = onTopicClick,
                     )
@@ -172,7 +168,6 @@ private fun LazyListScope.topicBody(
     description: String,
     news: NewsUiState,
     imageUrl: String,
-    onBookmarkChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
 ) {
@@ -181,7 +176,7 @@ private fun LazyListScope.topicBody(
         TopicHeader(name, description, imageUrl)
     }
 
-    userNewsResourceCards(news, onBookmarkChanged, onNewsResourceViewed, onTopicClick)
+    userNewsResourceCards(news, onNewsResourceViewed, onTopicClick)
 }
 
 @Composable
@@ -211,7 +206,6 @@ private fun TopicHeader(name: String, description: String, imageUrl: String) {
 // TODO: Could/should this be replaced with [LazyGridScope.newsFeed]?
 private fun LazyListScope.userNewsResourceCards(
     news: NewsUiState,
-    onBookmarkChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     onTopicClick: (String) -> Unit,
 ) {
@@ -219,7 +213,6 @@ private fun LazyListScope.userNewsResourceCards(
         is NewsUiState.Success -> {
             userNewsResourceCardItems(
                 items = news.news,
-                onToggleBookmark = { onBookmarkChanged(it.id, !it.isSaved) },
                 onNewsResourceViewed = onNewsResourceViewed,
                 onTopicClick = onTopicClick,
                 itemModifier = Modifier.padding(24.dp),
@@ -246,7 +239,6 @@ private fun TopicBodyPreview() {
                 description = "Lorem ipsum maximum",
                 news = NewsUiState.Success(emptyList()),
                 imageUrl = "",
-                onBookmarkChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
             )
@@ -296,7 +288,6 @@ fun TopicScreenPopulated(
                 newsUiState = NewsUiState.Success(userNewsResources),
                 showBackButton = true,
                 onBackClick = {},
-                onBookmarkChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
             )
@@ -314,7 +305,6 @@ fun TopicScreenLoading() {
                 newsUiState = NewsUiState.Loading,
                 showBackButton = true,
                 onBackClick = {},
-                onBookmarkChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
             )
