@@ -6,9 +6,9 @@
 
 - UI 层：Jetpack Compose、Material 3、Navigation Compose。For You、Saved、Interests 等页面按产品要求保留空白页面壳和导航入口。
 - 状态管理：ViewModel、Kotlin Flow、单向数据流。当前主要活跃状态来自搜索页面和设置页面。
-- 数据层：保留 Repository 模式、DataStore、Room、Network 模块和 Sync 基础设施。已删除的业务模型、表、DAO、网络 DTO 和同步分支不再保留。
+- 数据层：保留 Repository 模式、DataStore、Room 和 Network 模块。已删除的业务模型、表、DAO、网络 DTO 和同步分支不再保留。
 - 依赖注入：继续使用 Hilt/KSP。DI 模块保留，但只绑定仍在使用的仓库和基础设施对象。
-- 同步：WorkManager 同步框架保留。当前 `SyncWorker` 保留启动、订阅和埋点流程，不再同步 Topic/NewsResource 业务数据。
+- 同步：同步模块已删除，应用启动不再调度 WorkManager 同步任务。
 
 ## 数据层边界
 

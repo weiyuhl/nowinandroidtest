@@ -1,6 +1,6 @@
 # 模块化学习之旅
 
-nowtest 仍保持模块化结构：`app/` 负责应用壳和导航整合，`feature/` 放页面模块，`core/` 放可复用能力，`sync/` 放后台同步。
+nowtest 仍保持模块化结构：`app/` 负责应用壳和导航整合，`feature/` 放页面模块，`core/` 放可复用能力。
 
 ## 模块类型
 
@@ -14,7 +14,6 @@ nowtest 仍保持模块化结构：`app/` 负责应用壳和导航整合，`feat
 - `core:model`：共享外部模型。当前保留设置相关模型。
 - `core:designsystem` / `core:ui`：设计系统、通用 UI 和埋点辅助。
 - `core:testing` / `core:data-test` / `core:datastore-test`：测试基础设施。
-- `sync:work`：WorkManager 同步基础设施。
 
 ## 当前已移除的业务模块内容
 

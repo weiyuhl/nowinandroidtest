@@ -4,9 +4,9 @@
 
 ## 1. 项目整体定位
 
-这是一个多模块 Android 项目，项目名为 `nowtest`，使用 Kotlin、Jetpack Compose、Hilt、Room、Proto DataStore、WorkManager、Navigation 3 等 Android 现代技术栈。
+这是一个多模块 Android 项目，项目名为 `nowtest`，使用 Kotlin、Jetpack Compose、Hilt、Room、Proto DataStore、Navigation 3 等 Android 现代技术栈。
 
-项目整体风格接近 Android 官方推荐架构：单 Activity、Compose UI、ViewModel 暴露状态、Repository 管理数据、Hilt 负责依赖注入、WorkManager 负责后台同步。
+项目整体风格接近 Android 官方推荐架构：单 Activity、Compose UI、ViewModel 暴露状态、Repository 管理数据、Hilt 负责依赖注入。
 
 当前工作区看起来处在功能裁剪或本地化改造阶段：大量外部服务、远程同步、prod 相关文件已被删除或修改；数据层和同步逻辑明显比完整 Now in Android 风格项目更轻量。
 
@@ -25,7 +25,6 @@ nowinandroid-test/
 ├── gradle/                      # Gradle wrapper 与版本目录
 ├── kokoro/                      # Kokoro/CI 构建脚本
 ├── lint/                        # 自定义 lint 规则模块
-├── sync/                        # 后台同步相关模块
 ├── ui-test-hilt-manifest/       # UI 测试 Hilt manifest 辅助模块
 ├── AGENTS.md                    # Agent/自动化助手相关说明
 ├── build.gradle.kts             # 根构建脚本
@@ -133,17 +132,9 @@ nowinandroid-test/
 | Search | 有 | 有 | 搜索页，目前使用本地测试内容 |
 | Settings | 无 | 有 | 设置弹窗，读写用户主题偏好 |
 
-### 3.4 sync 模块
+### 3.4 已删除的 sync 模块
 
-```text
-:sync:work
-:sync:sync-test
-```
-
-- `sync:work`：WorkManager 后台同步实现。
-- `sync:sync-test`：同步相关测试替身，例如永不同步的 `SyncManager`。
-
-当前同步 worker 已被简化，主要记录 sync started / sync finished 事件，没有实际远程数据拉取。
+根目录 `sync/`、`:sync:work` 和 `:sync:sync-test` 已删除。应用启动不再调度 WorkManager 同步任务，`SyncManager` 相关接口和测试替身也已移除。
 
 ### 3.5 build-logic 模块
 
@@ -245,8 +236,6 @@ prodRelease
 - Kotlin Flow / StateFlow
 - Hilt ViewModel
 - Hilt Android
-- Hilt WorkManager
-- WorkManager
 - Room
 - Proto DataStore
 
@@ -271,7 +260,6 @@ prodRelease
 - AndroidX Test Core/Runner/Rules
 - Espresso
 - UI Automator
-- WorkManager Testing
 - Compose UI Test
 - Hilt Android Testing
 
@@ -297,7 +285,7 @@ ViewModel
    ↓ 调用接口 / 暴露 StateFlow
 Repository
    ↓ 协调数据源
-DataStore / Room / Network / WorkManager
+DataStore / Room / Network
 ```
 
 这是典型单向数据流 UDF：
@@ -318,7 +306,6 @@ DataStore / Room / Network / WorkManager
 - 实现 `ImageLoaderFactory`
 - 注入 Coil `ImageLoader`
 - debug 模式设置 StrictMode
-- 启动时初始化 WorkManager 同步
 - 启动 profile verifier logger
 
 ### 7.2 MainActivity
@@ -457,24 +444,7 @@ DataStore proto 定义位于 `core:datastore-proto`。
 
 ## 12. 同步架构
 
-同步由 `NtApplication.onCreate()` 调用 `Sync.initialize(context)` 开始。
-
-`Sync.initialize` 使用 WorkManager：
-
-- 调用 `WorkManager.getInstance(context)`
-- 使用 `enqueueUniqueWork`
-- work name 为 `SyncWorkName`
-- policy 为 `ExistingWorkPolicy.KEEP`
-- work request 来自 `SyncWorker.startUpSyncWork()`
-
-`SyncWorker`：
-
-- 标注 `@HiltWorker`
-- 继承 `CoroutineWorker`
-- 使用 IO dispatcher
-- 注入 `AnalyticsHelper`
-- 支持 foreground info
-- 当前 `doWork()` 只记录同步开始/结束，并返回 success
+同步架构已删除。应用启动不再初始化 `Sync`，项目不再包含 `SyncWorker`、`DelegatingWorker`、`WorkManagerSyncManager` 或 `sync` Gradle 模块。
 
 当前同步模块更像保留框架，而不是完整业务同步实现。
 
@@ -485,7 +455,6 @@ DataStore proto 定义位于 `core:datastore-proto`。
 - `@HiltAndroidApp`：Application
 - `@AndroidEntryPoint`：Activity
 - `@HiltViewModel`：ViewModel
-- `@HiltWorker`：WorkManager worker
 - `@Module` + `@InstallIn`：依赖绑定
 
 典型绑定：
@@ -495,7 +464,6 @@ UserDataRepository -> OfflineFirstUserDataRepository
 NetworkMonitor -> ConnectivityManagerNetworkMonitor
 TimeZoneMonitor -> TimeZoneBroadcastMonitor
 NtNetworkDataSource -> DemoNtNetworkDataSource / RetrofitNtNetwork
-SyncManager -> WorkManagerSyncManager 或测试实现
 AnalyticsHelper -> demo/prod flavor 实现
 Notifications -> demo/prod flavor 实现
 ```
@@ -552,7 +520,6 @@ src/androidTestDemo/   # demo flavor 插桩测试
 - `core:testing`
 - `core:data-test`
 - `core:datastore-test`
-- `sync:sync-test`
 - `core:screenshot-testing`
 - `ui-test-hilt-manifest`
 
@@ -620,7 +587,7 @@ CI 与自动化配置：
 - 删除远程 sync subscriber
 - 删除 sync notification service
 - 删除部分 prod manifest
-- 简化 `SyncWorker`
+- 删除同步模块
 - 简化 analytics prod/demo 实现
 - 修改 Gradle 依赖与 convention plugin
 - 修改 release 构建脚本与 CI 脚本
@@ -632,7 +599,7 @@ CI 与自动化配置：
 ## 19. 架构优点
 
 - 多模块边界清晰。
-- `core`、`feature`、`sync`、`build-logic` 分层明确。
+- `core`、`feature`、`build-logic` 分层明确。
 - feature 采用 `api` / `impl` 拆分，降低跨 feature 耦合。
 - Compose UI 与 ViewModel、Repository 分离较清楚。
 - typed `NavKey` 导航比字符串 route 更安全。
@@ -640,14 +607,12 @@ CI 与自动化配置：
 - 构建逻辑集中在 convention plugins，模块脚本较简洁。
 - 测试基础设施完整，覆盖单测、UI、截图、benchmark。
 - 使用 DataStore 管理用户偏好，适合小型结构化设置数据。
-- WorkManager 同步基础设施仍保留，未来可恢复实际同步逻辑。
 
 ## 20. 风险与注意事项
 
 - 当前工作区未提交变更多，可能处于迁移中间态。
 - prod flavor 相关文件删除较多，prod 构建很可能需要额外验证。
-- Room、Retrofit、WorkManager 等基础设施仍在，但业务使用已大幅减少，可能存在冗余依赖。
-- `SyncWorker` 当前接近空实现，长期保留需要明确目的。
+- Room、Retrofit 等基础设施仍在，但业务使用已大幅减少，可能存在冗余依赖。
 - `core:database` 当前只剩 metadata entity，如不再需要本地关系型数据，可评估是否移除 Room。
 - `core:network` 当前 Retrofit 实现很轻，如不再需要远程后端，可评估是否移除网络层或保留接口占位。
 - `feature:settings` 没有 api 模块，与其他 feature 风格不完全一致，但作为 app 顶层 dialog 当前可以接受。
@@ -668,11 +633,140 @@ CI 与自动化配置：
 9. `core:navigation`：理解 Navigation 3 封装。
 10. `feature/*/api` 与 `feature/*/impl`：理解功能模块。
 11. `core:data` / `core:datastore` / `core:database` / `core:network`：理解数据层。
-12. `sync:work`：理解后台同步。
-13. `core:testing`、`core:data-test`、`core:datastore-test`：理解测试替身机制。
+12. `core:testing`、`core:data-test`、`core:datastore-test`：理解测试替身机制。
 
-## 22. 总结
+## 22. 为什么判断为“经过裁剪的 Now in Android 风格多模块 Compose 应用”
 
-当前项目是一个经过裁剪的 Now in Android 风格多模块 Compose 应用。它保留了现代 Android 应用的主要基础设施：Compose、Material 3、Navigation 3、Hilt、Flow、DataStore、Room、WorkManager、Roborazzi、Macrobenchmark、Baseline Profile 和 convention plugins。
+这个判断不是单凭命名猜测，而是由仓库文档、模块结构、源码状态和当前变更共同印证出来的。
 
-从当前工作区状态看，项目正在移除远程同步和旧数据功能，转向更轻量的 demo/local-only 架构。短期内应优先验证 `demoDebug` 构建和测试是否稳定；长期可以进一步清理未实际使用的 Room、Retrofit、WorkManager 或 prod flavor 基础设施。
+### 22.1 与 Now in Android 的直接关联
+
+根 `README.md` 明确说明该应用参考 Android 官方 Now in Android 系列，并且描述了典型 NIA 应用能力：
+
+- 使用 Kotlin 和 Jetpack Compose 构建。
+- 遵循 Android 官方架构指南。
+- 展示 Android 开发相关内容。
+- 支持关注主题、收藏内容、通知等功能。
+- 使用 `demo` / `prod` flavor 区分本地静态数据和真实后端。
+
+这些都是原始 Now in Android 项目的典型特征。
+
+### 22.2 文档明确说明“原始业务链路已经下线”
+
+`docs/ArchitectureLearningJourney.md` 直接说明：
+
+- 项目仍采用现代 Android 分层架构。
+- 原始 Now in Android 的 `Topic`、`NewsResource`、For You 信息流、Saved 收藏、Interests 兴趣选择业务链路已经下线。
+- 当前保留 `UserDataRepository`、DataStore、Room、Network 等基础设施。
+- 已删除 Topic、NewsResource、关注、收藏、已读、onboarding 等业务模型、DAO、DTO、同步分支。
+
+这正是“经过裁剪”的最直接证据：不是全新项目，而是保留架构和基础设施、删除大量原业务链路后的项目。
+
+### 22.3 模块化文档确认保留 NIA 风格模块结构
+
+`docs/ModularizationLearningJourney.md` 明确说明项目仍保持模块化结构：
+
+```text
+app/      应用壳和导航整合
+feature/  页面模块
+core/     可复用能力
+```
+
+同时它说明：
+
+- `feature:*:api` 保留页面导航键和最小 API。
+- `feature:*:impl` 保留页面实现。
+- 已下线功能如果仍要保留页面，只保留空白页面壳。
+- `core:data` 只保留仍使用的 `UserDataRepository`。
+- `core:database` 当前仅保留 metadata 表。
+- `core:network` 旧业务 DTO 和静态 JSON 已删除。
+
+这说明项目不是普通 Compose 多模块应用，而是保留了 Now in Android 的模块分层方式，同时删除了大量业务实现。
+
+### 22.4 源码结构符合 NIA 风格
+
+源码中仍保留 NIA 风格的典型结构：
+
+```text
+app/
+feature/<name>/api
+feature/<name>/impl
+core/data
+core/database
+core/datastore
+core/designsystem
+core/domain
+core/model
+core/network
+core/navigation
+core/testing
+build-logic/convention
+```
+
+这种 `app + feature + core + build-logic` 的多模块组织方式，与 Now in Android 的架构非常接近。
+
+### 22.5 技术栈符合 NIA 风格
+
+项目仍保留以下 NIA 风格技术组件：
+
+- Jetpack Compose
+- Material 3
+- Hilt
+- ViewModel
+- Kotlin Flow / StateFlow
+- Room
+- Proto DataStore
+- Retrofit / OkHttp
+- Roborazzi 截图测试
+- Macrobenchmark
+- Baseline Profile
+- 自定义 convention plugins
+- 不使用 Mock 框架，使用测试替身
+
+这些不是偶然组合，而是 Android 官方 Now in Android 示例项目中的核心技术组合。
+
+### 22.6 当前源码显示业务被裁剪
+
+当前源码和 git 状态显示业务层明显被简化：
+
+- `NtDatabase` 当前只保留 metadata entity。
+- `NtNetworkDataSource` 接口为空或接近空，Retrofit 实现也很轻。
+- 搜索页使用本地测试内容，不再依赖旧 FTS/SearchContents/RecentSearch 链路。
+- For You、Bookmarks、Interests 等入口仍在，但业务数据链路已明显移除。
+- 工作区中存在删除 prod manifest、远程 analytics、同步模块和 notification service 等变更。
+
+这些都说明项目不是完整 NIA，而是 NIA 风格项目被裁剪后的状态。
+
+### 22.7 命名也保留 NIA 派生痕迹
+
+项目大量命名使用 `Nt` / `nowtest`：
+
+- `NtApplication`
+- `NtTheme`
+- `NtIcons`
+- `NtTopAppBar`
+- `NtNavigationSuiteScaffold`
+- `NtNetworkDataSource`
+- `nowtest.android.application`
+- `com.lhzkml.nowtest`
+
+这些命名像是把原 NIA 的 `Nia` / `Now in Android` 风格重命名为 `Nt` / `nowtest` 后保留下来的结果。
+
+### 22.8 结论
+
+因此，“经过裁剪的 Now in Android 风格多模块 Compose 应用”的判断依据是：
+
+1. 根 README 明确连接到 Now in Android 系列。
+2. 架构文档明确说明原始 NIA 的 Topic / NewsResource / For You / Saved / Interests 等业务链路已经下线。
+3. 模块化文档明确说明仍保留 `app`、`feature`、`core` 的模块结构。
+4. 源码仍保留 NIA 风格基础设施与技术栈。
+5. 当前业务数据层、网络层和页面实现都表现出被裁剪后的状态。
+6. 命名、构建插件、测试策略和设计系统都保留 NIA 派生痕迹。
+
+所以更精确的表述是：这是一个从 Now in Android 架构和代码风格派生出来、保留核心基础设施、删除大量原始内容业务链路后的多模块 Jetpack Compose Android 应用。
+
+## 23. 总结
+
+当前项目是一个经过裁剪的 Now in Android 风格多模块 Compose 应用。它保留了现代 Android 应用的主要基础设施：Compose、Material 3、Navigation 3、Hilt、Flow、DataStore、Room、Roborazzi、Macrobenchmark、Baseline Profile 和 convention plugins。
+
+从当前工作区状态看，项目正在移除远程同步和旧数据功能，转向更轻量的 demo/local-only 架构。短期内应优先验证 `demoDebug` 构建和测试是否稳定；长期可以进一步清理未实际使用的 Room、Retrofit 或 prod flavor 基础设施。

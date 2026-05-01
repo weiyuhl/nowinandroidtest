@@ -68,7 +68,6 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.model)
     implementation(projects.core.analytics)
-    implementation(projects.sync.work)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
@@ -100,7 +99,6 @@ dependencies {
     testImplementation(projects.core.dataTest)
     testImplementation(projects.core.datastoreTest)
     testImplementation(libs.hilt.android.testing)
-    testImplementation(projects.sync.syncTest)
     testImplementation(libs.kotlin.test)
 
     testDemoImplementation(libs.androidx.navigation.testing)

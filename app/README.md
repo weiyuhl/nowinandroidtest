@@ -38,10 +38,6 @@ graph TB
       :feature:interests:impl[impl]:::android-library
     end
   end
-  subgraph :sync
-    direction TB
-    :sync:work[work]:::android-library
-  end
   subgraph :core
     direction TB
     :core:analytics[analytics]:::android-library
@@ -77,7 +73,6 @@ graph TB
   :app -.-> :feature:search:api
   :app -.-> :feature:search:impl
   :app -.-> :feature:settings:impl
-  :app -.-> :sync:work
   :benchmarks -.->|testedApks| :app
   :core:data -.-> :core:analytics
   :core:data --> :core:common
@@ -120,10 +115,6 @@ graph TB
   :feature:settings:impl -.-> :core:data
   :feature:settings:impl -.-> :core:designsystem
   :feature:settings:impl -.-> :core:ui
-  :sync:work -.-> :core:analytics
-  :sync:work -.-> :core:data
-  :sync:work -.-> :core:notifications
-
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;
 classDef android-library fill:#9BF6FF,stroke:#000,stroke-width:2px,color:#000;
