@@ -13,43 +13,42 @@
 - 截图测试（录制新基线）：`./gradlew recordRoborazziDemoDebug`
 - Compose 编译器指标：`./gradlew assembleRelease -PenableComposeCompilerMetrics=true -PenableComposeCompilerReports=true`
 
-始终使用 `demoDebug` 变体。`prod` flavor 需要后端服务，该后端目前未公开发布。切勿直接运行 `./gradlew test` 或 `./gradlew connectedAndroidTest`，因为这会运行所有变体并导致失败。
+日常开发优先使用 `demoDebug` 变体。不要直接运行 `./gradlew test` 或 `./gradlew connectedAndroidTest`，因为这会运行所有变体并增加无关失败风险。
 
 ## 架构
 
-单 Activity 响应式应用，遵循 [Android 官方架构指南](https://developer.android.com/topic/architecture)，采用单向数据流（UDF）模式：
+单 Activity 响应式应用，采用单向数据流（UDF）模式：
 
-- **UI 层：** Jetpack Compose + Material 3。ViewModel 通过 Kotlin `Flow` 暴露状态。界面以 `StateFlow` 形式观察状态，并将事件传回 ViewModel。
-- **领域层：** 用例（如 `GetTopicsUseCase`），负责组合或整理来自仓库的数据流。
-- **数据层：** 仓库模式。`OfflineFirst*Repository` 实现类协调本地数据源（Room、DataStore）和远程数据源（Retrofit）之间的数据同步。
+- **UI 层：** Jetpack Compose + Material 3。ViewModel 通过 Kotlin `Flow` 暴露状态，界面观察状态并将事件传回 ViewModel。
+- **领域层：** 放置跨仓库组合逻辑或页面用例，按当前业务需要维护。
+- **数据层：** 使用仓库模式封装 DataStore、Room、Network 等数据源。
 
-核心库：Hilt（依赖注入）、Jetpack Navigation 2（类型安全的 Compose 导航）、WorkManager（后台同步）、Room、Proto DataStore、Retrofit/OkHttp。
+核心库：Hilt、Navigation 3、Room、Proto DataStore、Retrofit/OkHttp、Roborazzi、Macrobenchmark、Baseline Profile。
 
 ## 模块结构
 
-- `app/` — 应用模块：`MainActivity`、`NtApp`、`NtNavHost`、顶层导航。依赖所有 feature 模块。
-- `feature/<name>/api` — 功能的公开接口（仅包含导航键）。不得依赖其他 feature 的 `api` 或 `impl` 模块。
-- `feature/<name>/impl` — 功能实现。可以依赖其他 feature 的 `api` 模块。
-- `core/<name>` — 共享库。不得依赖 feature 或 app 模块。包括 `data`、`database`、`network`、`model`（纯 JVM 库）、`designsystem`、`ui`、`navigation`、`domain`、`testing`、`analytics`、`notifications` 等。
-- `build-logic/` — 包含约定插件的复合构建（如 `nowtest.android.application`、`nowtest.android.library.compose` 等），用于共享 Gradle 配置。
-- `sync/work` — WorkManager 同步逻辑。
-- `benchmarks/` — 宏基准测试和基线配置文件生成。
+- `app/`：应用模块，包含 `MainActivity`、`NtApp`、顶层导航和应用级依赖装配。
+- `feature/<name>/api`：功能的公开接口，通常只包含导航键。
+- `feature/<name>/impl`：功能实现，可以依赖其他 feature 的 `api` 模块。
+- `core/<name>`：共享库，不依赖 feature 或 app 模块。包括 `data`、`database`、`network`、`model`、`designsystem`、`ui`、`navigation`、`domain`、`testing`、`analytics`、`notifications` 等。
+- `build-logic/`：包含约定插件的复合构建，例如 `nowtest.android.application`、`nowtest.android.library.compose`。
+- `benchmarks/`：宏基准测试和基线配置文件生成。
 
-约定插件采用可叠加、可组合的设计。一次性的构建逻辑应直接写在模块的 `build.gradle.kts` 中，而非创建新的约定插件。
+约定插件采用可叠加、可组合的设计。一次性的构建逻辑应直接写在模块的 `build.gradle.kts` 中，而不是创建新的约定插件。
 
 ## 构建变体
 
-两种产品 flavor：`demo`（本地静态数据）和 `prod`（远程后端 — 未公开发布）。
+两种产品 flavor：`demo` 和 `prod`。
 两种构建类型：`debug` 和 `release`。
 开发使用 `demoDebug`。UI 性能测试使用 `demoRelease`。
 
 ## 测试
 
-不使用任何 Mock 框架。Hilt 的测试 API 注入测试替身 — 即实现相同接口的真实类，但具有简化的行为和专用于测试的钩子（例如 `core/data-test` 中的 `Test*Repository` 类）。
+不使用 Mock 框架。Hilt 的测试 API 注入测试替身，即实现相同接口的真实类，但具有简化行为和测试钩子。
 
-- 本地测试：JUnit + Turbine（Flow 测试）+ Truth（断言）。
+- 本地测试：JUnit + Turbine + Truth。
 - 插桩测试：使用 `ComposeTestRule` 配合 `ComponentActivity` 测试 UI 功能。`:app` 模块中的更广泛测试可以启动 `MainActivity`。
-- 截图测试：Roborazzi。基线图片在 Linux CI 上录制 — 在其他平台上可能会失败。开始工作前，先在 `main` 分支上运行 `recordRoborazziDemoDebug` 以生成本地基线。
+- 截图测试：Roborazzi。基线图片在 Linux CI 上录制，在其他平台上可能存在像素差异。
 
 UI 测试与源代码同目录存放：`src/testDemo/` 和 `src/androidTestDemo/`。
 
