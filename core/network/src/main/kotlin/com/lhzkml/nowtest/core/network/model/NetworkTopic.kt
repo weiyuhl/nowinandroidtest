@@ -14,7 +14,6 @@ data class NetworkTopic(
     val longDescription: String = "",
     val url: String = "",
     val imageUrl: String = "",
-    val followed: Boolean = false,
 )
 
 fun NetworkTopic.asExternalModel(): Topic =

@@ -21,7 +21,7 @@ import javax.inject.Inject
  * [NtNetworkDataSource] implementation that provides static news resources to aid development
  */
 class DemoNtNetworkDataSource @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
     private val networkJson: Json,
     private val assets: DemoAssetManager = JvmUnitTestDemoAssetManager,
 ) : NtNetworkDataSource {

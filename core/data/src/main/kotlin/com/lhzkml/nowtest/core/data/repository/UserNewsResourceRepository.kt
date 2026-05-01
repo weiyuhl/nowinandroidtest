@@ -16,9 +16,4 @@ interface UserNewsResourceRepository {
             filterNewsIds = null,
         ),
     ): Flow<List<UserNewsResource>>
-
-    /**
-     * Returns the user's bookmarked news resources as a stream.
-     */
-    fun observeAllBookmarked(): Flow<List<UserNewsResource>>
 }

@@ -33,13 +33,13 @@ import kotlinx.coroutines.withContext
  */
 @HiltWorker
 internal class SyncWorker @AssistedInject constructor(
-    @Assisted private val appContext: Context,
+    @param:Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val ntPreferences: NtPreferencesDataSource,
     private val topicRepository: TopicsRepository,
     private val newsRepository: NewsRepository,
     private val searchContentsRepository: SearchContentsRepository,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
     private val syncSubscriber: SyncSubscriber,
 ) : CoroutineWorker(appContext, workerParams), Synchronizer {

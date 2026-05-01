@@ -25,8 +25,8 @@ import com.lhzkml.nowtest.feature.interests.api.R as interestsR
 data class TopLevelNavItem(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-    @StringRes val iconTextId: Int,
-    @StringRes val titleTextId: Int,
+    @param:StringRes val iconTextId: Int,
+    @param:StringRes val titleTextId: Int,
 )
 
 val FOR_YOU = TopLevelNavItem(

@@ -25,7 +25,7 @@ internal class DefaultSearchContentsRepository @Inject constructor(
     private val newsResourceFtsDao: NewsResourceFtsDao,
     private val topicDao: TopicDao,
     private val topicFtsDao: TopicFtsDao,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : SearchContentsRepository {
 
     override suspend fun populateFtsData() {

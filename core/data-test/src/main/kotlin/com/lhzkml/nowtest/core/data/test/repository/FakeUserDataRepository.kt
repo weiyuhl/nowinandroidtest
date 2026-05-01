@@ -21,10 +21,6 @@ class FakeUserDataRepository @Inject constructor(
     override val userData: Flow<UserData> =
         ntPreferencesDataSource.userData
 
-    override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
-        ntPreferencesDataSource.setNewsResourceBookmarked(newsResourceId, bookmarked)
-    }
-
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) =
         ntPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
 
@@ -38,9 +34,5 @@ class FakeUserDataRepository @Inject constructor(
 
     override suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
         ntPreferencesDataSource.setDynamicColorPreference(useDynamicColor)
-    }
-
-    override suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean) {
-        ntPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding)
     }
 }

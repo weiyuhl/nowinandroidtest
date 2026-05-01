@@ -16,7 +16,6 @@ class NtPreferencesDataSource @Inject constructor(
     val userData = userPreferences.data
         .map {
             UserData(
-                bookmarkedNewsResources = it.bookmarkedNewsResourceIdsMap.keys,
                 viewedNewsResources = it.viewedNewsResourceIdsMap.keys,
                 themeBrand = when (it.themeBrand) {
                     null,
@@ -38,40 +37,8 @@ class NtPreferencesDataSource @Inject constructor(
                     DarkThemeConfigProto.DARK_THEME_CONFIG_DARK -> DarkThemeConfig.DARK
                 },
                 useDynamicColor = it.useDynamicColor,
-                shouldHideOnboarding = it.shouldHideOnboarding,
             )
         }
-
-    suspend fun setFollowedTopicIds(topicIds: Set<String>) {
-        try {
-            userPreferences.updateData {
-                it.copy {
-                    followedTopicIds.clear()
-                    followedTopicIds.putAll(topicIds.associateWith { true })
-                    updateShouldHideOnboardingIfNecessary()
-                }
-            }
-        } catch (ioException: IOException) {
-            Log.e("NtPreferences", "Failed to update user preferences", ioException)
-        }
-    }
-
-    suspend fun setTopicIdFollowed(topicId: String, followed: Boolean) {
-        try {
-            userPreferences.updateData {
-                it.copy {
-                    if (followed) {
-                        followedTopicIds.put(topicId, true)
-                    } else {
-                        followedTopicIds.remove(topicId)
-                    }
-                    updateShouldHideOnboardingIfNecessary()
-                }
-            }
-        } catch (ioException: IOException) {
-            Log.e("NtPreferences", "Failed to update user preferences", ioException)
-        }
-    }
 
     suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         userPreferences.updateData {
@@ -100,22 +67,6 @@ class NtPreferencesDataSource @Inject constructor(
                     DarkThemeConfig.DARK -> DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
                 }
             }
-        }
-    }
-
-    suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
-        try {
-            userPreferences.updateData {
-                it.copy {
-                    if (bookmarked) {
-                        bookmarkedNewsResourceIds.put(newsResourceId, true)
-                    } else {
-                        bookmarkedNewsResourceIds.remove(newsResourceId)
-                    }
-                }
-            }
-        } catch (ioException: IOException) {
-            Log.e("NtPreferences", "Failed to update user preferences", ioException)
         }
     }
 
@@ -167,17 +118,5 @@ class NtPreferencesDataSource @Inject constructor(
         } catch (ioException: IOException) {
             Log.e("NtPreferences", "Failed to update user preferences", ioException)
         }
-    }
-
-    suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean) {
-        userPreferences.updateData {
-            it.copy { this.shouldHideOnboarding = shouldHideOnboarding }
-        }
-    }
-}
-
-private fun UserPreferencesKt.Dsl.updateShouldHideOnboardingIfNecessary() {
-    if (followedTopicIds.isEmpty() && followedAuthorIds.isEmpty()) {
-        shouldHideOnboarding = false
     }
 }

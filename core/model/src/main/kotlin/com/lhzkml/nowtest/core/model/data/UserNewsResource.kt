@@ -3,8 +3,7 @@ package com.lhzkml.nowtest.core.model.data
 import kotlinx.datetime.Instant
 
 /**
- * A [NewsResource] with additional user information such as whether they have saved (bookmarked)
- * this news resource.
+ * A [NewsResource] with additional user information.
  */
 data class UserNewsResource internal constructor(
     val id: String,
@@ -15,7 +14,6 @@ data class UserNewsResource internal constructor(
     val publishDate: Instant,
     val type: String,
     val topics: List<Topic>,
-    val isSaved: Boolean,
     val hasBeenViewed: Boolean,
 ) {
     constructor(newsResource: NewsResource, userData: UserData) : this(
@@ -27,7 +25,6 @@ data class UserNewsResource internal constructor(
         publishDate = newsResource.publishDate,
         type = newsResource.type,
         topics = newsResource.topics,
-        isSaved = newsResource.id in userData.bookmarkedNewsResources,
         hasBeenViewed = newsResource.id in userData.viewedNewsResources,
     )
 }

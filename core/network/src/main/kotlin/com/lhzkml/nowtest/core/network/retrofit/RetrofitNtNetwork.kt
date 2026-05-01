@@ -42,10 +42,10 @@ private interface RetrofitNtNetworkApi {
     ): List<NetworkChangeList>
 }
 
-private const val Nt_BASE_URL = BuildConfig.BACKEND_URL
+private const val NT_BASE_URL = BuildConfig.BACKEND_URL
 
 /**
- * Wrapper for data provided from the [Nt_BASE_URL]
+ * Wrapper for data provided from the [NT_BASE_URL]
  */
 @Serializable
 private data class NetworkResponse<T>(
@@ -63,7 +63,7 @@ internal class RetrofitNtNetwork @Inject constructor(
 
     private val networkApi = trace("RetrofitNtNetwork") {
         Retrofit.Builder()
-            .baseUrl(Nt_BASE_URL)
+            .baseUrl(NT_BASE_URL)
             // We use callFactory lambda here with dagger.Lazy<Call.Factory>
             // to prevent initializing OkHttp on the main thread.
             .callFactory { okhttpCallFactory.get().newCall(it) }

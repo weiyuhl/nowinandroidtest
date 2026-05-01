@@ -21,7 +21,7 @@ import javax.inject.Inject
  * backend.
  */
 internal class FakeTopicsRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
     private val datasource: DemoNtNetworkDataSource,
 ) : TopicsRepository {
     override fun getTopics(): Flow<List<Topic>> = flow {

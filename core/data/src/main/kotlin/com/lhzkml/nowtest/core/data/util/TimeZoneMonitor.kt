@@ -38,9 +38,9 @@ interface TimeZoneMonitor {
 
 @Singleton
 internal class TimeZoneBroadcastMonitor @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     @ApplicationScope appScope: CoroutineScope,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : TimeZoneMonitor {
 
     override val currentTimeZone: SharedFlow<TimeZone> =

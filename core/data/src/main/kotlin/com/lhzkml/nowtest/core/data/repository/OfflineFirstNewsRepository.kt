@@ -60,11 +60,9 @@ internal class OfflineFirstNewsRepository @Inject constructor(
             },
             modelDeleter = newsResourceDao::deleteNewsResources,
             modelUpdater = { changedIds ->
-                val userData = ntPreferencesDataSource.userData.first()
-                val hasOnboarded = userData.shouldHideOnboarding
-
                 val existingNewsResourceIdsThatHaveChanged = when {
-                    hasOnboarded -> newsResourceDao.getNewsResourceIds(
+                    isFirstSync -> emptySet()
+                    else -> newsResourceDao.getNewsResourceIds(
                         useFilterTopicIds = false,
                         filterTopicIds = emptySet(),
                         useFilterNewsIds = true,
@@ -72,8 +70,6 @@ internal class OfflineFirstNewsRepository @Inject constructor(
                     )
                         .first()
                         .toSet()
-                    // No need to retrieve anything if notifications won't be sent
-                    else -> emptySet()
                 }
 
                 if (isFirstSync) {
@@ -107,7 +103,7 @@ internal class OfflineFirstNewsRepository @Inject constructor(
                     )
                 }
 
-                if (hasOnboarded) {
+                if (!isFirstSync) {
                     val addedNewsResources = newsResourceDao.getNewsResources(
                         useFilterTopicIds = false,
                         filterTopicIds = emptySet(),

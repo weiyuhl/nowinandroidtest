@@ -16,14 +16,6 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
     override val userData: Flow<UserData> =
         ntPreferencesDataSource.userData
 
-    override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
-        ntPreferencesDataSource.setNewsResourceBookmarked(newsResourceId, bookmarked)
-        analyticsHelper.logNewsResourceBookmarkToggled(
-            newsResourceId = newsResourceId,
-            isBookmarked = bookmarked,
-        )
-    }
-
     override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) =
         ntPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
 
@@ -40,10 +32,5 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
     override suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
         ntPreferencesDataSource.setDynamicColorPreference(useDynamicColor)
         analyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor)
-    }
-
-    override suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean) {
-        ntPreferencesDataSource.setShouldHideOnboarding(shouldHideOnboarding)
-        analyticsHelper.logOnboardingStateChanged(shouldHideOnboarding)
     }
 }

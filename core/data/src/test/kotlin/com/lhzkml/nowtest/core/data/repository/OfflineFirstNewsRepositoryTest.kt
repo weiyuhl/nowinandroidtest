@@ -8,8 +8,8 @@ import com.lhzkml.nowtest.core.data.testdoubles.CollectionType
 import com.lhzkml.nowtest.core.data.testdoubles.TestNewsResourceDao
 import com.lhzkml.nowtest.core.data.testdoubles.TestNtNetworkDataSource
 import com.lhzkml.nowtest.core.data.testdoubles.TestTopicDao
-import com.lhzkml.nowtest.core.data.testdoubles.filteredInterestsIds
-import com.lhzkml.nowtest.core.data.testdoubles.nonPresentInterestsIds
+import com.lhzkml.nowtest.core.data.testdoubles.filteredTopicIds
+import com.lhzkml.nowtest.core.data.testdoubles.nonPresentTopicIds
 import com.lhzkml.nowtest.core.database.model.NewsResourceEntity
 import com.lhzkml.nowtest.core.database.model.NewsResourceTopicCrossRef
 import com.lhzkml.nowtest.core.database.model.PopulatedNewsResource
@@ -87,14 +87,14 @@ class OfflineFirstNewsRepositoryTest {
         testScope.runTest {
             assertEquals(
                 expected = newsResourceDao.getNewsResources(
-                    filterTopicIds = filteredInterestsIds,
+                    filterTopicIds = filteredTopicIds,
                     useFilterTopicIds = true,
                 )
                     .first()
                     .map(PopulatedNewsResource::asExternalModel),
                 actual = subject.getNewsResources(
                     query = NewsResourceQuery(
-                        filterTopicIds = filteredInterestsIds,
+                        filterTopicIds = filteredTopicIds,
                     ),
                 )
                     .first(),
@@ -104,7 +104,7 @@ class OfflineFirstNewsRepositoryTest {
                 expected = emptyList(),
                 actual = subject.getNewsResources(
                     query = NewsResourceQuery(
-                        filterTopicIds = nonPresentInterestsIds,
+                        filterTopicIds = nonPresentTopicIds,
                     ),
                 )
                     .first(),
@@ -114,8 +114,6 @@ class OfflineFirstNewsRepositoryTest {
     @Test
     fun offlineFirstNewsRepository_sync_pulls_from_network() =
         testScope.runTest {
-            // User has not onboarded
-            ntPreferencesDataSource.setShouldHideOnboarding(false)
             subject.syncWith(synchronizer)
 
             val newsResourcesFromNetwork = network.getNewsResources()
@@ -144,9 +142,6 @@ class OfflineFirstNewsRepositoryTest {
     @Test
     fun offlineFirstNewsRepository_sync_deletes_items_marked_deleted_on_network() =
         testScope.runTest {
-            // User has not onboarded
-            ntPreferencesDataSource.setShouldHideOnboarding(false)
-
             val newsResourcesFromNetwork = network.getNewsResources()
                 .map(NetworkNewsResource::asEntity)
                 .map(NewsResourceEntity::asExternalModel)
@@ -191,9 +186,6 @@ class OfflineFirstNewsRepositoryTest {
     @Test
     fun offlineFirstNewsRepository_incremental_sync_pulls_from_network() =
         testScope.runTest {
-            // User has not onboarded
-            ntPreferencesDataSource.setShouldHideOnboarding(false)
-
             // Set news version to 7
             synchronizer.updateChangeListVersions {
                 copy(newsResourceVersion = 7)
@@ -229,8 +221,11 @@ class OfflineFirstNewsRepositoryTest {
                 actual = synchronizer.getChangeListVersions().newsResourceVersion,
             )
 
-            // Notifier should not have been called
-            assertTrue(notifier.addedNewsResources.isEmpty())
+            // Notifier should have been called with newly synced news resources.
+            assertEquals(
+                expected = newsResourcesFromNetwork.map(NewsResource::id).sorted(),
+                actual = notifier.addedNewsResources.first().map(NewsResource::id).sorted(),
+            )
         }
 
     @Test
@@ -294,16 +289,24 @@ class OfflineFirstNewsRepositoryTest {
         }
 
     @Test
-    fun offlineFirstNewsRepository_sends_notifications_for_newly_synced_news_when_onboarded() =
+    fun offlineFirstNewsRepository_sends_notifications_for_newly_synced_news_on_incremental_sync() =
         testScope.runTest {
-            // User has onboarded
-            ntPreferencesDataSource.setShouldHideOnboarding(true)
+            synchronizer.updateChangeListVersions {
+                copy(newsResourceVersion = 7)
+            }
 
-            val networkNewsResources = network.getNewsResources()
+            val changeList = network.changeListsAfter(
+                CollectionType.NewsResources,
+                version = 7,
+            )
+            val changeListIds = changeList
+                .map(NetworkChangeList::id)
+                .toSet()
 
             subject.syncWith(synchronizer)
 
-            val newsResourceIdsFromNetwork = networkNewsResources
+            val newsResourceIdsFromNetwork = network.getNewsResources()
+                .filter { it.id in changeListIds }
                 .map(NetworkNewsResource::id)
                 .sorted()
 
@@ -317,8 +320,9 @@ class OfflineFirstNewsRepositoryTest {
     @Test
     fun offlineFirstNewsRepository_does_not_send_notifications_for_existing_news_resources() =
         testScope.runTest {
-            // User has onboarded
-            ntPreferencesDataSource.setShouldHideOnboarding(true)
+            synchronizer.updateChangeListVersions {
+                copy(newsResourceVersion = 7)
+            }
 
             val networkNewsResources = network.getNewsResources()
                 .map(NetworkNewsResource::asEntity)

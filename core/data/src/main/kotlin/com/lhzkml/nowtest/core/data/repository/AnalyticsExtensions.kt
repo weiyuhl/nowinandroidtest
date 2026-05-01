@@ -4,19 +4,6 @@ import com.lhzkml.nowtest.core.analytics.AnalyticsEvent
 import com.lhzkml.nowtest.core.analytics.AnalyticsEvent.Param
 import com.lhzkml.nowtest.core.analytics.AnalyticsHelper
 
-internal fun AnalyticsHelper.logNewsResourceBookmarkToggled(newsResourceId: String, isBookmarked: Boolean) {
-    val eventType = if (isBookmarked) "news_resource_saved" else "news_resource_unsaved"
-    val paramKey = if (isBookmarked) "saved_news_resource_id" else "unsaved_news_resource_id"
-    logEvent(
-        AnalyticsEvent(
-            type = eventType,
-            extras = listOf(
-                Param(key = paramKey, value = newsResourceId),
-            ),
-        ),
-    )
-}
-
 internal fun AnalyticsHelper.logThemeChanged(themeName: String) =
     logEvent(
         AnalyticsEvent(
@@ -46,10 +33,3 @@ internal fun AnalyticsHelper.logDynamicColorPreferenceChanged(useDynamicColor: B
             ),
         ),
     )
-
-internal fun AnalyticsHelper.logOnboardingStateChanged(shouldHideOnboarding: Boolean) {
-    val eventType = if (shouldHideOnboarding) "onboarding_complete" else "onboarding_reset"
-    logEvent(
-        AnalyticsEvent(type = eventType),
-    )
-}

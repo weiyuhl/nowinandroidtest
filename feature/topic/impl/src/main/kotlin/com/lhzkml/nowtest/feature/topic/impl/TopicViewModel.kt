@@ -26,7 +26,7 @@ class TopicViewModel @AssistedInject constructor(
     private val userDataRepository: UserDataRepository,
     topicsRepository: TopicsRepository,
     userNewsResourceRepository: UserNewsResourceRepository,
-    @Assisted val topicId: String,
+    @param:Assisted val topicId: String,
 ) : ViewModel() {
     val topicUiState: StateFlow<TopicUiState> = topicUiState(
         topicId = topicId,

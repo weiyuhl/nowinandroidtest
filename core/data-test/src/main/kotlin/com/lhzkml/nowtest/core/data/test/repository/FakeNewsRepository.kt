@@ -21,7 +21,7 @@ import javax.inject.Inject
  * backend.
  */
 class FakeNewsRepository @Inject constructor(
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
     private val datasource: DemoNtNetworkDataSource,
 ) : NewsRepository {
 

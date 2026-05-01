@@ -7,7 +7,6 @@ import androidx.datastore.dataStoreFile
 import com.lhzkml.nowtest.core.common.network.Dispatcher
 import com.lhzkml.nowtest.core.common.network.NtDispatchers.IO
 import com.lhzkml.nowtest.core.common.network.di.ApplicationScope
-import com.lhzkml.nowtest.core.datastore.IntToStringIdsMigration
 import com.lhzkml.nowtest.core.datastore.UserPreferences
 import com.lhzkml.nowtest.core.datastore.UserPreferencesSerializer
 import dagger.Module
@@ -34,9 +33,6 @@ object DataStoreModule {
         DataStoreFactory.create(
             serializer = userPreferencesSerializer,
             scope = CoroutineScope(scope.coroutineContext + ioDispatcher),
-            migrations = listOf(
-                IntToStringIdsMigration,
-            ),
         ) {
             context.dataStoreFile("user_preferences.pb")
         }

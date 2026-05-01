@@ -13,11 +13,9 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 
 val userNewsResourcesTestData: List<UserNewsResource> = UserData(
-    bookmarkedNewsResources = setOf("1", "4"),
     viewedNewsResources = setOf("1", "2", "4"),
     themeBrand = ThemeBrand.ANDROID,
     darkThemeConfig = DarkThemeConfig.DARK,
-    shouldHideOnboarding = true,
     useDynamicColor = false,
 ).let { userData ->
     listOf(

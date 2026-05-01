@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-val filteredInterestsIds = setOf("1")
-val nonPresentInterestsIds = setOf("2")
+val filteredTopicIds = setOf("1")
+val nonPresentTopicIds = setOf("2")
 
 /**
  * Test double for [NewsResourceDao]

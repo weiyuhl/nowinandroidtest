@@ -13,11 +13,6 @@ interface UserDataRepository {
     val userData: Flow<UserData>
 
     /**
-     * Updates the bookmarked status for a news resource
-     */
-    suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean)
-
-    /**
      * Updates the viewed status for a news resource
      */
     suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean)
@@ -36,9 +31,4 @@ interface UserDataRepository {
      * Sets the preferred dynamic color config.
      */
     suspend fun setDynamicColorPreference(useDynamicColor: Boolean)
-
-    /**
-     * Sets whether the user has completed the onboarding process.
-     */
-    suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean)
 }

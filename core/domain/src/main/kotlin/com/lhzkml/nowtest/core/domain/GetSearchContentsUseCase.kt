@@ -1,7 +1,6 @@
 package com.lhzkml.nowtest.core.domain
 
 import com.lhzkml.nowtest.core.data.repository.SearchContentsRepository
-import com.lhzkml.nowtest.core.model.data.SearchResult
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 import com.lhzkml.nowtest.core.model.data.UserSearchResult
 import kotlinx.coroutines.flow.Flow
@@ -26,12 +25,10 @@ class GetSearchContentsUseCase @Inject constructor(
                         UserNewsResource(
                             newsResource = news,
                             userData = com.lhzkml.nowtest.core.model.data.UserData(
-                                bookmarkedNewsResources = emptySet(),
                                 viewedNewsResources = emptySet(),
                                 themeBrand = com.lhzkml.nowtest.core.model.data.ThemeBrand.DEFAULT,
                                 darkThemeConfig = com.lhzkml.nowtest.core.model.data.DarkThemeConfig.FOLLOW_SYSTEM,
                                 useDynamicColor = false,
-                                shouldHideOnboarding = true,
                             ),
                         )
                     },

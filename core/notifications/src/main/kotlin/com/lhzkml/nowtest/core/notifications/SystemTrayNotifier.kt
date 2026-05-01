@@ -38,53 +38,55 @@ const val DEEP_LINK_URI_PATTERN = "$DEEP_LINK_BASE_PATH/{$DEEP_LINK_NEWS_RESOURC
  */
 @Singleton
 internal class SystemTrayNotifier @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) : Notifier {
 
     override fun postNewsNotifications(
         newsResources: List<NewsResource>,
-    ) = with(context) {
-        if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
-            return
-        }
-
-        val truncatedNewsResources = newsResources.take(MAX_NUM_NOTIFICATIONS)
-
-        val newsNotifications = truncatedNewsResources.map { newsResource ->
-            createNewsNotification {
-                setSmallIcon(R.drawable.core_notifications_ic_nt_notification)
-                    .setContentTitle(newsResource.title)
-                    .setContentText(newsResource.content)
-                    .setContentIntent(newsPendingIntent(newsResource))
-                    .setGroup(NEWS_NOTIFICATION_GROUP)
-                    .setAutoCancel(true)
+    ) {
+        with(context) {
+            if (checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
+                return
             }
-        }
-        val summaryNotification = createNewsNotification {
-            val title = getString(
-                R.string.core_notifications_news_notification_group_summary,
-                truncatedNewsResources.size,
-            )
-            setContentTitle(title)
-                .setContentText(title)
-                .setSmallIcon(R.drawable.core_notifications_ic_nt_notification)
-                // Build summary info into InboxStyle template.
-                .setStyle(newsNotificationStyle(truncatedNewsResources, title))
-                .setGroup(NEWS_NOTIFICATION_GROUP)
-                .setGroupSummary(true)
-                .setAutoCancel(true)
-                .build()
-        }
 
-        // Send the notifications
-        val notificationManager = NotificationManagerCompat.from(this)
-        newsNotifications.forEachIndexed { index, notification ->
-            notificationManager.notify(
-                truncatedNewsResources[index].id.hashCode(),
-                notification,
-            )
+            val truncatedNewsResources = newsResources.take(MAX_NUM_NOTIFICATIONS)
+
+            val newsNotifications = truncatedNewsResources.map { newsResource ->
+                createNewsNotification {
+                    setSmallIcon(R.drawable.core_notifications_ic_nt_notification)
+                        .setContentTitle(newsResource.title)
+                        .setContentText(newsResource.content)
+                        .setContentIntent(newsPendingIntent(newsResource))
+                        .setGroup(NEWS_NOTIFICATION_GROUP)
+                        .setAutoCancel(true)
+                }
+            }
+            val summaryNotification = createNewsNotification {
+                val title = getString(
+                    R.string.core_notifications_news_notification_group_summary,
+                    truncatedNewsResources.size,
+                )
+                setContentTitle(title)
+                    .setContentText(title)
+                    .setSmallIcon(R.drawable.core_notifications_ic_nt_notification)
+                    // Build summary info into InboxStyle template.
+                    .setStyle(newsNotificationStyle(truncatedNewsResources, title))
+                    .setGroup(NEWS_NOTIFICATION_GROUP)
+                    .setGroupSummary(true)
+                    .setAutoCancel(true)
+                    .build()
+            }
+
+            // Send the notifications
+            val notificationManager = NotificationManagerCompat.from(this)
+            newsNotifications.forEachIndexed { index, notification ->
+                notificationManager.notify(
+                    truncatedNewsResources[index].id.hashCode(),
+                    notification,
+                )
+            }
+            notificationManager.notify(NEWS_NOTIFICATION_SUMMARY_ID, summaryNotification)
         }
-        notificationManager.notify(NEWS_NOTIFICATION_SUMMARY_ID, summaryNotification)
     }
 
     /**
