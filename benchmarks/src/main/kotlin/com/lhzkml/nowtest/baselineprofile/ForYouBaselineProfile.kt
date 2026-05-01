@@ -3,7 +3,6 @@ package com.lhzkml.nowtest.baselineprofile
 import androidx.benchmark.macro.junit4.BaselineProfileRule
 import com.lhzkml.nowtest.PACKAGE_NAME
 import com.lhzkml.nowtest.foryou.forYouScrollFeedDownUp
-import com.lhzkml.nowtest.foryou.forYouSelectTopics
 import com.lhzkml.nowtest.foryou.forYouWaitForContent
 import com.lhzkml.nowtest.startActivityAndAllowNotifications
 import org.junit.Rule
@@ -22,7 +21,6 @@ class ForYouBaselineProfile {
 
             // Scroll the feed critical user journey
             forYouWaitForContent()
-            forYouSelectTopics(true)
             forYouScrollFeedDownUp()
         }
 }

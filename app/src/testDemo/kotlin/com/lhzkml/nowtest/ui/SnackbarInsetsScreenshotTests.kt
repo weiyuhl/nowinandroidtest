@@ -44,9 +44,7 @@ import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsCompat
 import androidx.window.core.layout.WindowSizeClass
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.lhzkml.nowtest.core.data.repository.TopicsRepository
 import com.lhzkml.nowtest.core.data.repository.UserNewsResourceRepository
-import com.lhzkml.nowtest.core.data.test.repository.FakeUserDataRepository
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
 import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
@@ -57,9 +55,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -102,26 +98,11 @@ class SnackbarInsetsScreenshotTests {
     lateinit var timeZoneMonitor: TimeZoneMonitor
 
     @Inject
-    lateinit var userDataRepository: FakeUserDataRepository
-
-    @Inject
-    lateinit var topicsRepository: TopicsRepository
-
-    @Inject
     lateinit var userNewsResourceRepository: UserNewsResourceRepository
 
     @Before
     fun setup() {
         hiltRule.inject()
-
-        // Configure user data
-        runBlocking {
-            userDataRepository.setShouldHideOnboarding(true)
-
-            userDataRepository.setFollowedTopicIds(
-                setOf(topicsRepository.getTopics().first().first().id),
-            )
-        }
     }
 
     @Before

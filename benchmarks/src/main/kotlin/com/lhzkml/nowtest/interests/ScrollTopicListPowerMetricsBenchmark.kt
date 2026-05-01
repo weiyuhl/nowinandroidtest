@@ -15,7 +15,6 @@ import androidx.test.uiautomator.By
 import com.lhzkml.nowtest.PACKAGE_NAME
 import com.lhzkml.nowtest.allowNotifications
 import com.lhzkml.nowtest.foryou.forYouScrollFeedDownUp
-import com.lhzkml.nowtest.foryou.forYouSelectTopics
 import com.lhzkml.nowtest.foryou.forYouWaitForContent
 import com.lhzkml.nowtest.foryou.setAppTheme
 import org.junit.Rule
@@ -59,7 +58,6 @@ class ScrollTopicListPowerMetricsBenchmark {
             },
         ) {
             forYouWaitForContent()
-            forYouSelectTopics()
             repeat(3) {
                 forYouScrollFeedDownUp()
             }

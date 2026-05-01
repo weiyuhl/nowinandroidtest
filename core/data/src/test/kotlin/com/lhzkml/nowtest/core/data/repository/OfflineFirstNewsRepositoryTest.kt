@@ -19,7 +19,6 @@ import com.lhzkml.nowtest.core.datastore.NtPreferencesDataSource
 import com.lhzkml.nowtest.core.datastore.UserPreferences
 import com.lhzkml.nowtest.core.datastore.test.InMemoryDataStore
 import com.lhzkml.nowtest.core.model.data.NewsResource
-import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.network.model.NetworkChangeList
 import com.lhzkml.nowtest.core.network.model.NetworkNewsResource
 import com.lhzkml.nowtest.core.testing.notifications.TestNotifier
@@ -295,38 +294,22 @@ class OfflineFirstNewsRepositoryTest {
         }
 
     @Test
-    fun offlineFirstNewsRepository_sends_notifications_for_newly_synced_news_that_is_followed() =
+    fun offlineFirstNewsRepository_sends_notifications_for_newly_synced_news_when_onboarded() =
         testScope.runTest {
             // User has onboarded
             ntPreferencesDataSource.setShouldHideOnboarding(true)
 
             val networkNewsResources = network.getNewsResources()
 
-            // Follow roughly half the topics
-            val followedTopicIds = networkNewsResources
-                .flatMap(NetworkNewsResource::topicEntityShells)
-                .mapNotNull { topic ->
-                    when (topic.id.chars().sum() % 2) {
-                        0 -> topic.id
-                        else -> null
-                    }
-                }
-                .toSet()
-
-            // Set followed topics
-            ntPreferencesDataSource.setFollowedTopicIds(followedTopicIds)
-
             subject.syncWith(synchronizer)
 
-            val followedNewsResourceIdsFromNetwork = networkNewsResources
-                .filter { (it.topics intersect followedTopicIds).isNotEmpty() }
+            val newsResourceIdsFromNetwork = networkNewsResources
                 .map(NetworkNewsResource::id)
                 .sorted()
 
-            // Notifier should have been called with only news resources that have topics
-            // that the user follows
+            // Notifier should have been called with newly synced news resources.
             assertEquals(
-                expected = followedNewsResourceIdsFromNetwork,
+                expected = newsResourceIdsFromNetwork,
                 actual = notifier.addedNewsResources.first().map(NewsResource::id).sorted(),
             )
         }
@@ -345,14 +328,6 @@ class OfflineFirstNewsRepositoryTest {
 
             // Prepopulate dao with news resources
             newsResourceDao.upsertNewsResources(networkNewsResources)
-
-            val followedTopicIds = newsResources
-                .flatMap(NewsResource::topics)
-                .map(Topic::id)
-                .toSet()
-
-            // Follow all topics
-            ntPreferencesDataSource.setFollowedTopicIds(followedTopicIds)
 
             subject.syncWith(synchronizer)
 

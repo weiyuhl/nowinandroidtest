@@ -40,7 +40,6 @@ class SearchViewModelTest {
     private val searchContentsRepository = TestSearchContentsRepository()
     private val getSearchContentsUseCase = GetSearchContentsUseCase(
         searchContentsRepository = searchContentsRepository,
-        userDataRepository = userDataRepository,
     )
     private val recentSearchRepository = TestRecentSearchRepository()
     private val getRecentQueryUseCase = GetRecentSearchQueriesUseCase(recentSearchRepository)

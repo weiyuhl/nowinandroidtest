@@ -269,17 +269,17 @@ UI 状态使用密封层次结构（接口和不可变数据类）进行建模�
 
 ViewModel 从一个或多个用例或仓库接收数据流作为冷 [flows](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/index.html)。这些流被[组合](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/combine.html)在一起，或者简单地[映射](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/map.html)，以生成单一 UI 状态流。然后使用 [stateIn](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/state-in.html) 将此单一流转换为热流。转换为状态流使 UI 元素能够从流中读取最后已知的状态。
 
-**示例：显示已关注的主题**
+**示例：显示主题列表**
 
-`InterestsViewModel` 将 `uiState` 暴露为 `StateFlow<InterestsUiState>`。这个热流是通过获取 `GetFollowableTopicsUseCase` 提供的 `List<FollowableTopic>` 冷流来创建的。每次发出新列表时，它都被转换为 `InterestsUiState.Interests` 状态，然后暴露给 UI。
+`InterestsViewModel` 将 `uiState` 暴露为 `StateFlow<InterestsUiState>`。这个热流是通过获取主题列表的冷流来创建的。每次发出新列表时，它都被转换为 `InterestsUiState.Interests` 状态，然后暴露给 UI。
 
 ### 处理用户交互
 
 用户操作通过常规方法调用从 UI 元素传递给 ViewModel。这些方法以 Lambda 表达式的形式传递给 UI 元素。
 
-**示例：关注一个主题**
+**示例：打开一个主题**
 
-`InterestsScreen` 接受一个名为 `followTopic` 的 Lambda 表达式，该表达式由 `InterestsViewModel.followTopic` 提供。每当用户点击一个主题进行关注时，此方法被调用。ViewModel 随后通过通知用户数据仓库来处理此操作。
+`InterestsScreen` 接受主题点击事件。每当用户点击一个主题时，ViewModel 会更新当前选中的主题，并由导航层打开对应主题内容。
 
 ## 延伸阅读
 
