@@ -101,7 +101,7 @@ class NtAppStateTest {
 
         assertEquals(3, navigationState.topLevelKeys.size)
         assertEquals(
-            setOf(ForYouNavKey, BookmarksNavKey, InterestsNavKey(null)),
+            setOf(ForYouNavKey, BookmarksNavKey, InterestsNavKey),
             navigationState.topLevelKeys,
         )
     }

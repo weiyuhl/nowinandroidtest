@@ -300,7 +300,7 @@ fun NewsResourceTopics(
     ) {
         for (topic in topics) {
             val contentDescription = stringResource(
-                R.string.core_ui_topic_chip_content_description_when_not_followed,
+                R.string.core_ui_topic_chip_content_description,
                 topic.name,
             )
             NtTopicTag(

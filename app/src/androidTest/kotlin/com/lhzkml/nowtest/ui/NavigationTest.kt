@@ -2,8 +2,6 @@ package com.lhzkml.nowtest.ui
 
 import androidx.compose.ui.semantics.SemanticsActions.ScrollBy
 import androidx.compose.ui.test.assertCountEquals
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
@@ -21,22 +19,18 @@ import androidx.test.espresso.NoActivityResumedException
 import com.lhzkml.nowtest.MainActivity
 import com.lhzkml.nowtest.R
 import com.lhzkml.nowtest.core.data.repository.NewsRepository
-import com.lhzkml.nowtest.core.data.repository.TopicsRepository
-import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.rules.GrantPostNotificationsPermissionRule
-import com.lhzkml.nowtest.feature.interests.impl.LIST_PANE_TEST_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
 import com.lhzkml.nowtest.feature.bookmarks.api.R as BookmarksR
 import com.lhzkml.nowtest.feature.foryou.api.R as FeatureForyouR
-import com.lhzkml.nowtest.feature.search.api.R as FeatureSearchR
+import com.lhzkml.nowtest.feature.interests.api.R as FeatureInterestsR
 import com.lhzkml.nowtest.feature.settings.impl.R as SettingsR
 
 /**
@@ -64,16 +58,12 @@ class NavigationTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var topicsRepository: TopicsRepository
-
-    @Inject
     lateinit var newsRepository: NewsRepository
 
     // The strings used for matching in these tests
     private val navigateUp by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_api_navigate_up)
     private val forYou by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_api_title)
-    private val interests by composeTestRule.stringResource(FeatureSearchR.string.feature_search_api_interests)
-    private val sampleTopic = "Headlines"
+    private val interests by composeTestRule.stringResource(FeatureInterestsR.string.feature_interests_api_title)
     private val appName by composeTestRule.stringResource(R.string.app_name)
     private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_api_title)
     private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_top_app_bar_action_icon_description)
@@ -88,42 +78,6 @@ class NavigationTest {
         composeTestRule.apply {
             // VERIFY for you is selected
             onNodeWithText(forYou).assertIsSelected()
-        }
-    }
-
-    // TODO: implement tests related to navigation & resetting of destinations (b/213307564)
-    // Restoring content should be tested with another tab than the For You one, as that will
-    // still succeed even when restoring state is turned off.
-    /**
-     * When navigating between the different top level destinations, we should restore the state
-     * of previously visited destinations.
-     */
-    @Test
-    fun navigationBar_navigateToPreviouslySelectedTab_restoresContent() {
-        composeTestRule.apply {
-            // GIVEN the user follows a topic
-            onNodeWithText(sampleTopic).performClick()
-            // WHEN the user navigates to the Interests destination
-            onNodeWithText(interests).performClick()
-            // AND the user navigates to the For You destination
-            onNodeWithText(forYou).performClick()
-            // THEN the state of the For You destination is restored
-            onNodeWithContentDescription(sampleTopic).assertIsOn()
-        }
-    }
-
-    /**
-     * When reselecting a tab, it should show that tab's start destination and restore its state.
-     */
-    @Test
-    fun navigationBar_reselectTab_keepsState() {
-        composeTestRule.apply {
-            // GIVEN the user follows a topic
-            onNodeWithText(sampleTopic).performClick()
-            // WHEN the user taps the For You navigation bar item
-            onNodeWithText(forYou).performClick()
-            // THEN the state of the For You destination is restored
-            onNodeWithContentDescription(sampleTopic).assertIsOn()
         }
     }
 
@@ -236,34 +190,6 @@ class NavigationTest {
             Espresso.pressBack()
             // THEN the app shows the For You destination
             onNodeWithText(forYou).assertExists()
-        }
-    }
-
-    // TODO decide if backStack should preserve previous stacks when navigating back to home tab (ForYou)
-    // https://github.com/weiyuhl/nowinandroidtest/issues/1937
-    @Ignore
-    @Test
-    fun navigationBar_multipleBackStackInterests() {
-        composeTestRule.apply {
-            onNodeWithText(interests).performClick()
-
-            // Select the last topic
-            val topic = runBlocking {
-                topicsRepository.getTopics().first().sortedBy(Topic::name).last()
-            }
-            onNodeWithTag(LIST_PANE_TEST_TAG).performScrollToNode(hasText(topic.name))
-            onNodeWithText(topic.name).performClick()
-
-            // Verify the topic is still shown
-            onNodeWithTag("topic:${topic.id}").assertIsDisplayed()
-
-            // Switch tab
-            onNodeWithText(forYou).performClick()
-            // Come back to Interests
-            onNodeWithText(interests).performClick()
-
-            // Verify the topic is still shown
-            onNodeWithTag("topic:${topic.id}").assertExists()
         }
     }
 

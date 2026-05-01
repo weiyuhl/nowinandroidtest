@@ -1,5 +1,6 @@
 package com.lhzkml.nowtest.feature.search.impl
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -29,6 +31,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -49,29 +53,26 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lhzkml.nowtest.core.designsystem.component.DynamicAsyncImage
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.scrollbarState
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
+import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 import com.lhzkml.nowtest.core.ui.DevicePreviews
-import com.lhzkml.nowtest.core.ui.InterestsItem
 import com.lhzkml.nowtest.core.ui.NewsFeedUiState.Success
 import com.lhzkml.nowtest.core.ui.R.string
 import com.lhzkml.nowtest.core.ui.TrackScreenViewEvent
@@ -81,7 +82,6 @@ import com.lhzkml.nowtest.feature.search.api.R as searchR
 @Composable
 internal fun SearchScreen(
     onBackClick: () -> Unit,
-    onInterestsClick: () -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     searchViewModel: SearchViewModel = hiltViewModel(),
@@ -100,7 +100,6 @@ internal fun SearchScreen(
         onNewsResourcesCheckedChanged = searchViewModel::setNewsResourceBookmarked,
         onNewsResourceViewed = { searchViewModel.setNewsResourceViewed(it, true) },
         onBackClick = onBackClick,
-        onInterestsClick = onInterestsClick,
         onTopicClick = onTopicClick,
     )
 }
@@ -117,7 +116,6 @@ internal fun SearchScreen(
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit = { _, _ -> },
     onNewsResourceViewed: (String) -> Unit = {},
     onBackClick: () -> Unit = {},
-    onInterestsClick: () -> Unit = {},
     onTopicClick: (String) -> Unit = {},
 ) {
     TrackScreenViewEvent(screenName = "Search")
@@ -153,7 +151,6 @@ internal fun SearchScreen(
                 if (searchResultUiState.isEmpty()) {
                     EmptySearchResultBody(
                         searchQuery = searchQuery,
-                        onInterestsClick = onInterestsClick,
                     )
                     if (recentSearchesUiState is RecentSearchQueriesUiState.Success) {
                         RecentSearchesBody(
@@ -185,7 +182,6 @@ internal fun SearchScreen(
 @Composable
 fun EmptySearchResultBody(
     searchQuery: String,
-    onInterestsClick: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -208,41 +204,6 @@ fun EmptySearchResultBody(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = 24.dp),
         )
-        val tryAnotherSearchString = buildAnnotatedString {
-            append(stringResource(id = searchR.string.feature_search_api_try_another_search))
-            append(" ")
-            withLink(
-                LinkAnnotation.Clickable(
-                    tag = "",
-                    linkInteractionListener = {
-                        onInterestsClick()
-                    },
-                ),
-            ) {
-                withStyle(
-                    style = SpanStyle(
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                ) {
-                    append(stringResource(id = searchR.string.feature_search_api_interests))
-                }
-            }
-
-            append(" ")
-            append(stringResource(id = searchR.string.feature_search_api_to_browse_topics))
-        }
-        Text(
-            text = tryAnotherSearchString,
-            style = MaterialTheme.typography.bodyLarge.merge(
-                TextStyle(
-                    color = MaterialTheme.colorScheme.secondary,
-                    textAlign = TextAlign.Center,
-                ),
-            ),
-            modifier = Modifier
-                .padding(start = 36.dp, end = 36.dp, bottom = 24.dp),
-        )
     }
 }
 
@@ -264,7 +225,7 @@ private fun SearchNotReadyBody() {
 @Composable
 private fun SearchResultBody(
     searchQuery: String,
-    topics: List<com.lhzkml.nowtest.core.model.data.Topic>,
+    topics: List<Topic>,
     newsResources: List<UserNewsResource>,
     onSearchTriggered: (String) -> Unit,
     onTopicClick: (String) -> Unit,
@@ -286,7 +247,7 @@ private fun SearchResultBody(
                 .testTag("search:newsResources"),
             state = state,
         ) {
-                if (topics.isNotEmpty()) {
+            if (topics.isNotEmpty()) {
                 item(
                     span = StaggeredGridItemSpan.FullLine,
                 ) {
@@ -305,10 +266,8 @@ private fun SearchResultBody(
                         key = "topic-$topicId",
                         span = StaggeredGridItemSpan.FullLine,
                     ) {
-                        InterestsItem(
-                            name = topic.name,
-                            description = topic.shortDescription,
-                            topicImageUrl = topic.imageUrl,
+                        TopicSearchResultItem(
+                            topic = topic,
                             onClick = {
                                 onSearchTriggered(searchQuery)
                                 onTopicClick(topicId)
@@ -358,6 +317,52 @@ private fun SearchResultBody(
             onThumbMoved = state.rememberDraggableScroller(
                 itemsAvailable = itemsAvailable,
             ),
+        )
+    }
+}
+
+@Composable
+private fun TopicSearchResultItem(
+    topic: Topic,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ListItem(
+        leadingContent = {
+            TopicSearchResultIcon(
+                topicImageUrl = topic.imageUrl,
+                modifier = Modifier.size(48.dp),
+            )
+        },
+        headlineContent = {
+            Text(text = topic.name)
+        },
+        supportingContent = {
+            Text(text = topic.shortDescription)
+        },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        modifier = modifier.clickable(onClick = onClick),
+    )
+}
+
+@Composable
+private fun TopicSearchResultIcon(
+    topicImageUrl: String,
+    modifier: Modifier = Modifier,
+) {
+    if (topicImageUrl.isEmpty()) {
+        Icon(
+            imageVector = NtIcons.Person,
+            contentDescription = null,
+            modifier = modifier
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(4.dp),
+        )
+    } else {
+        DynamicAsyncImage(
+            imageUrl = topicImageUrl,
+            contentDescription = null,
+            modifier = modifier,
         )
     }
 }
@@ -542,7 +547,6 @@ private fun SearchToolbarPreview() {
 private fun EmptySearchResultColumnPreview() {
     NtTheme {
         EmptySearchResultBody(
-            onInterestsClick = {},
             searchQuery = "C++",
         )
     }

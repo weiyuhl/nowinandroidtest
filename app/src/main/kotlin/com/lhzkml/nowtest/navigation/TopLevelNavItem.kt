@@ -9,7 +9,7 @@ import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
 import com.lhzkml.nowtest.feature.interests.api.navigation.InterestsNavKey
 import com.lhzkml.nowtest.feature.bookmarks.api.R as bookmarksR
 import com.lhzkml.nowtest.feature.foryou.api.R as forYouR
-import com.lhzkml.nowtest.feature.search.api.R as searchR
+import com.lhzkml.nowtest.feature.interests.api.R as interestsR
 
 /**
  * Type for the top level navigation items in the application. Contains UI information about the
@@ -46,12 +46,12 @@ val BOOKMARKS = TopLevelNavItem(
 val INTERESTS = TopLevelNavItem(
     selectedIcon = NtIcons.Grid3x3,
     unselectedIcon = NtIcons.Grid3x3,
-    iconTextId = searchR.string.feature_search_api_interests,
-    titleTextId = searchR.string.feature_search_api_interests,
+    iconTextId = interestsR.string.feature_interests_api_title,
+    titleTextId = interestsR.string.feature_interests_api_title,
 )
 
 val TOP_LEVEL_NAV_ITEMS = mapOf(
     ForYouNavKey to FOR_YOU,
     BookmarksNavKey to BOOKMARKS,
-    InterestsNavKey(null) to INTERESTS,
+    InterestsNavKey to INTERESTS,
 )

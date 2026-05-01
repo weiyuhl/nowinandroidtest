@@ -243,7 +243,7 @@ internal fun NtApp(
                     val entryProvider = entryProvider {
                         forYouEntry(navigator)
                         bookmarksEntry(navigator)
-                        interestsEntry(navigator)
+                        interestsEntry()
                         topicEntry(navigator)
                         searchEntry(navigator)
                     }
