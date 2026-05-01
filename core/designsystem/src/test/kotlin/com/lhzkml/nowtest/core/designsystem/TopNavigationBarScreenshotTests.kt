@@ -1,7 +1,6 @@
 package com.lhzkml.nowtest.core.designsystem
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -9,8 +8,10 @@ import androidx.compose.ui.test.DeviceConfigurationOverride
 import androidx.compose.ui.test.FontScale
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
+import androidx.navigation3.runtime.NavKey
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.lhzkml.nowtest.core.designsystem.component.NtTopAppBar
+import com.lhzkml.nowtest.core.designsystem.component.NtTopNavigationBar
+import com.lhzkml.nowtest.core.designsystem.component.NtTopNavigationDestination
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
 import com.lhzkml.nowtest.core.testing.util.DefaultRoborazziOptions
@@ -24,25 +25,24 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.annotation.LooperMode
 
-@OptIn(ExperimentalMaterial3Api::class)
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(application = HiltTestApplication::class, qualifiers = "480dpi")
 @LooperMode(LooperMode.Mode.PAUSED)
-class TopAppBarScreenshotTests {
+class TopNavigationBarScreenshotTests {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun topAppBar_multipleThemes() {
-        composeTestRule.captureMultiTheme("TopAppBar") {
-            NtTopAppBarExample()
+    fun topNavigationBar_multipleThemes() {
+        composeTestRule.captureMultiTheme("TopNavigationBar") {
+            NtTopNavigationBarExample()
         }
     }
 
     @Test
-    fun topAppBar_hugeFont() {
+    fun topNavigationBar_hugeFont() {
         composeTestRule.setContent {
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
@@ -51,26 +51,38 @@ class TopAppBarScreenshotTests {
                     DeviceConfigurationOverride.FontScale(2f),
                 ) {
                     NtTheme {
-                        NtTopAppBarExample()
+                        NtTopNavigationBarExample()
                     }
                 }
             }
         }
         composeTestRule.onRoot()
             .captureRoboImage(
-                "src/test/screenshots/TopAppBar/TopAppBar_fontScale2.png",
+                "src/test/screenshots/TopNavigationBar/TopNavigationBar_fontScale2.png",
                 roborazziOptions = DefaultRoborazziOptions,
             )
     }
 
     @Composable
-    private fun NtTopAppBarExample() {
-        NtTopAppBar(
-            titleRes = android.R.string.untitled,
-            navigationIcon = NtIcons.Search,
-            navigationIconContentDescription = "Navigation icon",
-            actionIcon = NtIcons.MoreVert,
-            actionIconContentDescription = "Action icon",
+    private fun NtTopNavigationBarExample() {
+        NtTopNavigationBar(
+            destinations = listOf(
+                NtTopNavigationDestination(
+                    key = TestSearchNavKey,
+                    icon = NtIcons.Search,
+                    contentDescription = "Search",
+                ),
+                NtTopNavigationDestination(
+                    key = TestSettingsNavKey,
+                    icon = NtIcons.Settings,
+                    contentDescription = "Settings",
+                ),
+            ),
+            onNavigateToDestination = {},
         )
     }
+
+    private object TestSearchNavKey : NavKey
+
+    private object TestSettingsNavKey : NavKey
 }

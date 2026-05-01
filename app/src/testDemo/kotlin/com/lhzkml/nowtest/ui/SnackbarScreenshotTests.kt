@@ -160,11 +160,8 @@ class SnackbarScreenshotTests {
                                 networkMonitor = networkMonitor,
                                 timeZoneMonitor = timeZoneMonitor,
                             )
-                            NtApp(
+                            NtAppContent(
                                 appState = appState,
-                                showSettingsDialog = false,
-                                onSettingsDismissed = {},
-                                onTopAppBarActionClick = {},
                                 windowAdaptiveInfo = WindowAdaptiveInfo(
                                     windowSizeClass = WindowSizeClass.compute(
                                         maxWidth.value,

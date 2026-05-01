@@ -1,12 +1,11 @@
 package com.lhzkml.nowtest.ui
 
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
@@ -46,11 +45,10 @@ class NavigationTest {
     private val navigateUp by composeTestRule.stringResource(CoreUiR.string.core_ui_back)
     private val forYou by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_api_title)
     private val interests by composeTestRule.stringResource(FeatureInterestsR.string.feature_interests_api_title)
-    private val appName by composeTestRule.stringResource(R.string.app_name)
     private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_api_title)
-    private val settings by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_top_app_bar_action_icon_description)
+    private val search by composeTestRule.stringResource(R.string.top_navigation_search_content_description)
+    private val settings by composeTestRule.stringResource(R.string.top_navigation_settings_content_description)
     private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_brand_android)
-    private val ok by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_dismiss_dialog_button_text)
 
     @Before
     fun setup() = hiltRule.inject()
@@ -81,38 +79,32 @@ class NavigationTest {
     }
 
     @Test
-    fun topLevelDestinations_showTopBarWithTitle() {
+    fun topLevelDestinations_showTopNavigationEntries() {
         composeTestRule.apply {
-            // Verify that the top bar contains the app name on the first screen.
-            onNodeWithText(appName).assertExists()
-
-            // Go to the saved tab, verify that the top bar contains "saved". This means
-            // we'll have 2 elements with the text "saved" on screen. One in the top bar, and
-            // one in the bottom navigation.
-            onNodeWithText(saved).performClick()
-            onAllNodesWithText(saved).assertCountEquals(2)
-
-            // As above but for the interests tab.
-            onNodeWithText(interests).performClick()
-            onAllNodesWithText(interests).assertCountEquals(2)
-        }
-    }
-
-    @Test
-    fun topLevelDestinations_showSettingsIcon() {
-        composeTestRule.apply {
+            onNodeWithContentDescription(search).assertExists()
             onNodeWithContentDescription(settings).assertExists()
 
             onNodeWithText(saved).performClick()
+            onNodeWithContentDescription(search).assertExists()
             onNodeWithContentDescription(settings).assertExists()
 
             onNodeWithText(interests).performClick()
+            onNodeWithContentDescription(search).assertExists()
             onNodeWithContentDescription(settings).assertExists()
         }
     }
 
     @Test
-    fun whenSettingsIconIsClicked_settingsDialogIsShown() {
+    fun whenSearchIconIsClicked_searchScreenIsShown() {
+        composeTestRule.apply {
+            onNodeWithContentDescription(search).performClick()
+
+            onNodeWithTag("searchTextField").assertExists()
+        }
+    }
+
+    @Test
+    fun whenSettingsIconIsClicked_settingsScreenIsShown() {
         composeTestRule.apply {
             onNodeWithContentDescription(settings).performClick()
 
@@ -122,12 +114,12 @@ class NavigationTest {
     }
 
     @Test
-    fun whenSettingsDialogDismissed_previousScreenIsDisplayed() {
+    fun whenSettingsScreenBackPressed_previousScreenIsDisplayed() {
         composeTestRule.apply {
-            // Navigate to the saved screen, open the settings dialog, then close it.
+            // Navigate to the saved screen, open the settings screen, then go back.
             onNodeWithText(saved).performClick()
             onNodeWithContentDescription(settings).performClick()
-            onNodeWithText(ok).performClick()
+            Espresso.pressBack()
 
             // Check that the saved screen is still visible and selected.
             onNode(hasText(saved) and hasTestTag("NtNavItem")).assertIsSelected()

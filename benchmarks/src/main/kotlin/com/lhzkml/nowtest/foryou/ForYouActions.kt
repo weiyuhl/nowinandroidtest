@@ -6,7 +6,7 @@ import androidx.test.uiautomator.Until
 import androidx.test.uiautomator.untilHasChildren
 import com.lhzkml.nowtest.flingElementDownUp
 import com.lhzkml.nowtest.waitAndFindObject
-import com.lhzkml.nowtest.waitForObjectOnTopAppBar
+import com.lhzkml.nowtest.waitForObjectOnTopNavigationBar
 
 fun MacrobenchmarkScope.forYouWaitForContent() {
     device.wait(Until.gone(By.res("loadingWheel")), 5_000)
@@ -28,6 +28,6 @@ fun MacrobenchmarkScope.setAppTheme(isDark: Boolean) {
     device.waitForIdle()
     device.findObject(By.text("OK")).click()
 
-    // Wait until the top app bar is visible on screen
-    waitForObjectOnTopAppBar(By.text("nowtest"))
+    // Wait until the top navigation bar is visible on screen
+    waitForObjectOnTopNavigationBar(By.desc("Search"))
 }

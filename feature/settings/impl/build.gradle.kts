@@ -12,6 +12,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.google.oss.licenses)
     implementation(projects.core.data)
+    implementation(projects.feature.settings.api)
 
     testImplementation(projects.core.testing)
 

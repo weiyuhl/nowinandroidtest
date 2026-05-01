@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,7 +19,6 @@ import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -30,10 +28,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,7 +43,8 @@ import androidx.navigation3.ui.NavDisplay
 import com.lhzkml.nowtest.R
 import com.lhzkml.nowtest.core.designsystem.component.NtBackground
 import com.lhzkml.nowtest.core.designsystem.component.NtNavigationSuiteScaffold
-import com.lhzkml.nowtest.core.designsystem.component.NtTopAppBar
+import com.lhzkml.nowtest.core.designsystem.component.NtTopNavigationBar
+import com.lhzkml.nowtest.core.designsystem.component.NtTopNavigationDestination
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.navigation.Navigator
 import com.lhzkml.nowtest.core.navigation.toEntries
@@ -57,9 +53,9 @@ import com.lhzkml.nowtest.feature.foryou.impl.navigation.forYouEntry
 import com.lhzkml.nowtest.feature.interests.impl.navigation.interestsEntry
 import com.lhzkml.nowtest.feature.search.api.navigation.SearchNavKey
 import com.lhzkml.nowtest.feature.search.impl.navigation.searchEntry
-import com.lhzkml.nowtest.feature.settings.impl.SettingsDialog
+import com.lhzkml.nowtest.feature.settings.api.navigation.SettingsNavKey
+import com.lhzkml.nowtest.feature.settings.impl.navigation.settingsEntry
 import com.lhzkml.nowtest.navigation.TOP_LEVEL_NAV_ITEMS
-import com.lhzkml.nowtest.feature.settings.impl.R as settingsR
 
 internal val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> {
     error("SnackbarHostState should be initialized at runtime")
@@ -71,8 +67,6 @@ fun NtApp(
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
-
     NtBackground(modifier = modifier) {
         val snackbarHostState = remember { SnackbarHostState() }
 
@@ -89,13 +83,8 @@ fun NtApp(
             }
         }
         CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
-            NtApp(
+            NtAppContent(
                 appState = appState,
-
-                // TODO: Settings should be a dialog screen
-                showSettingsDialog = showSettingsDialog,
-                onSettingsDismissed = { showSettingsDialog = false },
-                onTopAppBarActionClick = { showSettingsDialog = true },
                 windowAdaptiveInfo = windowAdaptiveInfo,
             )
         }
@@ -104,24 +93,14 @@ fun NtApp(
 
 @Composable
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalComposeUiApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
 )
-internal fun NtApp(
+internal fun NtAppContent(
     appState: NtAppState,
-    showSettingsDialog: Boolean,
-    onSettingsDismissed: () -> Unit,
-    onTopAppBarActionClick: () -> Unit,
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    if (showSettingsDialog) {
-        SettingsDialog(
-            onDismiss = { onSettingsDismissed() },
-        )
-    }
-
     val snackbarHostState = LocalSnackbarHostState.current
 
     val navigator = remember { Navigator(appState.navigationState) }
@@ -182,37 +161,39 @@ internal fun NtApp(
                         ),
                     ),
             ) {
-                // Only show the top app bar on top level destinations.
-                var shouldShowTopAppBar = false
+                // Only show the top navigation bar on top level destinations.
+                var shouldShowTopNavigationBar = false
 
                 if (appState.navigationState.currentKey in appState.navigationState.topLevelKeys) {
-                    shouldShowTopAppBar = true
+                    shouldShowTopNavigationBar = true
 
-                    val destination = TOP_LEVEL_NAV_ITEMS[appState.navigationState.currentTopLevelKey]
-                        ?: error("Top level nav item not found for ${appState.navigationState.currentTopLevelKey}")
+                    val topNavigationDestinations = listOf<NtTopNavigationDestination<NavKey>>(
+                        NtTopNavigationDestination(
+                            key = SearchNavKey,
+                            icon = NtIcons.Search,
+                            contentDescription = stringResource(
+                                id = R.string.top_navigation_search_content_description,
+                            ),
+                        ),
+                        NtTopNavigationDestination(
+                            key = SettingsNavKey,
+                            icon = NtIcons.Settings,
+                            contentDescription = stringResource(
+                                id = R.string.top_navigation_settings_content_description,
+                            ),
+                        ),
+                    )
 
-                    NtTopAppBar(
-                        titleRes = destination.titleTextId,
-                        navigationIcon = NtIcons.Search,
-                        navigationIconContentDescription = stringResource(
-                            id = settingsR.string.feature_settings_impl_top_app_bar_navigation_icon_description,
-                        ),
-                        actionIcon = NtIcons.Settings,
-                        actionIconContentDescription = stringResource(
-                            id = settingsR.string.feature_settings_impl_top_app_bar_action_icon_description,
-                        ),
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent,
-                        ),
-                        onActionClick = { onTopAppBarActionClick() },
-                        onNavigationClick = { navigator.navigate(SearchNavKey) },
+                    NtTopNavigationBar(
+                        destinations = topNavigationDestinations,
+                        onNavigateToDestination = navigator::navigate,
                     )
                 }
 
                 Box(
                     // Workaround for https://issuetracker.google.com/338478720
                     modifier = Modifier.consumeWindowInsets(
-                        if (shouldShowTopAppBar) {
+                        if (shouldShowTopNavigationBar) {
                             WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
                         } else {
                             WindowInsets(0, 0, 0, 0)
@@ -226,6 +207,7 @@ internal fun NtApp(
                         bookmarksEntry()
                         interestsEntry()
                         searchEntry(navigator)
+                        settingsEntry(navigator)
                     }
 
                     NavDisplay(

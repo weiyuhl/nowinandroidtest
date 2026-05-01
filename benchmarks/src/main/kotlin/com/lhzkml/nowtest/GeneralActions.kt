@@ -41,16 +41,16 @@ fun MacrobenchmarkScope.startActivityAndAllowNotifications() {
 }
 
 /**
- * Waits for and returns the `ntTopAppBar`
+ * Waits for and returns the `ntTopNavigationBar`
  */
-fun MacrobenchmarkScope.getTopAppBar(): UiObject2 {
-    device.wait(Until.hasObject(By.res("ntTopAppBar")), 2_000)
-    return device.findObject(By.res("ntTopAppBar"))
+fun MacrobenchmarkScope.getTopNavigationBar(): UiObject2 {
+    device.wait(Until.hasObject(By.res("ntTopNavigationBar")), 2_000)
+    return device.findObject(By.res("ntTopNavigationBar"))
 }
 
 /**
- * Waits for an object on the top app bar, passed in as [selector].
+ * Waits for an object on the top navigation bar, passed in as [selector].
  */
-fun MacrobenchmarkScope.waitForObjectOnTopAppBar(selector: BySelector, timeout: Long = 2_000) {
-    getTopAppBar().wait(Until.hasObject(selector), timeout)
+fun MacrobenchmarkScope.waitForObjectOnTopNavigationBar(selector: BySelector, timeout: Long = 2_000) {
+    getTopNavigationBar().wait(Until.hasObject(selector), timeout)
 }

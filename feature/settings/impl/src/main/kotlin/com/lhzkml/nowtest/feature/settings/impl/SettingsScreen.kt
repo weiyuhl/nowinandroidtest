@@ -11,16 +11,21 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -28,18 +33,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.lhzkml.nowtest.core.designsystem.component.NtTextButton
+import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
 import com.lhzkml.nowtest.core.designsystem.theme.supportsDynamicTheming
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig
@@ -53,16 +57,19 @@ import com.lhzkml.nowtest.core.ui.TrackScreenViewEvent
 import com.lhzkml.nowtest.feature.settings.impl.R.string
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Loading
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Success
+import com.lhzkml.nowtest.core.ui.R as coreUiR
 
 @Composable
-fun SettingsDialog(
-    onDismiss: () -> Unit,
+fun SettingsScreen(
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
-    SettingsDialog(
-        onDismiss = onDismiss,
+    SettingsScreen(
+        modifier = modifier,
         settingsUiState = settingsUiState,
+        onBackClick = onBackClick,
         onChangeThemeBrand = viewModel::updateThemeBrand,
         onChangeDynamicColorPreference = viewModel::updateDynamicColorPreference,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
@@ -70,72 +77,88 @@ fun SettingsDialog(
 }
 
 @Composable
-fun SettingsDialog(
+fun SettingsScreen(
     settingsUiState: SettingsUiState,
     supportDynamicColor: Boolean = supportsDynamicTheming(),
-    onDismiss: () -> Unit,
+    onBackClick: () -> Unit = {},
+    onChangeThemeBrand: (themeBrand: ThemeBrand) -> Unit,
+    onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
+    onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    TrackScreenViewEvent(screenName = "Settings")
+    Column(modifier = modifier.fillMaxSize()) {
+        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.safeDrawing))
+        SettingsToolbar(onBackClick = onBackClick)
+        HorizontalDivider()
+        SettingsContent(
+            settingsUiState = settingsUiState,
+            supportDynamicColor = supportDynamicColor,
+            onChangeThemeBrand = onChangeThemeBrand,
+            onChangeDynamicColorPreference = onChangeDynamicColorPreference,
+            onChangeDarkThemeConfig = onChangeDarkThemeConfig,
+        )
+        Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
+    }
+}
+
+@Composable
+private fun SettingsToolbar(
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        IconButton(onClick = onBackClick) {
+            Icon(
+                imageVector = NtIcons.ArrowBack,
+                contentDescription = stringResource(id = coreUiR.string.core_ui_back),
+            )
+        }
+        Text(
+            text = stringResource(string.feature_settings_impl_title),
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }
+}
+
+@Composable
+private fun ColumnScope.SettingsContent(
+    settingsUiState: SettingsUiState,
+    supportDynamicColor: Boolean,
     onChangeThemeBrand: (themeBrand: ThemeBrand) -> Unit,
     onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
 ) {
-    val configuration = LocalConfiguration.current
-
-    /**
-     * usePlatformDefaultWidth = false is use as a temporary fix to allow
-     * height recalculation during recomposition. This, however, causes
-     * Dialog's to occupy full width in Compact mode. Therefore max width
-     * is configured below. This should be removed when there's fix to
-     * https://issuetracker.google.com/issues/221643630
-     */
-    AlertDialog(
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-        modifier = Modifier.widthIn(max = configuration.screenWidthDp.dp - 80.dp),
-        onDismissRequest = { onDismiss() },
-        title = {
-            Text(
-                text = stringResource(string.feature_settings_impl_title),
-                style = MaterialTheme.typography.titleLarge,
-            )
-        },
-        text = {
-            HorizontalDivider()
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                when (settingsUiState) {
-                    Loading -> {
-                        Text(
-                            text = stringResource(string.feature_settings_impl_loading),
-                            modifier = Modifier.padding(vertical = 16.dp),
-                        )
-                    }
-
-                    is Success -> {
-                        SettingsPanel(
-                            settings = settingsUiState.settings,
-                            supportDynamicColor = supportDynamicColor,
-                            onChangeThemeBrand = onChangeThemeBrand,
-                            onChangeDynamicColorPreference = onChangeDynamicColorPreference,
-                            onChangeDarkThemeConfig = onChangeDarkThemeConfig,
-                        )
-                    }
-                }
-                HorizontalDivider(Modifier.padding(top = 8.dp))
-                LinksPanel()
-            }
-            TrackScreenViewEvent(screenName = "Settings")
-        },
-        confirmButton = {
-            NtTextButton(
-                onClick = onDismiss,
-                modifier = Modifier.padding(horizontal = 8.dp),
-            ) {
+    Column(
+        Modifier
+            .weight(1f)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 8.dp),
+    ) {
+        when (settingsUiState) {
+            Loading -> {
                 Text(
-                    text = stringResource(string.feature_settings_impl_dismiss_dialog_button_text),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
+                    text = stringResource(string.feature_settings_impl_loading),
+                    modifier = Modifier.padding(vertical = 16.dp),
                 )
             }
-        },
-    )
+
+            is Success -> {
+                SettingsPanel(
+                    settings = settingsUiState.settings,
+                    supportDynamicColor = supportDynamicColor,
+                    onChangeThemeBrand = onChangeThemeBrand,
+                    onChangeDynamicColorPreference = onChangeDynamicColorPreference,
+                    onChangeDarkThemeConfig = onChangeDarkThemeConfig,
+                )
+            }
+        }
+        HorizontalDivider(Modifier.padding(top = 8.dp))
+        LinksPanel()
+    }
 }
 
 // [ColumnScope] is used for using the [ColumnScope.AnimatedVisibility] extension overload composable.
@@ -147,14 +170,14 @@ private fun ColumnScope.SettingsPanel(
     onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
 ) {
-    SettingsDialogSectionTitle(text = stringResource(string.feature_settings_impl_theme))
+    SettingsSectionTitle(text = stringResource(string.feature_settings_impl_theme))
     Column(Modifier.selectableGroup()) {
-        SettingsDialogThemeChooserRow(
+        SettingsThemeChooserRow(
             text = stringResource(string.feature_settings_impl_brand_default),
             selected = settings.brand == DEFAULT,
             onClick = { onChangeThemeBrand(DEFAULT) },
         )
-        SettingsDialogThemeChooserRow(
+        SettingsThemeChooserRow(
             text = stringResource(string.feature_settings_impl_brand_android),
             selected = settings.brand == ANDROID,
             onClick = { onChangeThemeBrand(ANDROID) },
@@ -162,14 +185,14 @@ private fun ColumnScope.SettingsPanel(
     }
     AnimatedVisibility(visible = settings.brand == DEFAULT && supportDynamicColor) {
         Column {
-            SettingsDialogSectionTitle(text = stringResource(string.feature_settings_impl_dynamic_color_preference))
+            SettingsSectionTitle(text = stringResource(string.feature_settings_impl_dynamic_color_preference))
             Column(Modifier.selectableGroup()) {
-                SettingsDialogThemeChooserRow(
+                SettingsThemeChooserRow(
                     text = stringResource(string.feature_settings_impl_dynamic_color_yes),
                     selected = settings.useDynamicColor,
                     onClick = { onChangeDynamicColorPreference(true) },
                 )
-                SettingsDialogThemeChooserRow(
+                SettingsThemeChooserRow(
                     text = stringResource(string.feature_settings_impl_dynamic_color_no),
                     selected = !settings.useDynamicColor,
                     onClick = { onChangeDynamicColorPreference(false) },
@@ -177,19 +200,19 @@ private fun ColumnScope.SettingsPanel(
             }
         }
     }
-    SettingsDialogSectionTitle(text = stringResource(string.feature_settings_impl_dark_mode_preference))
+    SettingsSectionTitle(text = stringResource(string.feature_settings_impl_dark_mode_preference))
     Column(Modifier.selectableGroup()) {
-        SettingsDialogThemeChooserRow(
+        SettingsThemeChooserRow(
             text = stringResource(string.feature_settings_impl_dark_mode_config_system_default),
             selected = settings.darkThemeConfig == FOLLOW_SYSTEM,
             onClick = { onChangeDarkThemeConfig(FOLLOW_SYSTEM) },
         )
-        SettingsDialogThemeChooserRow(
+        SettingsThemeChooserRow(
             text = stringResource(string.feature_settings_impl_dark_mode_config_light),
             selected = settings.darkThemeConfig == LIGHT,
             onClick = { onChangeDarkThemeConfig(LIGHT) },
         )
-        SettingsDialogThemeChooserRow(
+        SettingsThemeChooserRow(
             text = stringResource(string.feature_settings_impl_dark_mode_config_dark),
             selected = settings.darkThemeConfig == DARK,
             onClick = { onChangeDarkThemeConfig(DARK) },
@@ -198,7 +221,7 @@ private fun ColumnScope.SettingsPanel(
 }
 
 @Composable
-private fun SettingsDialogSectionTitle(text: String) {
+private fun SettingsSectionTitle(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleMedium,
@@ -207,7 +230,7 @@ private fun SettingsDialogSectionTitle(text: String) {
 }
 
 @Composable
-fun SettingsDialogThemeChooserRow(
+fun SettingsThemeChooserRow(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
@@ -271,10 +294,9 @@ private fun LinksPanel() {
 
 @Preview
 @Composable
-private fun PreviewSettingsDialog() {
+private fun PreviewSettingsScreen() {
     NtTheme {
-        SettingsDialog(
-            onDismiss = {},
+        SettingsScreen(
             settingsUiState = Success(
                 UserEditableSettings(
                     brand = DEFAULT,
@@ -291,10 +313,9 @@ private fun PreviewSettingsDialog() {
 
 @Preview
 @Composable
-private fun PreviewSettingsDialogLoading() {
+private fun PreviewSettingsScreenLoading() {
     NtTheme {
-        SettingsDialog(
-            onDismiss = {},
+        SettingsScreen(
             settingsUiState = Loading,
             onChangeThemeBrand = {},
             onChangeDynamicColorPreference = {},

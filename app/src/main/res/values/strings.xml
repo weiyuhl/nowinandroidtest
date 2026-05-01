@@ -3,4 +3,6 @@
 <resources>
     <string name="app_name">nowtest</string>
     <string name="not_connected">⚠️ You aren’t connected to the internet</string>
+    <string name="top_navigation_search_content_description">Search</string>
+    <string name="top_navigation_settings_content_description">Settings</string>
 </resources>

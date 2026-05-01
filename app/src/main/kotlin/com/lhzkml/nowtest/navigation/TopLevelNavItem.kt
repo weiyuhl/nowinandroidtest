@@ -2,7 +2,6 @@ package com.lhzkml.nowtest.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.lhzkml.nowtest.R
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.feature.bookmarks.api.navigation.BookmarksNavKey
 import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
@@ -13,41 +12,36 @@ import com.lhzkml.nowtest.feature.interests.api.R as interestsR
 
 /**
  * Type for the top level navigation items in the application. Contains UI information about the
- * current route that is used in the top app bar and common navigation UI.
+ * current route that is used in the navigation UI.
  *
  * @param selectedIcon The icon to be displayed in the navigation UI when this destination is
  * selected.
  * @param unselectedIcon The icon to be displayed in the navigation UI when this destination is
  * not selected.
  * @param iconTextId Text that to be displayed in the navigation UI.
- * @param titleTextId Text that is displayed on the top app bar.
  */
 data class TopLevelNavItem(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     @param:StringRes val iconTextId: Int,
-    @param:StringRes val titleTextId: Int,
 )
 
 val FOR_YOU = TopLevelNavItem(
     selectedIcon = NtIcons.Upcoming,
     unselectedIcon = NtIcons.UpcomingBorder,
     iconTextId = forYouR.string.feature_foryou_api_title,
-    titleTextId = R.string.app_name,
 )
 
 val BOOKMARKS = TopLevelNavItem(
     selectedIcon = NtIcons.Bookmarks,
     unselectedIcon = NtIcons.BookmarksBorder,
     iconTextId = bookmarksR.string.feature_bookmarks_api_title,
-    titleTextId = bookmarksR.string.feature_bookmarks_api_title,
 )
 
 val INTERESTS = TopLevelNavItem(
     selectedIcon = NtIcons.Grid3x3,
     unselectedIcon = NtIcons.Grid3x3,
     iconTextId = interestsR.string.feature_interests_api_title,
-    titleTextId = interestsR.string.feature_interests_api_title,
 )
 
 val TOP_LEVEL_NAV_ITEMS = mapOf(

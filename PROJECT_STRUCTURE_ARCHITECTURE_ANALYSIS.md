@@ -374,7 +374,7 @@ UI 使用 Jetpack Compose 和 Material 3。
 - `NtTheme`：应用主题
 - `NtBackground`：背景容器
 - `NtNavigationSuiteScaffold`：自适应导航栏/导航轨/导航抽屉
-- `NtTopAppBar`：顶栏
+- `NtTopNavigationBar`：顶部导航栏
 - `NavDisplay`：导航内容区域
 - `SettingsDialog`：设置弹窗
 - Snackbar：离线提示

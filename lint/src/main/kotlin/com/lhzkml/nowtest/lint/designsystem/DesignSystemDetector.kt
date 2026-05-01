@@ -75,10 +75,10 @@ class DesignSystemDetector : Detector(), Detector.UastScanner {
             "FilledIconToggleButton" to "NtIconToggleButton",
             "FilledTonalIconToggleButton" to "NtIconToggleButton",
             "OutlinedIconToggleButton" to "NtIconToggleButton",
-            "CenterAlignedTopAppBar" to "NtTopAppBar",
-            "SmallTopAppBar" to "NtTopAppBar",
-            "MediumTopAppBar" to "NtTopAppBar",
-            "LargeTopAppBar" to "NtTopAppBar",
+            "CenterAlignedTopAppBar" to "NtTopNavigationBar",
+            "SmallTopAppBar" to "NtTopNavigationBar",
+            "MediumTopAppBar" to "NtTopNavigationBar",
+            "LargeTopAppBar" to "NtTopNavigationBar",
         )
         val RECEIVER_NAMES = mapOf(
             "Icons" to "NtIcons",

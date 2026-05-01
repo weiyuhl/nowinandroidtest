@@ -81,16 +81,16 @@ class DesignSystemDetectorTest {
                 src/test.kt:20: Error: Using OutlinedIconToggleButton instead of NtIconToggleButton [DesignSystem]
                     OutlinedIconToggleButton()
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~
-                src/test.kt:21: Error: Using CenterAlignedTopAppBar instead of NtTopAppBar [DesignSystem]
+                src/test.kt:21: Error: Using CenterAlignedTopAppBar instead of NtTopNavigationBar [DesignSystem]
                     CenterAlignedTopAppBar()
                     ~~~~~~~~~~~~~~~~~~~~~~~~
-                src/test.kt:22: Error: Using SmallTopAppBar instead of NtTopAppBar [DesignSystem]
+                src/test.kt:22: Error: Using SmallTopAppBar instead of NtTopNavigationBar [DesignSystem]
                     SmallTopAppBar()
                     ~~~~~~~~~~~~~~~~
-                src/test.kt:23: Error: Using MediumTopAppBar instead of NtTopAppBar [DesignSystem]
+                src/test.kt:23: Error: Using MediumTopAppBar instead of NtTopNavigationBar [DesignSystem]
                     MediumTopAppBar()
                     ~~~~~~~~~~~~~~~~~
-                src/test.kt:24: Error: Using LargeTopAppBar instead of NtTopAppBar [DesignSystem]
+                src/test.kt:24: Error: Using LargeTopAppBar instead of NtTopNavigationBar [DesignSystem]
                     LargeTopAppBar()
                     ~~~~~~~~~~~~~~~~
                 20 errors, 0 warnings

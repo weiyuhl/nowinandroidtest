@@ -12,7 +12,7 @@ import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Success
 import org.junit.Rule
 import org.junit.Test
 
-class SettingsDialogTest {
+class SettingsScreenTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
@@ -22,9 +22,8 @@ class SettingsDialogTest {
     @Test
     fun whenLoading_showsLoadingText() {
         composeTestRule.setContent {
-            SettingsDialog(
+            SettingsScreen(
                 settingsUiState = Loading,
-                onDismiss = {},
                 onChangeDynamicColorPreference = {},
                 onChangeThemeBrand = {},
                 onChangeDarkThemeConfig = {},
@@ -39,7 +38,7 @@ class SettingsDialogTest {
     @Test
     fun whenStateIsSuccess_allDefaultSettingsAreDisplayed() {
         composeTestRule.setContent {
-            SettingsDialog(
+            SettingsScreen(
                 settingsUiState = Success(
                     UserEditableSettings(
                         brand = ANDROID,
@@ -47,7 +46,6 @@ class SettingsDialogTest {
                         darkThemeConfig = DARK,
                     ),
                 ),
-                onDismiss = { },
                 onChangeDynamicColorPreference = {},
                 onChangeThemeBrand = {},
                 onChangeDarkThemeConfig = {},
@@ -71,7 +69,7 @@ class SettingsDialogTest {
     @Test
     fun whenStateIsSuccess_supportsDynamicColor_usesDefaultBrand_DynamicColorOptionIsDisplayed() {
         composeTestRule.setContent {
-            SettingsDialog(
+            SettingsScreen(
                 settingsUiState = Success(
                     UserEditableSettings(
                         brand = DEFAULT,
@@ -80,7 +78,6 @@ class SettingsDialogTest {
                     ),
                 ),
                 supportDynamicColor = true,
-                onDismiss = {},
                 onChangeDynamicColorPreference = {},
                 onChangeThemeBrand = {},
                 onChangeDarkThemeConfig = {},
@@ -98,7 +95,7 @@ class SettingsDialogTest {
     @Test
     fun whenStateIsSuccess_notSupportDynamicColor_DynamicColorOptionIsNotDisplayed() {
         composeTestRule.setContent {
-            SettingsDialog(
+            SettingsScreen(
                 settingsUiState = Success(
                     UserEditableSettings(
                         brand = ANDROID,
@@ -106,7 +103,6 @@ class SettingsDialogTest {
                         useDynamicColor = false,
                     ),
                 ),
-                onDismiss = {},
                 onChangeDynamicColorPreference = {},
                 onChangeThemeBrand = {},
                 onChangeDarkThemeConfig = {},
@@ -122,7 +118,7 @@ class SettingsDialogTest {
     @Test
     fun whenStateIsSuccess_usesAndroidBrand_DynamicColorOptionIsNotDisplayed() {
         composeTestRule.setContent {
-            SettingsDialog(
+            SettingsScreen(
                 settingsUiState = Success(
                     UserEditableSettings(
                         brand = ANDROID,
@@ -130,7 +126,6 @@ class SettingsDialogTest {
                         useDynamicColor = false,
                     ),
                 ),
-                onDismiss = {},
                 onChangeDynamicColorPreference = {},
                 onChangeThemeBrand = {},
                 onChangeDarkThemeConfig = {},
@@ -146,7 +141,7 @@ class SettingsDialogTest {
     @Test
     fun whenStateIsSuccess_allLinksAreDisplayed() {
         composeTestRule.setContent {
-            SettingsDialog(
+            SettingsScreen(
                 settingsUiState = Success(
                     UserEditableSettings(
                         brand = ANDROID,
@@ -154,7 +149,6 @@ class SettingsDialogTest {
                         useDynamicColor = false,
                     ),
                 ),
-                onDismiss = {},
                 onChangeDynamicColorPreference = {},
                 onChangeThemeBrand = {},
                 onChangeDarkThemeConfig = {},

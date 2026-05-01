@@ -60,6 +60,7 @@ dependencies {
     implementation(projects.feature.bookmarks.impl)
     implementation(projects.feature.search.api)
     implementation(projects.feature.search.impl)
+    implementation(projects.feature.settings.api)
     implementation(projects.feature.settings.impl)
 
     implementation(projects.core.common)
