@@ -6,7 +6,6 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -14,15 +13,11 @@ import androidx.compose.ui.unit.dp
 import com.lhzkml.nowtest.core.designsystem.theme.BackgroundTheme
 import com.lhzkml.nowtest.core.designsystem.theme.DarkAndroidBackgroundTheme
 import com.lhzkml.nowtest.core.designsystem.theme.DarkAndroidColorScheme
-import com.lhzkml.nowtest.core.designsystem.theme.DarkAndroidGradientColors
 import com.lhzkml.nowtest.core.designsystem.theme.DarkDefaultColorScheme
-import com.lhzkml.nowtest.core.designsystem.theme.GradientColors
 import com.lhzkml.nowtest.core.designsystem.theme.LightAndroidBackgroundTheme
 import com.lhzkml.nowtest.core.designsystem.theme.LightAndroidColorScheme
-import com.lhzkml.nowtest.core.designsystem.theme.LightAndroidGradientColors
 import com.lhzkml.nowtest.core.designsystem.theme.LightDefaultColorScheme
 import com.lhzkml.nowtest.core.designsystem.theme.LocalBackgroundTheme
-import com.lhzkml.nowtest.core.designsystem.theme.LocalGradientColors
 import com.lhzkml.nowtest.core.designsystem.theme.LocalTintTheme
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
 import com.lhzkml.nowtest.core.designsystem.theme.TintTheme
@@ -36,9 +31,8 @@ import kotlin.test.assertEquals
  * Tests [NtTheme] using different combinations of the theme mode parameters:
  * darkTheme, disableDynamicTheming, and androidTheme.
  *
- * It verifies that the various composition locals — [MaterialTheme], [LocalGradientColors] and
- * [LocalBackgroundTheme] — have the expected values for a given theme mode, as specified by the
- * design system.
+ * It verifies that the various composition locals — [MaterialTheme] and [LocalBackgroundTheme] —
+ * have the expected values for a given theme mode, as specified by the design system.
  */
 @RunWith(RobolectricTestRunner::class)
 class ThemeTest {
@@ -56,8 +50,6 @@ class ThemeTest {
             ) {
                 val colorScheme = LightDefaultColorScheme
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = defaultGradientColors(colorScheme)
-                assertEquals(gradientColors, LocalGradientColors.current)
                 val backgroundTheme = defaultBackgroundTheme(colorScheme)
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
                 val tintTheme = defaultTintTheme()
@@ -76,8 +68,6 @@ class ThemeTest {
             ) {
                 val colorScheme = DarkDefaultColorScheme
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = defaultGradientColors(colorScheme)
-                assertEquals(gradientColors, LocalGradientColors.current)
                 val backgroundTheme = defaultBackgroundTheme(colorScheme)
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
                 val tintTheme = defaultTintTheme()
@@ -96,8 +86,6 @@ class ThemeTest {
             ) {
                 val colorScheme = dynamicLightColorSchemeWithFallback()
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = dynamicGradientColorsWithFallback(colorScheme)
-                assertEquals(gradientColors, LocalGradientColors.current)
                 val backgroundTheme = defaultBackgroundTheme(colorScheme)
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
                 val tintTheme = dynamicTintThemeWithFallback(colorScheme)
@@ -116,8 +104,6 @@ class ThemeTest {
             ) {
                 val colorScheme = dynamicDarkColorSchemeWithFallback()
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = dynamicGradientColorsWithFallback(colorScheme)
-                assertEquals(gradientColors, LocalGradientColors.current)
                 val backgroundTheme = defaultBackgroundTheme(colorScheme)
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
                 val tintTheme = dynamicTintThemeWithFallback(colorScheme)
@@ -136,8 +122,6 @@ class ThemeTest {
             ) {
                 val colorScheme = LightAndroidColorScheme
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = LightAndroidGradientColors
-                assertEquals(gradientColors, LocalGradientColors.current)
                 val backgroundTheme = LightAndroidBackgroundTheme
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
                 val tintTheme = defaultTintTheme()
@@ -156,8 +140,6 @@ class ThemeTest {
             ) {
                 val colorScheme = DarkAndroidColorScheme
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = DarkAndroidGradientColors
-                assertEquals(gradientColors, LocalGradientColors.current)
                 val backgroundTheme = DarkAndroidBackgroundTheme
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
                 val tintTheme = defaultTintTheme()
@@ -176,8 +158,6 @@ class ThemeTest {
             ) {
                 val colorScheme = LightAndroidColorScheme
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = LightAndroidGradientColors
-                assertEquals(gradientColors, LocalGradientColors.current)
                 val backgroundTheme = LightAndroidBackgroundTheme
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
                 val tintTheme = defaultTintTheme()
@@ -196,8 +176,6 @@ class ThemeTest {
             ) {
                 val colorScheme = DarkAndroidColorScheme
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val gradientColors = DarkAndroidGradientColors
-                assertEquals(gradientColors, LocalGradientColors.current)
                 val backgroundTheme = DarkAndroidBackgroundTheme
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
                 val tintTheme = defaultTintTheme()
@@ -216,20 +194,6 @@ class ThemeTest {
     private fun dynamicDarkColorSchemeWithFallback(): ColorScheme = when {
         SDK_INT >= VERSION_CODES.S -> dynamicDarkColorScheme(LocalContext.current)
         else -> DarkDefaultColorScheme
-    }
-
-    private fun emptyGradientColors(colorScheme: ColorScheme): GradientColors =
-        GradientColors(container = colorScheme.surfaceColorAtElevation(2.dp))
-
-    private fun defaultGradientColors(colorScheme: ColorScheme): GradientColors = GradientColors(
-        top = colorScheme.inverseOnSurface,
-        bottom = colorScheme.primaryContainer,
-        container = colorScheme.surface,
-    )
-
-    private fun dynamicGradientColorsWithFallback(colorScheme: ColorScheme): GradientColors = when {
-        SDK_INT >= VERSION_CODES.S -> emptyGradientColors(colorScheme)
-        else -> defaultGradientColors(colorScheme)
     }
 
     private fun defaultBackgroundTheme(colorScheme: ColorScheme): BackgroundTheme = BackgroundTheme(

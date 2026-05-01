@@ -9,7 +9,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
@@ -145,16 +144,6 @@ val DarkAndroidColorScheme = darkColorScheme(
 )
 
 /**
- * Light Android gradient colors
- */
-val LightAndroidGradientColors = GradientColors(container = DarkGreenGray95)
-
-/**
- * Dark Android gradient colors
- */
-val DarkAndroidGradientColors = GradientColors(container = Color.Black)
-
-/**
  * Light Android background theme
  */
 val LightAndroidBackgroundTheme = BackgroundTheme(color = DarkGreenGray95)
@@ -190,18 +179,6 @@ fun NtTheme(
 
         else -> if (darkTheme) DarkDefaultColorScheme else LightDefaultColorScheme
     }
-    // Gradient colors
-    val emptyGradientColors = GradientColors(container = colorScheme.surfaceColorAtElevation(2.dp))
-    val defaultGradientColors = GradientColors(
-        top = colorScheme.inverseOnSurface,
-        bottom = colorScheme.primaryContainer,
-        container = colorScheme.surface,
-    )
-    val gradientColors = when {
-        androidTheme -> if (darkTheme) DarkAndroidGradientColors else LightAndroidGradientColors
-        !disableDynamicTheming && supportsDynamicTheming() -> emptyGradientColors
-        else -> defaultGradientColors
-    }
     // Background theme
     val defaultBackgroundTheme = BackgroundTheme(
         color = colorScheme.surface,
@@ -218,7 +195,6 @@ fun NtTheme(
     }
     // Composition locals
     CompositionLocalProvider(
-        LocalGradientColors provides gradientColors,
         LocalBackgroundTheme provides backgroundTheme,
         LocalTintTheme provides tintTheme,
     ) {

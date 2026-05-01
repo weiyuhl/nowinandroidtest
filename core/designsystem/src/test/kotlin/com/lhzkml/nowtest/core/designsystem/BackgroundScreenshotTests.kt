@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.dp
 import com.lhzkml.nowtest.core.designsystem.component.NtBackground
-import com.lhzkml.nowtest.core.designsystem.component.NtGradientBackground
 import com.lhzkml.nowtest.core.testing.util.captureMultiTheme
 import dagger.hilt.android.testing.HiltTestApplication
 import org.junit.Rule
@@ -31,15 +30,6 @@ class BackgroundScreenshotTests {
     fun ntBackground_multipleThemes() {
         composeTestRule.captureMultiTheme("Background") { description ->
             NtBackground(Modifier.size(100.dp)) {
-                Text("$description background")
-            }
-        }
-    }
-
-    @Test
-    fun ntGradientBackground_multipleThemes() {
-        composeTestRule.captureMultiTheme("Background", "GradientBackground") { description ->
-            NtGradientBackground(Modifier.size(100.dp)) {
                 Text("$description background")
             }
         }

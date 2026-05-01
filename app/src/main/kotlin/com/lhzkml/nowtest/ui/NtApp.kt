@@ -47,16 +47,12 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.lhzkml.nowtest.R
 import com.lhzkml.nowtest.core.designsystem.component.NtBackground
-import com.lhzkml.nowtest.core.designsystem.component.NtGradientBackground
 import com.lhzkml.nowtest.core.designsystem.component.NtNavigationSuiteScaffold
 import com.lhzkml.nowtest.core.designsystem.component.NtTopAppBar
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
-import com.lhzkml.nowtest.core.designsystem.theme.GradientColors
-import com.lhzkml.nowtest.core.designsystem.theme.LocalGradientColors
 import com.lhzkml.nowtest.core.navigation.Navigator
 import com.lhzkml.nowtest.core.navigation.toEntries
 import com.lhzkml.nowtest.feature.bookmarks.impl.navigation.bookmarksEntry
-import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
 import com.lhzkml.nowtest.feature.foryou.impl.navigation.forYouEntry
 import com.lhzkml.nowtest.feature.interests.impl.navigation.interestsEntry
 import com.lhzkml.nowtest.feature.search.api.navigation.SearchNavKey
@@ -75,42 +71,33 @@ fun NtApp(
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val shouldShowGradientBackground = appState.navigationState.currentTopLevelKey == ForYouNavKey
     var showSettingsDialog by rememberSaveable { mutableStateOf(false) }
 
     NtBackground(modifier = modifier) {
-        NtGradientBackground(
-            gradientColors = if (shouldShowGradientBackground) {
-                LocalGradientColors.current
-            } else {
-                GradientColors()
-            },
-        ) {
-            val snackbarHostState = remember { SnackbarHostState() }
+        val snackbarHostState = remember { SnackbarHostState() }
 
-            val isOffline by appState.isOffline.collectAsStateWithLifecycle()
+        val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
-            // If user is not connected to the internet show a snack bar to inform them.
-            val notConnectedMessage = stringResource(R.string.not_connected)
-            LaunchedEffect(isOffline) {
-                if (isOffline) {
-                    snackbarHostState.showSnackbar(
-                        message = notConnectedMessage,
-                        duration = Indefinite,
-                    )
-                }
-            }
-            CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
-                NtApp(
-                    appState = appState,
-
-                    // TODO: Settings should be a dialog screen
-                    showSettingsDialog = showSettingsDialog,
-                    onSettingsDismissed = { showSettingsDialog = false },
-                    onTopAppBarActionClick = { showSettingsDialog = true },
-                    windowAdaptiveInfo = windowAdaptiveInfo,
+        // If user is not connected to the internet show a snack bar to inform them.
+        val notConnectedMessage = stringResource(R.string.not_connected)
+        LaunchedEffect(isOffline) {
+            if (isOffline) {
+                snackbarHostState.showSnackbar(
+                    message = notConnectedMessage,
+                    duration = Indefinite,
                 )
             }
+        }
+        CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
+            NtApp(
+                appState = appState,
+
+                // TODO: Settings should be a dialog screen
+                showSettingsDialog = showSettingsDialog,
+                onSettingsDismissed = { showSettingsDialog = false },
+                onTopAppBarActionClick = { showSettingsDialog = true },
+                windowAdaptiveInfo = windowAdaptiveInfo,
+            )
         }
     }
 }
