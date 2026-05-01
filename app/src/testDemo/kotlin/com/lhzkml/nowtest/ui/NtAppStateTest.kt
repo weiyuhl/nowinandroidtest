@@ -3,11 +3,8 @@ package com.lhzkml.nowtest.ui
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation3.runtime.NavBackStack
-import com.lhzkml.nowtest.core.data.repository.CompositeUserNewsResourceRepository
 import com.lhzkml.nowtest.core.navigation.NavigationState
 import com.lhzkml.nowtest.core.navigation.Navigator
-import com.lhzkml.nowtest.core.testing.repository.TestNewsRepository
-import com.lhzkml.nowtest.core.testing.repository.TestUserDataRepository
 import com.lhzkml.nowtest.core.testing.util.TestNetworkMonitor
 import com.lhzkml.nowtest.core.testing.util.TestTimeZoneMonitor
 import com.lhzkml.nowtest.feature.bookmarks.api.navigation.BookmarksNavKey
@@ -43,9 +40,6 @@ class NtAppStateTest {
 
     private val timeZoneMonitor = TestTimeZoneMonitor()
 
-    private val userNewsResourceRepository =
-        CompositeUserNewsResourceRepository(TestNewsRepository(), TestUserDataRepository())
-
     // Subject under test.
     private lateinit var state: NtAppState
 
@@ -68,7 +62,6 @@ class NtAppStateTest {
                 NtAppState(
                     coroutineScope = backgroundScope,
                     networkMonitor = networkMonitor,
-                    userNewsResourceRepository = userNewsResourceRepository,
                     timeZoneMonitor = timeZoneMonitor,
                     navigationState = navigationState,
                 )
@@ -92,7 +85,6 @@ class NtAppStateTest {
         composeTestRule.setContent {
             state = rememberNtAppState(
                 networkMonitor = networkMonitor,
-                userNewsResourceRepository = userNewsResourceRepository,
                 timeZoneMonitor = timeZoneMonitor,
             )
         }
@@ -112,7 +104,6 @@ class NtAppStateTest {
             state = NtAppState(
                 coroutineScope = backgroundScope,
                 networkMonitor = networkMonitor,
-                userNewsResourceRepository = userNewsResourceRepository,
                 timeZoneMonitor = timeZoneMonitor,
                 navigationState = testNavigationState(),
             )
@@ -132,7 +123,6 @@ class NtAppStateTest {
             state = NtAppState(
                 coroutineScope = backgroundScope,
                 networkMonitor = networkMonitor,
-                userNewsResourceRepository = userNewsResourceRepository,
                 timeZoneMonitor = timeZoneMonitor,
                 navigationState = testNavigationState(),
             )

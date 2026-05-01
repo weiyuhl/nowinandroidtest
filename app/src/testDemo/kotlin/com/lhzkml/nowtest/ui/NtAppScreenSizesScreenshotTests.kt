@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.lhzkml.nowtest.core.data.repository.UserNewsResourceRepository
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
 import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
@@ -63,9 +62,6 @@ class NtAppScreenSizesScreenshotTests {
     @Inject
     lateinit var timeZoneMonitor: TimeZoneMonitor
 
-    @Inject
-    lateinit var userNewsResourceRepository: UserNewsResourceRepository
-
     @Before
     fun setup() {
         hiltRule.inject()
@@ -88,7 +84,6 @@ class NtAppScreenSizesScreenshotTests {
                     NtTheme {
                         val fakeAppState = rememberNtAppState(
                             networkMonitor = networkMonitor,
-                            userNewsResourceRepository = userNewsResourceRepository,
                             timeZoneMonitor = timeZoneMonitor,
                         )
                         NtApp(

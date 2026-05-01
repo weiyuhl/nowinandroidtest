@@ -13,11 +13,6 @@ interface UserDataRepository {
     val userData: Flow<UserData>
 
     /**
-     * Updates the viewed status for a news resource
-     */
-    suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean)
-
-    /**
      * Sets the desired theme brand.
      */
     suspend fun setThemeBrand(themeBrand: ThemeBrand)

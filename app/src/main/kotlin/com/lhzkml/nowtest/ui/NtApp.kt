@@ -28,6 +28,7 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,15 +36,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -58,7 +55,6 @@ import com.lhzkml.nowtest.core.designsystem.theme.GradientColors
 import com.lhzkml.nowtest.core.designsystem.theme.LocalGradientColors
 import com.lhzkml.nowtest.core.navigation.Navigator
 import com.lhzkml.nowtest.core.navigation.toEntries
-import com.lhzkml.nowtest.feature.bookmarks.impl.navigation.LocalSnackbarHostState
 import com.lhzkml.nowtest.feature.bookmarks.impl.navigation.bookmarksEntry
 import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
 import com.lhzkml.nowtest.feature.foryou.impl.navigation.forYouEntry
@@ -66,9 +62,12 @@ import com.lhzkml.nowtest.feature.interests.impl.navigation.interestsEntry
 import com.lhzkml.nowtest.feature.search.api.navigation.SearchNavKey
 import com.lhzkml.nowtest.feature.search.impl.navigation.searchEntry
 import com.lhzkml.nowtest.feature.settings.impl.SettingsDialog
-import com.lhzkml.nowtest.feature.topic.impl.navigation.topicEntry
 import com.lhzkml.nowtest.navigation.TOP_LEVEL_NAV_ITEMS
 import com.lhzkml.nowtest.feature.settings.impl.R as settingsR
+
+internal val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> {
+    error("SnackbarHostState should be initialized at runtime")
+}
 
 @Composable
 fun NtApp(
@@ -130,9 +129,6 @@ internal fun NtApp(
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    val unreadNavKeys by appState.topLevelNavKeysWithUnreadResources
-        .collectAsStateWithLifecycle()
-
     if (showSettingsDialog) {
         SettingsDialog(
             onDismiss = { onSettingsDismissed() },
@@ -146,7 +142,6 @@ internal fun NtApp(
     NtNavigationSuiteScaffold(
         navigationSuiteItems = {
             TOP_LEVEL_NAV_ITEMS.forEach { (navKey, navItem) ->
-                val hasUnread = unreadNavKeys.contains(navKey)
                 val selected = navKey == appState.navigationState.currentTopLevelKey
                 item(
                     selected = selected,
@@ -165,8 +160,7 @@ internal fun NtApp(
                     },
                     label = { Text(stringResource(navItem.iconTextId)) },
                     modifier = Modifier
-                        .testTag("NtNavItem")
-                        .then(if (hasUnread) Modifier.notificationDot() else Modifier),
+                        .testTag("NtNavItem"),
                 )
             }
         },
@@ -241,10 +235,9 @@ internal fun NtApp(
                     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
 
                     val entryProvider = entryProvider {
-                        forYouEntry(navigator)
+                        forYouEntry()
                         bookmarksEntry()
                         interestsEntry()
-                        topicEntry(navigator)
                         searchEntry(navigator)
                     }
 
@@ -261,22 +254,3 @@ internal fun NtApp(
         }
     }
 }
-
-private fun Modifier.notificationDot(): Modifier =
-    composed {
-        val tertiaryColor = MaterialTheme.colorScheme.tertiary
-        drawWithContent {
-            drawContent()
-            drawCircle(
-                tertiaryColor,
-                radius = 5.dp.toPx(),
-                // This is based on the dimensions of the NavigationBar's "indicator pill";
-                // however, its parameters are private, so we must depend on them implicitly
-                // (NavigationBarTokens.ActiveIndicatorWidth = 64.dp)
-                center = center + Offset(
-                    64.dp.toPx() * .45f,
-                    32.dp.toPx() * -.45f - 6.dp.toPx(),
-                ),
-            )
-        }
-    }

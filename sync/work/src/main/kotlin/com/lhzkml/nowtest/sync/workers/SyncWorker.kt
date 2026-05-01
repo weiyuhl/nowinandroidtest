@@ -11,36 +11,25 @@ import androidx.work.WorkerParameters
 import com.lhzkml.nowtest.core.analytics.AnalyticsHelper
 import com.lhzkml.nowtest.core.common.network.Dispatcher
 import com.lhzkml.nowtest.core.common.network.NtDispatchers.IO
-import com.lhzkml.nowtest.core.data.Synchronizer
-import com.lhzkml.nowtest.core.data.repository.NewsRepository
-import com.lhzkml.nowtest.core.data.repository.TopicsRepository
-import com.lhzkml.nowtest.core.datastore.ChangeListVersions
-import com.lhzkml.nowtest.core.datastore.NtPreferencesDataSource
 import com.lhzkml.nowtest.sync.initializers.SyncConstraints
 import com.lhzkml.nowtest.sync.initializers.syncForegroundInfo
 import com.lhzkml.nowtest.sync.status.SyncSubscriber
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 
 /**
- * Syncs the data layer by delegating to the appropriate repository instances with
- * sync functionality.
+ * Runs startup sync hooks that are still active after feature-owned data sync was removed.
  */
 @HiltWorker
 internal class SyncWorker @AssistedInject constructor(
     @param:Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val ntPreferences: NtPreferencesDataSource,
-    private val topicRepository: TopicsRepository,
-    private val newsRepository: NewsRepository,
     @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
     private val syncSubscriber: SyncSubscriber,
-) : CoroutineWorker(appContext, workerParams), Synchronizer {
+) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun getForegroundInfo(): ForegroundInfo =
         appContext.syncForegroundInfo()
@@ -51,11 +40,7 @@ internal class SyncWorker @AssistedInject constructor(
 
             syncSubscriber.subscribe()
 
-            // First sync the repositories in parallel
-            val syncedSuccessfully = awaitAll(
-                async { topicRepository.sync() },
-                async { newsRepository.sync() },
-            ).all { it }
+            val syncedSuccessfully = true
 
             analyticsHelper.logSyncFinished(syncedSuccessfully)
 
@@ -66,13 +51,6 @@ internal class SyncWorker @AssistedInject constructor(
             }
         }
     }
-
-    override suspend fun getChangeListVersions(): ChangeListVersions =
-        ntPreferences.getChangeListVersions()
-
-    override suspend fun updateChangeListVersions(
-        update: ChangeListVersions.() -> ChangeListVersions,
-    ) = ntPreferences.updateChangeListVersion(update)
 
     companion object {
         /**

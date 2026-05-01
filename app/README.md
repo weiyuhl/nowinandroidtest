@@ -37,11 +37,6 @@ graph TB
       :feature:interests:api[api]:::android-library
       :feature:interests:impl[impl]:::android-library
     end
-    subgraph :feature:topic
-      direction TB
-      :feature:topic:api[api]:::android-library
-      :feature:topic:impl[impl]:::android-library
-    end
   end
   subgraph :sync
     direction TB
@@ -82,8 +77,6 @@ graph TB
   :app -.-> :feature:search:api
   :app -.-> :feature:search:impl
   :app -.-> :feature:settings:impl
-  :app -.-> :feature:topic:api
-  :app -.-> :feature:topic:impl
   :app -.-> :sync:work
   :benchmarks -.->|testedApks| :app
   :core:data -.-> :core:analytics
@@ -103,27 +96,20 @@ graph TB
   :core:notifications -.-> :core:common
   :core:notifications --> :core:model
   :core:ui --> :core:analytics
-  :core:ui --> :core:designsystem
-  :core:ui --> :core:model
   :feature:bookmarks:api --> :core:navigation
   :feature:bookmarks:impl -.-> :core:data
   :feature:bookmarks:impl -.-> :core:designsystem
   :feature:bookmarks:impl -.-> :core:ui
   :feature:bookmarks:impl -.-> :feature:bookmarks:api
-  :feature:bookmarks:impl -.-> :feature:topic:api
   :feature:foryou:api --> :core:navigation
   :feature:foryou:impl -.-> :core:designsystem
-  :feature:foryou:impl -.-> :core:domain
-  :feature:foryou:impl -.-> :core:notifications
   :feature:foryou:impl -.-> :core:ui
   :feature:foryou:impl -.-> :feature:foryou:api
-  :feature:foryou:impl -.-> :feature:topic:api
   :feature:interests:api --> :core:navigation
   :feature:interests:impl -.-> :core:designsystem
   :feature:interests:impl -.-> :core:domain
   :feature:interests:impl -.-> :core:ui
   :feature:interests:impl -.-> :feature:interests:api
-  :feature:interests:impl -.-> :feature:topic:api
   :feature:search:api -.-> :core:domain
   :feature:search:api --> :core:navigation
   :feature:search:impl -.-> :core:designsystem
@@ -131,17 +117,9 @@ graph TB
   :feature:search:impl -.-> :core:ui
   :feature:search:impl -.-> :feature:interests:api
   :feature:search:impl -.-> :feature:search:api
-  :feature:search:impl -.-> :feature:topic:api
   :feature:settings:impl -.-> :core:data
   :feature:settings:impl -.-> :core:designsystem
   :feature:settings:impl -.-> :core:ui
-  :feature:topic:api -.-> :core:designsystem
-  :feature:topic:api --> :core:navigation
-  :feature:topic:api -.-> :core:ui
-  :feature:topic:impl -.-> :core:data
-  :feature:topic:impl -.-> :core:designsystem
-  :feature:topic:impl -.-> :core:ui
-  :feature:topic:impl -.-> :feature:topic:api
   :sync:work -.-> :core:analytics
   :sync:work -.-> :core:data
   :sync:work -.-> :core:notifications

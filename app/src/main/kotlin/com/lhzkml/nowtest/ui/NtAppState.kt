@@ -4,8 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation3.runtime.NavKey
-import com.lhzkml.nowtest.core.data.repository.UserNewsResourceRepository
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
 import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
 import com.lhzkml.nowtest.core.navigation.NavigationState
@@ -15,7 +13,6 @@ import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
 import com.lhzkml.nowtest.navigation.TOP_LEVEL_NAV_ITEMS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.TimeZone
@@ -23,7 +20,6 @@ import kotlinx.datetime.TimeZone
 @Composable
 fun rememberNtAppState(
     networkMonitor: NetworkMonitor,
-    userNewsResourceRepository: UserNewsResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): NtAppState {
@@ -35,14 +31,12 @@ fun rememberNtAppState(
         navigationState,
         coroutineScope,
         networkMonitor,
-        userNewsResourceRepository,
         timeZoneMonitor,
     ) {
         NtAppState(
             navigationState = navigationState,
             coroutineScope = coroutineScope,
             networkMonitor = networkMonitor,
-            userNewsResourceRepository = userNewsResourceRepository,
             timeZoneMonitor = timeZoneMonitor,
         )
     }
@@ -53,7 +47,6 @@ class NtAppState(
     val navigationState: NavigationState,
     coroutineScope: CoroutineScope,
     networkMonitor: NetworkMonitor,
-    userNewsResourceRepository: UserNewsResourceRepository,
     timeZoneMonitor: TimeZoneMonitor,
 ) {
     val isOffline = networkMonitor.isOnline
@@ -63,22 +56,6 @@ class NtAppState(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = false,
         )
-
-    /**
-     * The top level nav keys that have unread news resources.
-     */
-    val topLevelNavKeysWithUnreadResources: StateFlow<Set<NavKey>> =
-        userNewsResourceRepository.observeAll()
-            .map { forYouNewsResources ->
-                setOfNotNull(
-                    ForYouNavKey.takeIf { forYouNewsResources.any { !it.hasBeenViewed } },
-                )
-            }
-            .stateIn(
-                coroutineScope,
-                SharingStarted.WhileSubscribed(5_000),
-                initialValue = emptySet(),
-            )
 
     val currentTimeZone = timeZoneMonitor.currentTimeZone
         .stateIn(

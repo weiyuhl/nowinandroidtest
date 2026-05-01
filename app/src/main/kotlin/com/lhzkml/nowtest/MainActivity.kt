@@ -20,7 +20,6 @@ import androidx.tracing.trace
 import com.lhzkml.nowtest.MainActivityUiState.Loading
 import com.lhzkml.nowtest.core.analytics.AnalyticsHelper
 import com.lhzkml.nowtest.core.analytics.LocalAnalyticsHelper
-import com.lhzkml.nowtest.core.data.repository.UserNewsResourceRepository
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
 import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
@@ -53,9 +52,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var analyticsHelper: AnalyticsHelper
-
-    @Inject
-    lateinit var userNewsResourceRepository: UserNewsResourceRepository
 
     private val viewModel: MainActivityViewModel by viewModels()
 
@@ -119,7 +115,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val appState = rememberNtAppState(
                 networkMonitor = networkMonitor,
-                userNewsResourceRepository = userNewsResourceRepository,
                 timeZoneMonitor = timeZoneMonitor,
             )
 

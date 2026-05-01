@@ -1,11 +1,7 @@
 package com.lhzkml.nowtest.core.data.test
 
 import com.lhzkml.nowtest.core.data.di.DataModule
-import com.lhzkml.nowtest.core.data.repository.NewsRepository
-import com.lhzkml.nowtest.core.data.repository.TopicsRepository
 import com.lhzkml.nowtest.core.data.repository.UserDataRepository
-import com.lhzkml.nowtest.core.data.test.repository.FakeNewsRepository
-import com.lhzkml.nowtest.core.data.test.repository.FakeTopicsRepository
 import com.lhzkml.nowtest.core.data.test.repository.FakeUserDataRepository
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
 import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
@@ -20,16 +16,6 @@ import dagger.hilt.testing.TestInstallIn
     replaces = [DataModule::class],
 )
 internal interface TestDataModule {
-    @Binds
-    fun bindsTopicRepository(
-        fakeTopicsRepository: FakeTopicsRepository,
-    ): TopicsRepository
-
-    @Binds
-    fun bindsNewsResourceRepository(
-        fakeNewsRepository: FakeNewsRepository,
-    ): NewsRepository
-
     @Binds
     fun bindsUserDataRepository(
         userDataRepository: FakeUserDataRepository,

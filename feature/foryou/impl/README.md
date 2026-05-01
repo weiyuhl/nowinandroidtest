@@ -18,10 +18,6 @@ graph TB
       :feature:foryou:api[api]:::android-library
       :feature:foryou:impl[impl]:::android-library
     end
-    subgraph :feature:topic
-      direction TB
-      :feature:topic:api[api]:::android-library
-    end
   end
   subgraph :core
     direction TB
@@ -57,18 +53,10 @@ graph TB
   :core:notifications -.-> :core:common
   :core:notifications --> :core:model
   :core:ui --> :core:analytics
-  :core:ui --> :core:designsystem
-  :core:ui --> :core:model
   :feature:foryou:api --> :core:navigation
   :feature:foryou:impl -.-> :core:designsystem
-  :feature:foryou:impl -.-> :core:domain
-  :feature:foryou:impl -.-> :core:notifications
   :feature:foryou:impl -.-> :core:ui
   :feature:foryou:impl -.-> :feature:foryou:api
-  :feature:foryou:impl -.-> :feature:topic:api
-  :feature:topic:api -.-> :core:designsystem
-  :feature:topic:api --> :core:navigation
-  :feature:topic:api -.-> :core:ui
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;

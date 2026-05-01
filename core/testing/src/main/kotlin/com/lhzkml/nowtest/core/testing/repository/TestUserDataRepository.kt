@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filterNotNull
 
 val emptyUserData = UserData(
-    viewedNewsResources = emptySet(),
     themeBrand = ThemeBrand.DEFAULT,
     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     useDynamicColor = false,
@@ -22,21 +21,6 @@ class TestUserDataRepository : UserDataRepository {
     private val currentUserData get() = _userData.replayCache.firstOrNull() ?: emptyUserData
 
     override val userData: Flow<UserData> = _userData.filterNotNull()
-
-    override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
-        currentUserData.let { current ->
-            _userData.tryEmit(
-                current.copy(
-                    viewedNewsResources =
-                    if (viewed) {
-                        current.viewedNewsResources + newsResourceId
-                    } else {
-                        current.viewedNewsResources - newsResourceId
-                    },
-                ),
-            )
-        }
-    }
 
     override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         currentUserData.let { current ->

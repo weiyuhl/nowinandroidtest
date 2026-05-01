@@ -2,7 +2,4 @@
 
 <resources>
     <string name="feature_foryou_api_title">For you</string>
-    <string name="feature_foryou_api_done">Done</string>
-    <string name="feature_foryou_api_loading">Loading for you…</string>
-    <string name="feature_foryou_api_navigate_up">Navigate up</string>
 </resources>

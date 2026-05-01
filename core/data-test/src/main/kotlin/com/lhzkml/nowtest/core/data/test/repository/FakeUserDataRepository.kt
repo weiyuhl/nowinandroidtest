@@ -21,9 +21,6 @@ class FakeUserDataRepository @Inject constructor(
     override val userData: Flow<UserData> =
         ntPreferencesDataSource.userData
 
-    override suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) =
-        ntPreferencesDataSource.setNewsResourceViewed(newsResourceId, viewed)
-
     override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
         ntPreferencesDataSource.setThemeBrand(themeBrand)
     }

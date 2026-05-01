@@ -1,10 +1,6 @@
 package com.lhzkml.nowtest.core.data.di
 
-import com.lhzkml.nowtest.core.data.repository.NewsRepository
-import com.lhzkml.nowtest.core.data.repository.OfflineFirstNewsRepository
-import com.lhzkml.nowtest.core.data.repository.OfflineFirstTopicsRepository
 import com.lhzkml.nowtest.core.data.repository.OfflineFirstUserDataRepository
-import com.lhzkml.nowtest.core.data.repository.TopicsRepository
 import com.lhzkml.nowtest.core.data.repository.UserDataRepository
 import com.lhzkml.nowtest.core.data.util.ConnectivityManagerNetworkMonitor
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
@@ -18,16 +14,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataModule {
-
-    @Binds
-    internal abstract fun bindsTopicRepository(
-        topicsRepository: OfflineFirstTopicsRepository,
-    ): TopicsRepository
-
-    @Binds
-    internal abstract fun bindsNewsResourceRepository(
-        newsRepository: OfflineFirstNewsRepository,
-    ): NewsRepository
 
     @Binds
     internal abstract fun bindsUserDataRepository(

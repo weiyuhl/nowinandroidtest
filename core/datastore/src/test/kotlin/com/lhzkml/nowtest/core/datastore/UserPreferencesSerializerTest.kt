@@ -23,8 +23,7 @@ class UserPreferencesSerializerTest {
     @Test
     fun writingAndReadingUserPreferences_outputsCorrectValue() = runTest {
         val expectedUserPreferences = userPreferences {
-            viewedNewsResourceIds.put("0", true)
-            viewedNewsResourceIds.put("1", true)
+            useDynamicColor = true
         }
 
         val outputStream = ByteArrayOutputStream()

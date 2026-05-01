@@ -6,7 +6,6 @@ import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.util.DebugLogger
 import com.lhzkml.nowtest.core.network.BuildConfig
-import com.lhzkml.nowtest.core.network.demo.DemoAssetManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,12 +26,6 @@ internal object NetworkModule {
     fun providesNetworkJson(): Json = Json {
         ignoreUnknownKeys = true
     }
-
-    @Provides
-    @Singleton
-    fun providesDemoAssetManager(
-        @ApplicationContext context: Context,
-    ): DemoAssetManager = DemoAssetManager(context.assets::open)
 
     @Provides
     @Singleton

@@ -7,23 +7,10 @@ option java_package = "com.lhzkml.nowtest.core.datastore";
 option java_multiple_files = true;
 
 message UserPreferences {
-    reserved 1, 2, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 18;
-    reserved "deprecated_int_followed_topic_ids", "authorChangeListVersion",
-        "deprecated_int_followed_author_ids", "has_done_int_to_string_id_migration",
-        "deprecated_followed_topic_ids", "deprecated_followed_author_ids",
-        "deprecated_bookmarked_news_resource_ids", "has_done_list_to_map_migration",
-        "followed_topic_ids", "followed_author_ids", "bookmarked_news_resource_ids",
-        "should_hide_onboarding";
-
-    int32 topicChangeListVersion = 3;
-    int32 newsResourceChangeListVersion = 6;
-
-    map<string, bool> viewed_news_resource_ids = 20;
-
     ThemeBrandProto theme_brand = 16;
     DarkThemeConfigProto dark_theme_config = 17;
 
     bool use_dynamic_color = 19;
 
-    // NEXT AVAILABLE ID: 21
+    // NEXT AVAILABLE ID: 20
 }

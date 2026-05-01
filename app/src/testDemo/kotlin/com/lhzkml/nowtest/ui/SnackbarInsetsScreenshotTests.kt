@@ -44,12 +44,10 @@ import androidx.core.graphics.Insets
 import androidx.core.view.WindowInsetsCompat
 import androidx.window.core.layout.WindowSizeClass
 import com.github.takahirom.roborazzi.captureRoboImage
-import com.lhzkml.nowtest.core.data.repository.UserNewsResourceRepository
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
 import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
 import com.lhzkml.nowtest.core.testing.util.DefaultRoborazziOptions
-import com.lhzkml.nowtest.feature.bookmarks.impl.navigation.LocalSnackbarHostState
 import com.lhzkml.nowtest.uitesthiltmanifest.HiltComponentActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -96,9 +94,6 @@ class SnackbarInsetsScreenshotTests {
 
     @Inject
     lateinit var timeZoneMonitor: TimeZoneMonitor
-
-    @Inject
-    lateinit var userNewsResourceRepository: UserNewsResourceRepository
 
     @Before
     fun setup() {
@@ -213,7 +208,6 @@ class SnackbarInsetsScreenshotTests {
                             NtTheme {
                                 val appState = rememberNtAppState(
                                     networkMonitor = networkMonitor,
-                                    userNewsResourceRepository = userNewsResourceRepository,
                                     timeZoneMonitor = timeZoneMonitor,
                                 )
                                 NtApp(

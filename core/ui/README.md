@@ -14,14 +14,10 @@ graph TB
   subgraph :core
     direction TB
     :core:analytics[analytics]:::android-library
-    :core:designsystem[designsystem]:::android-library
-    :core:model[model]:::jvm-library
     :core:ui[ui]:::android-library
   end
 
   :core:ui --> :core:analytics
-  :core:ui --> :core:designsystem
-  :core:ui --> :core:model
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;

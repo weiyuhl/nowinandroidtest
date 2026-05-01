@@ -22,10 +22,6 @@ graph TB
       direction TB
       :feature:interests:api[api]:::android-library
     end
-    subgraph :feature:topic
-      direction TB
-      :feature:topic:api[api]:::android-library
-    end
   end
   subgraph :core
     direction TB
@@ -61,8 +57,6 @@ graph TB
   :core:notifications -.-> :core:common
   :core:notifications --> :core:model
   :core:ui --> :core:analytics
-  :core:ui --> :core:designsystem
-  :core:ui --> :core:model
   :feature:interests:api --> :core:navigation
   :feature:search:api -.-> :core:domain
   :feature:search:api --> :core:navigation
@@ -71,10 +65,6 @@ graph TB
   :feature:search:impl -.-> :core:ui
   :feature:search:impl -.-> :feature:interests:api
   :feature:search:impl -.-> :feature:search:api
-  :feature:search:impl -.-> :feature:topic:api
-  :feature:topic:api -.-> :core:designsystem
-  :feature:topic:api --> :core:navigation
-  :feature:topic:api -.-> :core:ui
 
 classDef android-application fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000;
 classDef android-feature fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000;

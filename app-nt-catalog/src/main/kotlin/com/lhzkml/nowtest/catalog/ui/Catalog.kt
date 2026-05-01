@@ -31,7 +31,6 @@ import com.lhzkml.nowtest.core.designsystem.component.NtOutlinedButton
 import com.lhzkml.nowtest.core.designsystem.component.NtTab
 import com.lhzkml.nowtest.core.designsystem.component.NtTabRow
 import com.lhzkml.nowtest.core.designsystem.component.NtTextButton
-import com.lhzkml.nowtest.core.designsystem.component.NtTopicTag
 import com.lhzkml.nowtest.core.designsystem.component.NtViewToggleButton
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
@@ -276,27 +275,6 @@ fun NtCatalog() {
                             onExpandedChange = {},
                             compactText = { Text(text = "Disabled") },
                             expandedText = { Text(text = "Disabled") },
-                            enabled = false,
-                        )
-                    }
-                }
-                item { Text("Tags", Modifier.padding(top = 16.dp)) }
-                item {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        NtTopicTag(
-                            followed = true,
-                            onClick = {},
-                            text = { Text(text = "Topic 1".uppercase()) },
-                        )
-                        NtTopicTag(
-                            followed = false,
-                            onClick = {},
-                            text = { Text(text = "Topic 2".uppercase()) },
-                        )
-                        NtTopicTag(
-                            followed = false,
-                            onClick = {},
-                            text = { Text(text = "Disabled".uppercase()) },
                             enabled = false,
                         )
                     }

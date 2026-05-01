@@ -2,14 +2,4 @@
 
 <resources>
     <string name="core_ui_back">Back</string>
-
-    <string name="core_ui_unread_resource_dot_content_description">Unread</string>
-
-    <string name="core_ui_card_tap_action">Open Resource Link</string>
-    <string name="core_ui_card_meta_data_text">%1$s • %2$s</string>
-
-    <string name="core_ui_topic_chip_content_description">Topic: %1$s</string>
-
-    <string name="core_ui_feed_sharing">Feed sharing</string>
-    <string name="core_ui_feed_sharing_data">%1$s: %2$s</string>
 </resources>

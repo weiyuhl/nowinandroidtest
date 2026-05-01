@@ -59,8 +59,6 @@ dependencies {
     implementation(projects.feature.foryou.impl)
     implementation(projects.feature.bookmarks.api)
     implementation(projects.feature.bookmarks.impl)
-    implementation(projects.feature.topic.api)
-    implementation(projects.feature.topic.impl)
     implementation(projects.feature.search.api)
     implementation(projects.feature.search.impl)
     implementation(projects.feature.settings.impl)

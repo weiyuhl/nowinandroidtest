@@ -20,7 +20,7 @@
 单 Activity 响应式应用，遵循 [Android 官方架构指南](https://developer.android.com/topic/architecture)，采用单向数据流（UDF）模式：
 
 - **UI 层：** Jetpack Compose + Material 3。ViewModel 通过 Kotlin `Flow` 暴露状态。界面以 `StateFlow` 形式观察状态，并将事件传回 ViewModel。
-- **领域层：** 用例（如 `GetUserNewsResourcesUseCase`），负责组合来自多个仓库的数据流。
+- **领域层：** 用例（如 `GetTopicsUseCase`），负责组合或整理来自仓库的数据流。
 - **数据层：** 仓库模式。`OfflineFirst*Repository` 实现类协调本地数据源（Room、DataStore）和远程数据源（Retrofit）之间的数据同步。
 
 核心库：Hilt（依赖注入）、Jetpack Navigation 2（类型安全的 Compose 导航）、WorkManager（后台同步）、Room、Proto DataStore、Retrofit/OkHttp。

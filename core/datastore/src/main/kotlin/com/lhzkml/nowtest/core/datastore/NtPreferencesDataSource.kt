@@ -1,13 +1,10 @@
 package com.lhzkml.nowtest.core.datastore
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig
 import com.lhzkml.nowtest.core.model.data.ThemeBrand
 import com.lhzkml.nowtest.core.model.data.UserData
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import java.io.IOException
 import javax.inject.Inject
 
 class NtPreferencesDataSource @Inject constructor(
@@ -16,7 +13,6 @@ class NtPreferencesDataSource @Inject constructor(
     val userData = userPreferences.data
         .map {
             UserData(
-                viewedNewsResources = it.viewedNewsResourceIdsMap.keys,
                 themeBrand = when (it.themeBrand) {
                     null,
                     ThemeBrandProto.THEME_BRAND_UNSPECIFIED,
@@ -67,56 +63,6 @@ class NtPreferencesDataSource @Inject constructor(
                     DarkThemeConfig.DARK -> DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
                 }
             }
-        }
-    }
-
-    suspend fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
-        setNewsResourcesViewed(listOf(newsResourceId), viewed)
-    }
-
-    suspend fun setNewsResourcesViewed(newsResourceIds: List<String>, viewed: Boolean) {
-        userPreferences.updateData { prefs ->
-            prefs.copy {
-                newsResourceIds.forEach { id ->
-                    if (viewed) {
-                        viewedNewsResourceIds.put(id, true)
-                    } else {
-                        viewedNewsResourceIds.remove(id)
-                    }
-                }
-            }
-        }
-    }
-
-    suspend fun getChangeListVersions() = userPreferences.data
-        .map {
-            ChangeListVersions(
-                topicVersion = it.topicChangeListVersion,
-                newsResourceVersion = it.newsResourceChangeListVersion,
-            )
-        }
-        .firstOrNull() ?: ChangeListVersions()
-
-    /**
-     * Update the [ChangeListVersions] using [update].
-     */
-    suspend fun updateChangeListVersion(update: ChangeListVersions.() -> ChangeListVersions) {
-        try {
-            userPreferences.updateData { currentPreferences ->
-                val updatedChangeListVersions = update(
-                    ChangeListVersions(
-                        topicVersion = currentPreferences.topicChangeListVersion,
-                        newsResourceVersion = currentPreferences.newsResourceChangeListVersion,
-                    ),
-                )
-
-                currentPreferences.copy {
-                    topicChangeListVersion = updatedChangeListVersions.topicVersion
-                    newsResourceChangeListVersion = updatedChangeListVersions.newsResourceVersion
-                }
-            }
-        } catch (ioException: IOException) {
-            Log.e("NtPreferences", "Failed to update user preferences", ioException)
         }
     }
 }

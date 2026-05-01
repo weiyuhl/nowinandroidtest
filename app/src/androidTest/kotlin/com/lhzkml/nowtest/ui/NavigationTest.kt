@@ -1,33 +1,24 @@
 package com.lhzkml.nowtest.ui
 
-import androidx.compose.ui.semantics.SemanticsActions.ScrollBy
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollToNode
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoActivityResumedException
 import com.lhzkml.nowtest.MainActivity
 import com.lhzkml.nowtest.R
-import com.lhzkml.nowtest.core.data.repository.NewsRepository
-import com.lhzkml.nowtest.core.rules.GrantPostNotificationsPermissionRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
+import com.lhzkml.nowtest.core.ui.R as CoreUiR
 import com.lhzkml.nowtest.feature.bookmarks.api.R as BookmarksR
 import com.lhzkml.nowtest.feature.foryou.api.R as FeatureForyouR
 import com.lhzkml.nowtest.feature.interests.api.R as FeatureInterestsR
@@ -46,22 +37,13 @@ class NavigationTest {
     val hiltRule = HiltAndroidRule(this)
 
     /**
-     * Grant [android.Manifest.permission.POST_NOTIFICATIONS] permission.
-     */
-    @get:Rule(order = 1)
-    val postNotificationsPermission = GrantPostNotificationsPermissionRule()
-
-    /**
      * Use the primary activity to initialize the app normally.
      */
-    @get:Rule(order = 2)
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @Inject
-    lateinit var newsRepository: NewsRepository
-
     // The strings used for matching in these tests
-    private val navigateUp by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_api_navigate_up)
+    private val navigateUp by composeTestRule.stringResource(CoreUiR.string.core_ui_back)
     private val forYou by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_api_title)
     private val interests by composeTestRule.stringResource(FeatureInterestsR.string.feature_interests_api_title)
     private val appName by composeTestRule.stringResource(R.string.app_name)
@@ -80,14 +62,6 @@ class NavigationTest {
             onNodeWithText(forYou).assertIsSelected()
         }
     }
-
-//    @Test
-//    fun navigationBar_reselectTab_resetsToStartDestination() {
-//        // GIVEN the user is on the Topics destination and scrolls
-//        // and navigates to the Topic Detail destination
-//        // WHEN the user taps the Topics navigation bar item
-//        // THEN the Topics destination shows in the same scrolled state
-//    }
 
     /*
      * Top level destinations should never show an up affordance.
@@ -190,46 +164,6 @@ class NavigationTest {
             Espresso.pressBack()
             // THEN the app shows the For You destination
             onNodeWithText(forYou).assertExists()
-        }
-    }
-
-    @Test
-    fun navigatingToTopicFromForYou_showsTopicDetails() {
-        composeTestRule.apply {
-            // Get the first news resource
-            val newsResource = runBlocking {
-                newsRepository.getNewsResources().first().first()
-            }
-
-            // Get its first topic and follow it
-            val topic = newsResource.topics.first()
-            onNodeWithText(topic.name).performClick()
-
-            // Get the news feed and scroll to the news resource
-            // Note: Possible flakiness. If the content of the news resource is long then the topic
-            // tag might not be visible meaning it cannot be clicked
-            onNodeWithTag("forYou:feed")
-                .performScrollToNode(hasTestTag("newsResourceCard:${newsResource.id}"))
-                .fetchSemanticsNode()
-                .apply {
-                    val newsResourceCardNode = onNodeWithTag("newsResourceCard:${newsResource.id}")
-                        .fetchSemanticsNode()
-                    config[ScrollBy].action?.invoke(
-                        0f,
-                        // to ensure the bottom of the card is visible,
-                        // manually scroll the difference between the height of
-                        // the scrolling node and the height of the card
-                        (newsResourceCardNode.size.height - size.height).coerceAtLeast(0).toFloat(),
-                    )
-                }
-
-            // Click the first topic tag
-            onAllNodesWithTag("topicTag:${topic.id}", useUnmergedTree = true)
-                .onFirst()
-                .performClick()
-
-            // Verify that we're on the correct topic details screen
-            onNodeWithTag("topic:${topic.id}").assertExists()
         }
     }
 }

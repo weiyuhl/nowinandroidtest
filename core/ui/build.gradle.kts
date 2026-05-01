@@ -11,12 +11,9 @@ android {
 dependencies {
     api(libs.androidx.metrics)
     api(projects.core.analytics)
-    api(projects.core.designsystem)
-    api(projects.core.model)
 
-    implementation(libs.androidx.browser)
-    implementation(libs.coil.kt)
-    implementation(libs.coil.kt.compose)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.kotlinx.datetime)
 
     androidTestImplementation(libs.bundles.androidx.compose.ui.test)
     androidTestImplementation(projects.core.testing)

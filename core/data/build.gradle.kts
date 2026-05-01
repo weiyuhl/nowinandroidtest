@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.nowtest.android.library)
     alias(libs.plugins.nowtest.android.library.jacoco)
     alias(libs.plugins.nowtest.hilt)
-    id("kotlinx-serialization")
 }
 
 android {
@@ -17,10 +16,8 @@ dependencies {
     api(projects.core.network)
 
     implementation(projects.core.analytics)
-    implementation(projects.core.notifications)
 
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.kotlinx.serialization.json)
     testImplementation(projects.core.datastoreTest)
     testImplementation(projects.core.testing)
 }
