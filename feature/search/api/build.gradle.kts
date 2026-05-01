@@ -5,7 +5,3 @@ plugins {
 android {
     namespace = "com.lhzkml.nowtest.feature.search.api"
 }
-
-dependencies {
-    implementation(projects.core.domain)
-}

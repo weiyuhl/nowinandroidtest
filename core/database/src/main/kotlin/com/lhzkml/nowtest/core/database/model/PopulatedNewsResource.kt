@@ -33,9 +33,3 @@ fun PopulatedNewsResource.asExternalModel() = NewsResource(
     type = entity.type,
     topics = topics.map(TopicEntity::asExternalModel),
 )
-
-fun PopulatedNewsResource.asFtsEntity() = NewsResourceFtsEntity(
-    newsResourceId = entity.id,
-    title = entity.title,
-    content = entity.content,
-)

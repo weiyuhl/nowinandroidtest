@@ -4,9 +4,5 @@
     <string name="feature_search_api_title">Search</string>
     <string name="feature_search_api_clear_search_text_content_desc">Clear search text</string>
     <string name="feature_search_api_result_not_found">Sorry, there is no content found for your search \"%1$s\"</string>
-    <string name="feature_search_api_not_ready">Sorry, we are still processing the search index. Please come back later</string>
-    <string name="feature_search_api_topics">Topics</string>
-    <string name="feature_search_api_updates">Updates</string>
-    <string name="feature_search_api_recent_searches">Recent searches</string>
-    <string name="feature_search_api_clear_recent_searches_content_desc">Clear searches</string>
+    <string name="feature_search_api_test_content">Test content</string>
 </resources>

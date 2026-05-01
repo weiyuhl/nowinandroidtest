@@ -1,13 +1,9 @@
 package com.lhzkml.nowtest.core.data.di
 
-import com.lhzkml.nowtest.core.data.repository.DefaultRecentSearchRepository
-import com.lhzkml.nowtest.core.data.repository.DefaultSearchContentsRepository
 import com.lhzkml.nowtest.core.data.repository.NewsRepository
 import com.lhzkml.nowtest.core.data.repository.OfflineFirstNewsRepository
 import com.lhzkml.nowtest.core.data.repository.OfflineFirstTopicsRepository
 import com.lhzkml.nowtest.core.data.repository.OfflineFirstUserDataRepository
-import com.lhzkml.nowtest.core.data.repository.RecentSearchRepository
-import com.lhzkml.nowtest.core.data.repository.SearchContentsRepository
 import com.lhzkml.nowtest.core.data.repository.TopicsRepository
 import com.lhzkml.nowtest.core.data.repository.UserDataRepository
 import com.lhzkml.nowtest.core.data.util.ConnectivityManagerNetworkMonitor
@@ -37,16 +33,6 @@ abstract class DataModule {
     internal abstract fun bindsUserDataRepository(
         userDataRepository: OfflineFirstUserDataRepository,
     ): UserDataRepository
-
-    @Binds
-    internal abstract fun bindsRecentSearchRepository(
-        recentSearchRepository: DefaultRecentSearchRepository,
-    ): RecentSearchRepository
-
-    @Binds
-    internal abstract fun bindsSearchContentsRepository(
-        searchContentsRepository: DefaultSearchContentsRepository,
-    ): SearchContentsRepository
 
     @Binds
     internal abstract fun bindsNetworkMonitor(

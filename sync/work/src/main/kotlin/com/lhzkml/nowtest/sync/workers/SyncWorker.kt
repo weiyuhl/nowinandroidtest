@@ -13,7 +13,6 @@ import com.lhzkml.nowtest.core.common.network.Dispatcher
 import com.lhzkml.nowtest.core.common.network.NtDispatchers.IO
 import com.lhzkml.nowtest.core.data.Synchronizer
 import com.lhzkml.nowtest.core.data.repository.NewsRepository
-import com.lhzkml.nowtest.core.data.repository.SearchContentsRepository
 import com.lhzkml.nowtest.core.data.repository.TopicsRepository
 import com.lhzkml.nowtest.core.datastore.ChangeListVersions
 import com.lhzkml.nowtest.core.datastore.NtPreferencesDataSource
@@ -38,7 +37,6 @@ internal class SyncWorker @AssistedInject constructor(
     private val ntPreferences: NtPreferencesDataSource,
     private val topicRepository: TopicsRepository,
     private val newsRepository: NewsRepository,
-    private val searchContentsRepository: SearchContentsRepository,
     @param:Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
     private val analyticsHelper: AnalyticsHelper,
     private val syncSubscriber: SyncSubscriber,
@@ -62,7 +60,6 @@ internal class SyncWorker @AssistedInject constructor(
             analyticsHelper.logSyncFinished(syncedSuccessfully)
 
             if (syncedSuccessfully) {
-                searchContentsRepository.populateFtsData()
                 Result.success()
             } else {
                 Result.retry()

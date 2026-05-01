@@ -44,4 +44,17 @@ internal object DatabaseMigrations {
         ),
     )
     class Schema11to12 : AutoMigrationSpec
+
+    @DeleteTable.Entries(
+        DeleteTable(
+            tableName = "newsResourcesFts",
+        ),
+        DeleteTable(
+            tableName = "topicsFts",
+        ),
+        DeleteTable(
+            tableName = "recentSearchQueries",
+        ),
+    )
+    class Schema14to15 : AutoMigrationSpec
 }

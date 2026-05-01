@@ -2,13 +2,9 @@ package com.lhzkml.nowtest.core.data.test
 
 import com.lhzkml.nowtest.core.data.di.DataModule
 import com.lhzkml.nowtest.core.data.repository.NewsRepository
-import com.lhzkml.nowtest.core.data.repository.RecentSearchRepository
-import com.lhzkml.nowtest.core.data.repository.SearchContentsRepository
 import com.lhzkml.nowtest.core.data.repository.TopicsRepository
 import com.lhzkml.nowtest.core.data.repository.UserDataRepository
 import com.lhzkml.nowtest.core.data.test.repository.FakeNewsRepository
-import com.lhzkml.nowtest.core.data.test.repository.FakeRecentSearchRepository
-import com.lhzkml.nowtest.core.data.test.repository.FakeSearchContentsRepository
 import com.lhzkml.nowtest.core.data.test.repository.FakeTopicsRepository
 import com.lhzkml.nowtest.core.data.test.repository.FakeUserDataRepository
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
@@ -38,16 +34,6 @@ internal interface TestDataModule {
     fun bindsUserDataRepository(
         userDataRepository: FakeUserDataRepository,
     ): UserDataRepository
-
-    @Binds
-    fun bindsRecentSearchRepository(
-        recentSearchRepository: FakeRecentSearchRepository,
-    ): RecentSearchRepository
-
-    @Binds
-    fun bindsSearchContentsRepository(
-        searchContentsRepository: FakeSearchContentsRepository,
-    ): SearchContentsRepository
 
     @Binds
     fun bindsNetworkMonitor(

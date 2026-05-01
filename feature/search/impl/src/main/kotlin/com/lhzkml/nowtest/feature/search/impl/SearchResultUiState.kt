@@ -1,8 +1,5 @@
 package com.lhzkml.nowtest.feature.search.impl
 
-import com.lhzkml.nowtest.core.model.data.Topic
-import com.lhzkml.nowtest.core.model.data.UserNewsResource
-
 sealed interface SearchResultUiState {
     data object Loading : SearchResultUiState
 
@@ -13,18 +10,9 @@ sealed interface SearchResultUiState {
      */
     data object EmptyQuery : SearchResultUiState
 
-    data object LoadFailed : SearchResultUiState
-
     data class Success(
-        val topics: List<Topic> = emptyList(),
-        val newsResources: List<UserNewsResource> = emptyList(),
+        val results: List<SearchTestContent> = emptyList(),
     ) : SearchResultUiState {
-        fun isEmpty(): Boolean = topics.isEmpty() && newsResources.isEmpty()
+        fun isEmpty(): Boolean = results.isEmpty()
     }
-
-    /**
-     * A state where the search contents are not ready. This happens when the *Fts tables are not
-     * populated yet.
-     */
-    data object SearchNotReady : SearchResultUiState
 }
