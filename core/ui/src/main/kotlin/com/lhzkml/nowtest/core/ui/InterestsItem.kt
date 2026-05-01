@@ -13,24 +13,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lhzkml.nowtest.core.designsystem.component.DynamicAsyncImage
-import com.lhzkml.nowtest.core.designsystem.component.NtIconToggleButton
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
-import com.lhzkml.nowtest.core.ui.R.string
 
 @Composable
 fun InterestsItem(
     name: String,
-    following: Boolean,
     topicImageUrl: String,
     onClick: () -> Unit,
-    onFollowButtonClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
     description: String = "",
@@ -45,28 +40,6 @@ fun InterestsItem(
         },
         supportingContent = {
             Text(text = description)
-        },
-        trailingContent = {
-            NtIconToggleButton(
-                checked = following,
-                onCheckedChange = onFollowButtonClick,
-                icon = {
-                    Icon(
-                        imageVector = NtIcons.Add,
-                        contentDescription = stringResource(
-                            id = string.core_ui_interests_card_follow_button_content_desc,
-                        ),
-                    )
-                },
-                checkedIcon = {
-                    Icon(
-                        imageVector = NtIcons.Check,
-                        contentDescription = stringResource(
-                            id = string.core_ui_interests_card_unfollow_button_content_desc,
-                        ),
-                    )
-                },
-            )
         },
         colors = ListItemDefaults.colors(
             containerColor = if (isSelected) {
@@ -111,10 +84,8 @@ private fun InterestsCardPreview() {
             InterestsItem(
                 name = "Compose",
                 description = "Description",
-                following = false,
                 topicImageUrl = "",
                 onClick = { },
-                onFollowButtonClick = { },
             )
         }
     }
@@ -128,10 +99,8 @@ private fun InterestsCardLongNamePreview() {
             InterestsItem(
                 name = "This is a very very very very long name",
                 description = "Description",
-                following = true,
                 topicImageUrl = "",
                 onClick = { },
-                onFollowButtonClick = { },
             )
         }
     }
@@ -146,10 +115,8 @@ private fun InterestsCardLongDescriptionPreview() {
                 name = "Compose",
                 description = "This is a very very very very very very very " +
                     "very very very long description",
-                following = false,
                 topicImageUrl = "",
                 onClick = { },
-                onFollowButtonClick = { },
             )
         }
     }
@@ -163,10 +130,8 @@ private fun InterestsCardWithEmptyDescriptionPreview() {
             InterestsItem(
                 name = "Compose",
                 description = "",
-                following = true,
                 topicImageUrl = "",
                 onClick = { },
-                onFollowButtonClick = { },
             )
         }
     }
@@ -180,10 +145,8 @@ private fun InterestsCardSelectedPreview() {
             InterestsItem(
                 name = "Compose",
                 description = "",
-                following = true,
                 topicImageUrl = "",
                 onClick = { },
-                onFollowButtonClick = { },
                 isSelected = true,
             )
         }

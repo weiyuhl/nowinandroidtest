@@ -45,7 +45,7 @@ import com.lhzkml.nowtest.core.designsystem.component.scrollbar.rememberDraggabl
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.scrollbarState
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
+import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 import com.lhzkml.nowtest.core.ui.DevicePreviews
 import com.lhzkml.nowtest.core.ui.TrackScreenViewEvent
@@ -73,7 +73,6 @@ fun TopicScreen(
         modifier = modifier.testTag("topic:${viewModel.topicId}"),
         showBackButton = showBackButton,
         onBackClick = onBackClick,
-        onFollowClick = viewModel::followTopicToggle,
         onBookmarkChanged = viewModel::bookmarkNews,
         onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
         onTopicClick = onTopicClick,
@@ -87,7 +86,6 @@ internal fun TopicScreen(
     newsUiState: NewsUiState,
     showBackButton: Boolean,
     onBackClick: () -> Unit,
-    onFollowClick: (Boolean) -> Unit,
     onTopicClick: (String) -> Unit,
     onBookmarkChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
@@ -119,15 +117,14 @@ internal fun TopicScreen(
                         TopicToolbar(
                             showBackButton = showBackButton,
                             onBackClick = onBackClick,
-                            onFollowClick = onFollowClick,
-                            uiState = topicUiState.followableTopic,
+                            topic = topicUiState.topic,
                         )
                     }
                     topicBody(
-                        name = topicUiState.followableTopic.topic.name,
-                        description = topicUiState.followableTopic.topic.longDescription,
+                        name = topicUiState.topic.name,
+                        description = topicUiState.topic.longDescription,
                         news = newsUiState,
-                        imageUrl = topicUiState.followableTopic.topic.imageUrl,
+                        imageUrl = topicUiState.topic.imageUrl,
                         onBookmarkChanged = onBookmarkChanged,
                         onNewsResourceViewed = onNewsResourceViewed,
                         onTopicClick = onTopicClick,
@@ -259,11 +256,10 @@ private fun TopicBodyPreview() {
 
 @Composable
 private fun TopicToolbar(
-    uiState: FollowableTopic,
+    topic: Topic,
     modifier: Modifier = Modifier,
     showBackButton: Boolean = true,
     onBackClick: () -> Unit = {},
-    onFollowClick: (Boolean) -> Unit = {},
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -282,20 +278,7 @@ private fun TopicToolbar(
                 )
             }
         } else {
-            // Keeps the NtFilterChip aligned to the end of the Row.
             Spacer(modifier = Modifier.width(1.dp))
-        }
-        val selected = uiState.isFollowed
-        NtFilterChip(
-            selected = selected,
-            onSelectedChange = onFollowClick,
-            modifier = Modifier.padding(end = 24.dp),
-        ) {
-            if (selected) {
-                Text("FOLLOWING")
-            } else {
-                Text("NOT FOLLOWING")
-            }
         }
     }
 }
@@ -309,11 +292,10 @@ fun TopicScreenPopulated(
     NtTheme {
         NtBackground {
             TopicScreen(
-                topicUiState = TopicUiState.Success(userNewsResources[0].followableTopics[0]),
+                topicUiState = TopicUiState.Success(userNewsResources[0].topics[0]),
                 newsUiState = NewsUiState.Success(userNewsResources),
                 showBackButton = true,
                 onBackClick = {},
-                onFollowClick = {},
                 onBookmarkChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},
@@ -332,7 +314,6 @@ fun TopicScreenLoading() {
                 newsUiState = NewsUiState.Loading,
                 showBackButton = true,
                 onBackClick = {},
-                onFollowClick = {},
                 onBookmarkChanged = { _, _ -> },
                 onNewsResourceViewed = {},
                 onTopicClick = {},

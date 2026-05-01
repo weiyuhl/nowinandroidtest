@@ -1,10 +1,9 @@
 package com.lhzkml.nowtest.core.model.data
 
 /**
- * An entity of [SearchResult] with additional user information such as whether the user is
- * following a topic.
+ * An entity of [SearchResult] with additional user information.
  */
 data class UserSearchResult(
-    val topics: List<FollowableTopic> = emptyList(),
+    val topics: List<Topic> = emptyList(),
     val newsResources: List<UserNewsResource> = emptyList(),
 )

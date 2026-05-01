@@ -1,6 +1,6 @@
 package com.lhzkml.nowtest.feature.search.impl
 
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
+import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 
 sealed interface SearchResultUiState {
@@ -16,7 +16,7 @@ sealed interface SearchResultUiState {
     data object LoadFailed : SearchResultUiState
 
     data class Success(
-        val topics: List<FollowableTopic> = emptyList(),
+        val topics: List<Topic> = emptyList(),
         val newsResources: List<UserNewsResource> = emptyList(),
     ) : SearchResultUiState {
         fun isEmpty(): Boolean = topics.isEmpty() && newsResources.isEmpty()

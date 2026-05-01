@@ -105,12 +105,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun followTopic(followedTopicId: String, followed: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setTopicIdFollowed(followedTopicId, followed)
-        }
-    }
-
     fun setNewsResourceViewed(newsResourceId: String, viewed: Boolean) {
         viewModelScope.launch {
             userDataRepository.setNewsResourceViewed(newsResourceId, viewed)

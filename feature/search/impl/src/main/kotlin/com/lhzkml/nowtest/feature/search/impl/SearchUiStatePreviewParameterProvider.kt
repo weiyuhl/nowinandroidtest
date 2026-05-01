@@ -3,7 +3,6 @@
 package com.lhzkml.nowtest.feature.search.impl
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
 import com.lhzkml.nowtest.core.ui.PreviewParameterData.newsResources
 import com.lhzkml.nowtest.core.ui.PreviewParameterData.topics
 
@@ -14,9 +13,7 @@ import com.lhzkml.nowtest.core.ui.PreviewParameterData.topics
 class SearchUiStatePreviewParameterProvider : PreviewParameterProvider<SearchResultUiState> {
     override val values: Sequence<SearchResultUiState> = sequenceOf(
         SearchResultUiState.Success(
-            topics = topics.mapIndexed { i, topic ->
-                FollowableTopic(topic = topic, isFollowed = i % 2 == 0)
-            },
+            topics = topics,
             newsResources = newsResources,
         ),
     )

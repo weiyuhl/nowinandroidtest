@@ -55,8 +55,8 @@ import com.lhzkml.nowtest.core.designsystem.component.NtIconToggleButton
 import com.lhzkml.nowtest.core.designsystem.component.NtTopicTag
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
 import com.lhzkml.nowtest.core.model.data.NewsResource
+import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toJavaInstant
@@ -150,7 +150,7 @@ fun NewsResourceCardExpanded(
                     NewsResourceShortDescription(userNewsResource.content)
                     Spacer(modifier = Modifier.height(12.dp))
                     NewsResourceTopics(
-                        topics = userNewsResource.followableTopics,
+                        topics = userNewsResource.topics,
                         onTopicClick = onTopicClick,
                     )
                 }
@@ -289,7 +289,7 @@ fun NewsResourceShortDescription(
 
 @Composable
 fun NewsResourceTopics(
-    topics: List<FollowableTopic>,
+    topics: List<Topic>,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -298,29 +298,22 @@ fun NewsResourceTopics(
         modifier = modifier.horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        for (followableTopic in topics) {
+        for (topic in topics) {
+            val contentDescription = stringResource(
+                R.string.core_ui_topic_chip_content_description_when_not_followed,
+                topic.name,
+            )
             NtTopicTag(
-                followed = followableTopic.isFollowed,
-                onClick = { onTopicClick(followableTopic.topic.id) },
+                followed = false,
+                onClick = { onTopicClick(topic.id) },
                 text = {
-                    val contentDescription = if (followableTopic.isFollowed) {
-                        stringResource(
-                            R.string.core_ui_topic_chip_content_description_when_followed,
-                            followableTopic.topic.name,
-                        )
-                    } else {
-                        stringResource(
-                            R.string.core_ui_topic_chip_content_description_when_not_followed,
-                            followableTopic.topic.name,
-                        )
-                    }
                     Text(
-                        text = followableTopic.topic.name.uppercase(Locale.getDefault()),
+                        text = topic.name.uppercase(Locale.getDefault()),
                         modifier = Modifier
                             .semantics {
                                 this.contentDescription = contentDescription
                             }
-                            .testTag("topicTag:${followableTopic.topic.id}"),
+                            .testTag("topicTag:${topic.id}"),
                     )
                 },
             )

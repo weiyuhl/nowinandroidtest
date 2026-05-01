@@ -8,7 +8,6 @@ import com.lhzkml.nowtest.core.data.repository.NewsResourceQuery
 import com.lhzkml.nowtest.core.data.repository.TopicsRepository
 import com.lhzkml.nowtest.core.data.repository.UserDataRepository
 import com.lhzkml.nowtest.core.data.repository.UserNewsResourceRepository
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
 import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 import dagger.assisted.Assisted
@@ -32,7 +31,6 @@ class TopicViewModel @AssistedInject constructor(
 ) : ViewModel() {
     val topicUiState: StateFlow<TopicUiState> = topicUiState(
         topicId = topicId,
-        userDataRepository = userDataRepository,
         topicsRepository = topicsRepository,
     )
         .stateIn(
@@ -51,12 +49,6 @@ class TopicViewModel @AssistedInject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = NewsUiState.Loading,
         )
-
-    fun followTopicToggle(followed: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setTopicIdFollowed(topicId, followed)
-        }
-    }
 
     fun bookmarkNews(newsResourceId: String, bookmarked: Boolean) {
         viewModelScope.launch {
@@ -80,37 +72,13 @@ class TopicViewModel @AssistedInject constructor(
 
 private fun topicUiState(
     topicId: String,
-    userDataRepository: UserDataRepository,
     topicsRepository: TopicsRepository,
 ): Flow<TopicUiState> {
-    // Observe the followed topics, as they could change over time.
-    val followedTopicIds: Flow<Set<String>> =
-        userDataRepository.userData
-            .map { it.followedTopics }
-
-    // Observe topic information
-    val topicStream: Flow<Topic> = topicsRepository.getTopic(
-        id = topicId,
-    )
-
-    return combine(
-        followedTopicIds,
-        topicStream,
-        ::Pair,
-    )
+    return topicsRepository.getTopic(id = topicId)
         .asResult()
-        .map { followedTopicToTopicResult ->
-            when (followedTopicToTopicResult) {
-                is Result.Success -> {
-                    val (followedTopics, topic) = followedTopicToTopicResult.data
-                    TopicUiState.Success(
-                        followableTopic = FollowableTopic(
-                            topic = topic,
-                            isFollowed = topicId in followedTopics,
-                        ),
-                    )
-                }
-
+        .map { result ->
+            when (result) {
+                is Result.Success -> TopicUiState.Success(topic = result.data)
                 is Result.Loading -> TopicUiState.Loading
                 is Result.Error -> TopicUiState.Error
             }
@@ -122,12 +90,10 @@ private fun newsUiState(
     userNewsResourceRepository: UserNewsResourceRepository,
     userDataRepository: UserDataRepository,
 ): Flow<NewsUiState> {
-    // Observe news
     val newsStream: Flow<List<UserNewsResource>> = userNewsResourceRepository.observeAll(
         NewsResourceQuery(filterTopicIds = setOf(element = topicId)),
     )
 
-    // Observe bookmarks
     val bookmark: Flow<Set<String>> = userDataRepository.userData
         .map { it.bookmarkedNewsResources }
 
@@ -143,7 +109,7 @@ private fun newsUiState(
 }
 
 sealed interface TopicUiState {
-    data class Success(val followableTopic: FollowableTopic) : TopicUiState
+    data class Success(val topic: Topic) : TopicUiState
     data object Error : TopicUiState
     data object Loading : TopicUiState
 }

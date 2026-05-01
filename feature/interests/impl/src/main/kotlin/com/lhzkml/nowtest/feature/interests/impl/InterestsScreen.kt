@@ -12,9 +12,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lhzkml.nowtest.core.designsystem.component.NtBackground
 import com.lhzkml.nowtest.core.designsystem.component.NtLoadingWheel
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
+import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.ui.DevicePreviews
-import com.lhzkml.nowtest.core.ui.FollowableTopicPreviewParameterProvider
+import com.lhzkml.nowtest.core.ui.TopicPreviewParameterProvider
 import com.lhzkml.nowtest.core.ui.TrackScreenViewEvent
 import com.lhzkml.nowtest.feature.interests.api.R
 
@@ -29,9 +29,7 @@ fun InterestsScreen(
 
     InterestsScreen(
         uiState = uiState,
-        followTopic = viewModel::followTopic,
         onTopicClick = {
-            // TODO: this violates SSOT, events should go through the ViewModel
             viewModel.onTopicClick(it)
             onTopicClick(it)
         },
@@ -43,7 +41,6 @@ fun InterestsScreen(
 @Composable
 internal fun InterestsScreen(
     uiState: InterestsUiState,
-    followTopic: (String, Boolean) -> Unit,
     onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     shouldHighlightSelectedTopic: Boolean = false,
@@ -62,7 +59,6 @@ internal fun InterestsScreen(
                 TopicsTabContent(
                     topics = uiState.topics,
                     onTopicClick = onTopicClick,
-                    onFollowButtonClick = followTopic,
                     selectedTopicId = uiState.selectedTopicId,
                     shouldHighlightSelectedTopic = shouldHighlightSelectedTopic,
                 )
@@ -81,17 +77,16 @@ private fun InterestsEmptyScreen() {
 @DevicePreviews
 @Composable
 fun InterestsScreenPopulated(
-    @PreviewParameter(FollowableTopicPreviewParameterProvider::class)
-    followableTopics: List<FollowableTopic>,
+    @PreviewParameter(TopicPreviewParameterProvider::class)
+    topics: List<Topic>,
 ) {
     NtTheme {
         NtBackground {
             InterestsScreen(
                 uiState = InterestsUiState.Interests(
                     selectedTopicId = null,
-                    topics = followableTopics,
+                    topics = topics,
                 ),
-                followTopic = { _, _ -> },
                 onTopicClick = {},
             )
         }
@@ -105,7 +100,6 @@ fun InterestsScreenLoading() {
         NtBackground {
             InterestsScreen(
                 uiState = InterestsUiState.Loading,
-                followTopic = { _, _ -> },
                 onTopicClick = {},
             )
         }
@@ -119,7 +113,6 @@ fun InterestsScreenEmpty() {
         NtBackground {
             InterestsScreen(
                 uiState = InterestsUiState.Empty,
-                followTopic = { _, _ -> },
                 onTopicClick = {},
             )
         }

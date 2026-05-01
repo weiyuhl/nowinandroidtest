@@ -69,7 +69,6 @@ import com.lhzkml.nowtest.core.designsystem.component.scrollbar.rememberDraggabl
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.scrollbarState
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 import com.lhzkml.nowtest.core.ui.DevicePreviews
 import com.lhzkml.nowtest.core.ui.InterestsItem
@@ -100,7 +99,6 @@ internal fun SearchScreen(
         onClearRecentSearches = searchViewModel::clearRecentSearches,
         onNewsResourcesCheckedChanged = searchViewModel::setNewsResourceBookmarked,
         onNewsResourceViewed = { searchViewModel.setNewsResourceViewed(it, true) },
-        onFollowButtonClick = searchViewModel::followTopic,
         onBackClick = onBackClick,
         onInterestsClick = onInterestsClick,
         onTopicClick = onTopicClick,
@@ -118,7 +116,6 @@ internal fun SearchScreen(
     onClearRecentSearches: () -> Unit = {},
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit = { _, _ -> },
     onNewsResourceViewed: (String) -> Unit = {},
-    onFollowButtonClick: (String, Boolean) -> Unit = { _, _ -> },
     onBackClick: () -> Unit = {},
     onInterestsClick: () -> Unit = {},
     onTopicClick: (String) -> Unit = {},
@@ -177,7 +174,6 @@ internal fun SearchScreen(
                         onTopicClick = onTopicClick,
                         onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
                         onNewsResourceViewed = onNewsResourceViewed,
-                        onFollowButtonClick = onFollowButtonClick,
                     )
                 }
             }
@@ -268,13 +264,12 @@ private fun SearchNotReadyBody() {
 @Composable
 private fun SearchResultBody(
     searchQuery: String,
-    topics: List<FollowableTopic>,
+    topics: List<com.lhzkml.nowtest.core.model.data.Topic>,
     newsResources: List<UserNewsResource>,
     onSearchTriggered: (String) -> Unit,
     onTopicClick: (String) -> Unit,
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
-    onFollowButtonClick: (String, Boolean) -> Unit,
 ) {
     val state = rememberLazyStaggeredGridState()
     Box(
@@ -291,7 +286,7 @@ private fun SearchResultBody(
                 .testTag("search:newsResources"),
             state = state,
         ) {
-            if (topics.isNotEmpty()) {
+                if (topics.isNotEmpty()) {
                 item(
                     span = StaggeredGridItemSpan.FullLine,
                 ) {
@@ -304,24 +299,20 @@ private fun SearchResultBody(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     )
                 }
-                topics.forEach { followableTopic ->
-                    val topicId = followableTopic.topic.id
+                topics.forEach { topic ->
+                    val topicId = topic.id
                     item(
-                        // Append a prefix to distinguish a key for news resources
                         key = "topic-$topicId",
                         span = StaggeredGridItemSpan.FullLine,
                     ) {
                         InterestsItem(
-                            name = followableTopic.topic.name,
-                            following = followableTopic.isFollowed,
-                            description = followableTopic.topic.shortDescription,
-                            topicImageUrl = followableTopic.topic.imageUrl,
+                            name = topic.name,
+                            description = topic.shortDescription,
+                            topicImageUrl = topic.imageUrl,
                             onClick = {
-                                // Pass the current search query to ViewModel to save it as recent searches
                                 onSearchTriggered(searchQuery)
                                 onTopicClick(topicId)
                             },
-                            onFollowButtonClick = { onFollowButtonClick(topicId, it) },
                         )
                     }
                 }

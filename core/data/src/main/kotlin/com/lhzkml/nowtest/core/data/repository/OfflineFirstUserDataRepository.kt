@@ -1,6 +1,5 @@
 package com.lhzkml.nowtest.core.data.repository
 
-import androidx.annotation.VisibleForTesting
 import com.lhzkml.nowtest.core.analytics.AnalyticsHelper
 import com.lhzkml.nowtest.core.datastore.NtPreferencesDataSource
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig
@@ -16,15 +15,6 @@ internal class OfflineFirstUserDataRepository @Inject constructor(
 
     override val userData: Flow<UserData> =
         ntPreferencesDataSource.userData
-
-    @VisibleForTesting
-    override suspend fun setFollowedTopicIds(followedTopicIds: Set<String>) =
-        ntPreferencesDataSource.setFollowedTopicIds(followedTopicIds)
-
-    override suspend fun setTopicIdFollowed(followedTopicId: String, followed: Boolean) {
-        ntPreferencesDataSource.setTopicIdFollowed(followedTopicId, followed)
-        analyticsHelper.logTopicFollowToggled(followedTopicId, followed)
-    }
 
     override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
         ntPreferencesDataSource.setNewsResourceBookmarked(newsResourceId, bookmarked)

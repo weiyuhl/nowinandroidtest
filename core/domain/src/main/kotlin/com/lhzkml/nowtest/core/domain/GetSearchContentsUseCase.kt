@@ -1,14 +1,11 @@
 package com.lhzkml.nowtest.core.domain
 
 import com.lhzkml.nowtest.core.data.repository.SearchContentsRepository
-import com.lhzkml.nowtest.core.data.repository.UserDataRepository
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
 import com.lhzkml.nowtest.core.model.data.SearchResult
-import com.lhzkml.nowtest.core.model.data.UserData
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 import com.lhzkml.nowtest.core.model.data.UserSearchResult
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -16,30 +13,28 @@ import javax.inject.Inject
  */
 class GetSearchContentsUseCase @Inject constructor(
     private val searchContentsRepository: SearchContentsRepository,
-    private val userDataRepository: UserDataRepository,
 ) {
 
     operator fun invoke(
         searchQuery: String,
     ): Flow<UserSearchResult> =
         searchContentsRepository.searchContents(searchQuery)
-            .mapToUserSearchResult(userDataRepository.userData)
+            .map { searchResult ->
+                UserSearchResult(
+                    topics = searchResult.topics,
+                    newsResources = searchResult.newsResources.map { news ->
+                        UserNewsResource(
+                            newsResource = news,
+                            userData = com.lhzkml.nowtest.core.model.data.UserData(
+                                bookmarkedNewsResources = emptySet(),
+                                viewedNewsResources = emptySet(),
+                                themeBrand = com.lhzkml.nowtest.core.model.data.ThemeBrand.DEFAULT,
+                                darkThemeConfig = com.lhzkml.nowtest.core.model.data.DarkThemeConfig.FOLLOW_SYSTEM,
+                                useDynamicColor = false,
+                                shouldHideOnboarding = true,
+                            ),
+                        )
+                    },
+                )
+            }
 }
-
-private fun Flow<SearchResult>.mapToUserSearchResult(userDataStream: Flow<UserData>): Flow<UserSearchResult> =
-    combine(userDataStream) { searchResult, userData ->
-        UserSearchResult(
-            topics = searchResult.topics.map { topic ->
-                FollowableTopic(
-                    topic = topic,
-                    isFollowed = topic.id in userData.followedTopics,
-                )
-            },
-            newsResources = searchResult.newsResources.map { news ->
-                UserNewsResource(
-                    newsResource = news,
-                    userData = userData,
-                )
-            },
-        )
-    }

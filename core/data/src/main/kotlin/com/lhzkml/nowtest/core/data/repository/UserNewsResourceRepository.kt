@@ -18,11 +18,6 @@ interface UserNewsResourceRepository {
     ): Flow<List<UserNewsResource>>
 
     /**
-     * Returns available news resources for the user's followed topics as a stream.
-     */
-    fun observeAllForFollowedTopics(): Flow<List<UserNewsResource>>
-
-    /**
      * Returns the user's bookmarked news resources as a stream.
      */
     fun observeAllBookmarked(): Flow<List<UserNewsResource>>

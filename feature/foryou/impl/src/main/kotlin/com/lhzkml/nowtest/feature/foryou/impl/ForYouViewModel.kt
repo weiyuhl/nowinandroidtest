@@ -10,14 +10,11 @@ import com.lhzkml.nowtest.core.data.repository.NewsResourceQuery
 import com.lhzkml.nowtest.core.data.repository.UserDataRepository
 import com.lhzkml.nowtest.core.data.repository.UserNewsResourceRepository
 import com.lhzkml.nowtest.core.data.util.SyncManager
-import com.lhzkml.nowtest.core.domain.GetFollowableTopicsUseCase
 import com.lhzkml.nowtest.core.notifications.DEEP_LINK_NEWS_RESOURCE_ID_KEY
 import com.lhzkml.nowtest.core.ui.NewsFeedUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -32,11 +29,7 @@ class ForYouViewModel @Inject constructor(
     private val analyticsHelper: AnalyticsHelper,
     private val userDataRepository: UserDataRepository,
     userNewsResourceRepository: UserNewsResourceRepository,
-    getFollowableTopics: GetFollowableTopicsUseCase,
 ) : ViewModel() {
-
-    private val shouldShowOnboarding: Flow<Boolean> =
-        userDataRepository.userData.map { !it.shouldHideOnboarding }
 
     val deepLinkedNewsResource = savedStateHandle.getStateFlow<String?>(
         key = DEEP_LINK_NEWS_RESOURCE_ID_KEY,
@@ -68,36 +61,13 @@ class ForYouViewModel @Inject constructor(
         )
 
     val feedState: StateFlow<NewsFeedUiState> =
-        userNewsResourceRepository.observeAllForFollowedTopics()
+        userNewsResourceRepository.observeAll()
             .map(NewsFeedUiState::Success)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = NewsFeedUiState.Loading,
             )
-
-    val onboardingUiState: StateFlow<OnboardingUiState> =
-        combine(
-            shouldShowOnboarding,
-            getFollowableTopics(),
-        ) { shouldShowOnboarding, topics ->
-            if (shouldShowOnboarding) {
-                OnboardingUiState.Shown(topics = topics)
-            } else {
-                OnboardingUiState.NotShown
-            }
-        }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = OnboardingUiState.Loading,
-            )
-
-    fun updateTopicSelection(topicId: String, isChecked: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setTopicIdFollowed(topicId, isChecked)
-        }
-    }
 
     fun updateNewsResourceSaved(newsResourceId: String, isChecked: Boolean) {
         viewModelScope.launch {
@@ -121,12 +91,6 @@ class ForYouViewModel @Inject constructor(
                 newsResourceId = newsResourceId,
                 viewed = true,
             )
-        }
-    }
-
-    fun dismissOnboarding() {
-        viewModelScope.launch {
-            userDataRepository.setShouldHideOnboarding(true)
         }
     }
 }

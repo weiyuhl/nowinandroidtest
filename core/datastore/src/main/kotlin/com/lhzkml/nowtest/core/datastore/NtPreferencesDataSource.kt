@@ -18,7 +18,6 @@ class NtPreferencesDataSource @Inject constructor(
             UserData(
                 bookmarkedNewsResources = it.bookmarkedNewsResourceIdsMap.keys,
                 viewedNewsResources = it.viewedNewsResourceIdsMap.keys,
-                followedTopics = it.followedTopicIdsMap.keys,
                 themeBrand = when (it.themeBrand) {
                     null,
                     ThemeBrandProto.THEME_BRAND_UNSPECIFIED,

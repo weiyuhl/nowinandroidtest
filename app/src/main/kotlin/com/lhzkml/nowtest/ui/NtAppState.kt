@@ -70,7 +70,7 @@ class NtAppState(
      * The top level nav keys that have unread news resources.
      */
     val topLevelNavKeysWithUnreadResources: StateFlow<Set<NavKey>> =
-        userNewsResourceRepository.observeAllForFollowedTopics()
+        userNewsResourceRepository.observeAll()
             .combine(userNewsResourceRepository.observeAllBookmarked()) { forYouNewsResources, bookmarkedNewsResources ->
                 setOfNotNull(
                     ForYouNavKey.takeIf { forYouNewsResources.any { !it.hasBeenViewed } },

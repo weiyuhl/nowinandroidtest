@@ -3,8 +3,8 @@ package com.lhzkml.nowtest.core.model.data
 import kotlinx.datetime.Instant
 
 /**
- * A [NewsResource] with additional user information such as whether the user is following the
- * news resource's topics and whether they have saved (bookmarked) this news resource.
+ * A [NewsResource] with additional user information such as whether they have saved (bookmarked)
+ * this news resource.
  */
 data class UserNewsResource internal constructor(
     val id: String,
@@ -14,7 +14,7 @@ data class UserNewsResource internal constructor(
     val headerImageUrl: String?,
     val publishDate: Instant,
     val type: String,
-    val followableTopics: List<FollowableTopic>,
+    val topics: List<Topic>,
     val isSaved: Boolean,
     val hasBeenViewed: Boolean,
 ) {
@@ -26,12 +26,7 @@ data class UserNewsResource internal constructor(
         headerImageUrl = newsResource.headerImageUrl,
         publishDate = newsResource.publishDate,
         type = newsResource.type,
-        followableTopics = newsResource.topics.map { topic ->
-            FollowableTopic(
-                topic = topic,
-                isFollowed = topic.id in userData.followedTopics,
-            )
-        },
+        topics = newsResource.topics,
         isSaved = newsResource.id in userData.bookmarkedNewsResources,
         hasBeenViewed = newsResource.id in userData.viewedNewsResources,
     )

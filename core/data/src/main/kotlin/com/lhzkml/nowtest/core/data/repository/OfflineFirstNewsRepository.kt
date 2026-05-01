@@ -62,12 +62,11 @@ internal class OfflineFirstNewsRepository @Inject constructor(
             modelUpdater = { changedIds ->
                 val userData = ntPreferencesDataSource.userData.first()
                 val hasOnboarded = userData.shouldHideOnboarding
-                val followedTopicIds = userData.followedTopics
 
                 val existingNewsResourceIdsThatHaveChanged = when {
                     hasOnboarded -> newsResourceDao.getNewsResourceIds(
-                        useFilterTopicIds = true,
-                        filterTopicIds = followedTopicIds,
+                        useFilterTopicIds = false,
+                        filterTopicIds = emptySet(),
                         useFilterNewsIds = true,
                         filterNewsIds = changedIds.toSet(),
                     )
@@ -110,8 +109,8 @@ internal class OfflineFirstNewsRepository @Inject constructor(
 
                 if (hasOnboarded) {
                     val addedNewsResources = newsResourceDao.getNewsResources(
-                        useFilterTopicIds = true,
-                        filterTopicIds = followedTopicIds,
+                        useFilterTopicIds = false,
+                        filterTopicIds = emptySet(),
                         useFilterNewsIds = true,
                         filterNewsIds = changedIds.toSet() - existingNewsResourceIdsThatHaveChanged,
                     )

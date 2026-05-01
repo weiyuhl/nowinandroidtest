@@ -22,14 +22,13 @@ import androidx.compose.ui.unit.dp
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.scrollbarState
-import com.lhzkml.nowtest.core.model.data.FollowableTopic
+import com.lhzkml.nowtest.core.model.data.Topic
 import com.lhzkml.nowtest.core.ui.InterestsItem
 
 @Composable
 fun TopicsTabContent(
-    topics: List<FollowableTopic>,
+    topics: List<Topic>,
     onTopicClick: (String) -> Unit,
-    onFollowButtonClick: (String, Boolean) -> Unit,
     modifier: Modifier = Modifier,
     withBottomSpacer: Boolean = true,
     selectedTopicId: String? = null,
@@ -47,17 +46,15 @@ fun TopicsTabContent(
             contentPadding = PaddingValues(vertical = 16.dp),
             state = scrollableState,
         ) {
-            topics.forEach { followableTopic ->
-                val topicId = followableTopic.topic.id
+            topics.forEach { topic ->
+                val topicId = topic.id
                 item(key = topicId) {
                     val isSelected = shouldHighlightSelectedTopic && topicId == selectedTopicId
                     InterestsItem(
-                        name = followableTopic.topic.name,
-                        following = followableTopic.isFollowed,
-                        description = followableTopic.topic.shortDescription,
-                        topicImageUrl = followableTopic.topic.imageUrl,
+                        name = topic.name,
+                        description = topic.shortDescription,
+                        topicImageUrl = topic.imageUrl,
                         onClick = { onTopicClick(topicId) },
-                        onFollowButtonClick = { onFollowButtonClick(topicId, it) },
                         isSelected = isSelected,
                         modifier = Modifier.fillMaxWidth(),
                     )

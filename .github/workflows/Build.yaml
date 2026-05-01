@@ -157,7 +157,7 @@ jobs:
           path: '**/build/outputs/roborazzi/*_compare.png'
 
       - name: Check lint
-        run: ./gradlew :app:lintProdRelease :app-nt-catalog:lintRelease :lint:lint
+        run: ./gradlew :app:lintProdRelease :app-nia-catalog:lintRelease :lint:lint
 
       - name: Upload lint reports (HTML)
         if: ${{ !cancelled() }}
@@ -173,12 +173,12 @@ jobs:
           sarif_file: './app/'
           category: app
 
-      - name: Upload lint reports (SARIF) for app-nt-catalog module
-        if: ${{ !cancelled() && hashFiles('app-nt-catalog/**/*.sarif') != '' }}
+      - name: Upload lint reports (SARIF) for app-nia-catalog module
+        if: ${{ !cancelled() && hashFiles('app-nia-catalog/**/*.sarif') != '' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: './app-nt-catalog/'
-          category: app-nt-catalog
+          sarif_file: './app-nia-catalog/'
+          category: app-nia-catalog
 
       - name: Upload lint reports (SARIF) for lint module
         if: ${{ !cancelled() && hashFiles('lint/**/*.sarif') != '' }}

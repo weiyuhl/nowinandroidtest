@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.filterNotNull
 val emptyUserData = UserData(
     bookmarkedNewsResources = emptySet(),
     viewedNewsResources = emptySet(),
-    followedTopics = emptySet(),
     themeBrand = ThemeBrand.DEFAULT,
     darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
     useDynamicColor = false,
@@ -28,22 +27,6 @@ class TestUserDataRepository : UserDataRepository {
     private val currentUserData get() = _userData.replayCache.firstOrNull() ?: emptyUserData
 
     override val userData: Flow<UserData> = _userData.filterNotNull()
-
-    override suspend fun setFollowedTopicIds(followedTopicIds: Set<String>) {
-        _userData.tryEmit(currentUserData.copy(followedTopics = followedTopicIds))
-    }
-
-    override suspend fun setTopicIdFollowed(followedTopicId: String, followed: Boolean) {
-        currentUserData.let { current ->
-            val followedTopics = if (followed) {
-                current.followedTopics + followedTopicId
-            } else {
-                current.followedTopics - followedTopicId
-            }
-
-            _userData.tryEmit(current.copy(followedTopics = followedTopics))
-        }
-    }
 
     override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
         currentUserData.let { current ->

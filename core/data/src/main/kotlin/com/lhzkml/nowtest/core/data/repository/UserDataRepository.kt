@@ -13,16 +13,6 @@ interface UserDataRepository {
     val userData: Flow<UserData>
 
     /**
-     * Sets the user's currently followed topics
-     */
-    suspend fun setFollowedTopicIds(followedTopicIds: Set<String>)
-
-    /**
-     * Sets the user's newly followed/unfollowed topic
-     */
-    suspend fun setTopicIdFollowed(followedTopicId: String, followed: Boolean)
-
-    /**
      * Updates the bookmarked status for a news resource
      */
     suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean)

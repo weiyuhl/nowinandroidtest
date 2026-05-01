@@ -29,7 +29,6 @@ object PreviewParameterData {
     private val userData: UserData = UserData(
         bookmarkedNewsResources = setOf("1", "3"),
         viewedNewsResources = setOf("1", "2", "4"),
-        followedTopics = emptySet(),
         themeBrand = ThemeBrand.ANDROID,
         darkThemeConfig = DarkThemeConfig.DARK,
         shouldHideOnboarding = true,

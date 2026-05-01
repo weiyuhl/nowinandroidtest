@@ -21,12 +21,6 @@ class FakeUserDataRepository @Inject constructor(
     override val userData: Flow<UserData> =
         ntPreferencesDataSource.userData
 
-    override suspend fun setFollowedTopicIds(followedTopicIds: Set<String>) =
-        ntPreferencesDataSource.setFollowedTopicIds(followedTopicIds)
-
-    override suspend fun setTopicIdFollowed(followedTopicId: String, followed: Boolean) =
-        ntPreferencesDataSource.setTopicIdFollowed(followedTopicId, followed)
-
     override suspend fun setNewsResourceBookmarked(newsResourceId: String, bookmarked: Boolean) {
         ntPreferencesDataSource.setNewsResourceBookmarked(newsResourceId, bookmarked)
     }

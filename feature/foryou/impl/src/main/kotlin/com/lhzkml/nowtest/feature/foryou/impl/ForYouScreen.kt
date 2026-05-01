@@ -14,70 +14,42 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus.Denied
 import com.google.accompanist.permissions.rememberPermissionState
-import com.lhzkml.nowtest.core.designsystem.component.DynamicAsyncImage
-import com.lhzkml.nowtest.core.designsystem.component.NtButton
-import com.lhzkml.nowtest.core.designsystem.component.NtIconToggleButton
 import com.lhzkml.nowtest.core.designsystem.component.NtOverlayLoadingWheel
-import com.lhzkml.nowtest.core.designsystem.component.scrollbar.DecorativeScrollbar
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.DraggableScrollbar
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.rememberDraggableScroller
 import com.lhzkml.nowtest.core.designsystem.component.scrollbar.scrollbarState
-import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
 import com.lhzkml.nowtest.core.model.data.UserNewsResource
 import com.lhzkml.nowtest.core.ui.DevicePreviews
@@ -95,20 +67,16 @@ fun ForYouScreen(
     modifier: Modifier = Modifier,
     viewModel: ForYouViewModel = hiltViewModel(),
 ) {
-    val onboardingUiState by viewModel.onboardingUiState.collectAsStateWithLifecycle()
     val feedState by viewModel.feedState.collectAsStateWithLifecycle()
     val isSyncing by viewModel.isSyncing.collectAsStateWithLifecycle()
     val deepLinkedUserNewsResource by viewModel.deepLinkedNewsResource.collectAsStateWithLifecycle()
 
     ForYouScreen(
         isSyncing = isSyncing,
-        onboardingUiState = onboardingUiState,
         feedState = feedState,
         deepLinkedUserNewsResource = deepLinkedUserNewsResource,
-        onTopicCheckedChanged = viewModel::updateTopicSelection,
         onDeepLinkOpened = viewModel::onDeepLinkOpened,
         onTopicClick = onTopicClick,
-        saveFollowedTopics = viewModel::dismissOnboarding,
         onNewsResourcesCheckedChanged = viewModel::updateNewsResourceSaved,
         onNewsResourceViewed = { viewModel.setNewsResourceViewed(it, true) },
         modifier = modifier,
@@ -118,24 +86,22 @@ fun ForYouScreen(
 @Composable
 internal fun ForYouScreen(
     isSyncing: Boolean,
-    onboardingUiState: OnboardingUiState,
     feedState: NewsFeedUiState,
     deepLinkedUserNewsResource: UserNewsResource?,
-    onTopicCheckedChanged: (String, Boolean) -> Unit,
     onTopicClick: (String) -> Unit,
     onDeepLinkOpened: (String) -> Unit,
-    saveFollowedTopics: () -> Unit,
     onNewsResourcesCheckedChanged: (String, Boolean) -> Unit,
     onNewsResourceViewed: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isOnboardingLoading = onboardingUiState is OnboardingUiState.Loading
     val isFeedLoading = feedState is NewsFeedUiState.Loading
 
-    // This code should be called when the UI is ready for use and relates to Time To Full Display.
-    ReportDrawnWhen { !isSyncing && !isOnboardingLoading && !isFeedLoading }
+    ReportDrawnWhen { !isSyncing && !isFeedLoading }
 
-    val itemsAvailable = feedItemsSize(feedState, onboardingUiState)
+    val itemsAvailable = when (feedState) {
+        NewsFeedUiState.Loading -> 0
+        is NewsFeedUiState.Success -> feedState.feed.size
+    }
 
     val state = rememberLazyStaggeredGridState()
     val scrollbarState = state.scrollbarState(
@@ -156,24 +122,6 @@ internal fun ForYouScreen(
                 .testTag("forYou:feed"),
             state = state,
         ) {
-            onboarding(
-                onboardingUiState = onboardingUiState,
-                onTopicCheckedChanged = onTopicCheckedChanged,
-                saveFollowedTopics = saveFollowedTopics,
-                // Custom LayoutModifier to remove the enforced parent 16.dp contentPadding
-                // from the LazyVerticalGrid and enable edge-to-edge scrolling for this section
-                interestsItemModifier = Modifier.layout { measurable, constraints ->
-                    val placeable = measurable.measure(
-                        constraints.copy(
-                            maxWidth = constraints.maxWidth + 32.dp.roundToPx(),
-                        ),
-                    )
-                    layout(placeable.width, placeable.height) {
-                        placeable.place(0, 0)
-                    }
-                },
-            )
-
             newsFeed(
                 feedState = feedState,
                 onNewsResourcesCheckedChanged = onNewsResourcesCheckedChanged,
@@ -184,15 +132,12 @@ internal fun ForYouScreen(
             item(span = StaggeredGridItemSpan.FullLine, contentType = "bottomSpacing") {
                 Column {
                     Spacer(modifier = Modifier.height(8.dp))
-                    // Add space for the content to clear the "offline" snackbar.
-                    // TODO: Check that the Scaffold handles this correctly in NtApp
-                    // if (isOffline) Spacer(modifier = Modifier.height(48.dp))
                     Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.safeDrawing))
                 }
             }
         }
         AnimatedVisibility(
-            visible = isSyncing || isFeedLoading || isOnboardingLoading,
+            visible = isSyncing || isFeedLoading,
             enter = slideInVertically(
                 initialOffsetY = { fullHeight -> -fullHeight },
             ) + fadeIn(),
@@ -200,7 +145,7 @@ internal fun ForYouScreen(
                 targetOffsetY = { fullHeight -> -fullHeight },
             ) + fadeOut(),
         ) {
-            val loadingContentDescription = stringResource(id = R.string.feature_foryou_api_loading)
+            val loadingContentDescription = "Loading"
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -234,205 +179,9 @@ internal fun ForYouScreen(
     )
 }
 
-/**
- * An extension on [LazyListScope] defining the onboarding portion of the for you screen.
- * Depending on the [onboardingUiState], this might emit no items.
- *
- */
-private fun LazyStaggeredGridScope.onboarding(
-    onboardingUiState: OnboardingUiState,
-    onTopicCheckedChanged: (String, Boolean) -> Unit,
-    saveFollowedTopics: () -> Unit,
-    interestsItemModifier: Modifier = Modifier,
-) {
-    when (onboardingUiState) {
-        OnboardingUiState.Loading,
-        OnboardingUiState.LoadFailed,
-        OnboardingUiState.NotShown,
-        -> Unit
-
-        is OnboardingUiState.Shown -> {
-            item(span = StaggeredGridItemSpan.FullLine, contentType = "onboarding") {
-                Column(modifier = interestsItemModifier) {
-                    Text(
-                        text = stringResource(R.string.feature_foryou_api_onboarding_guidance_title),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 24.dp),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    Text(
-                        text = stringResource(R.string.feature_foryou_api_onboarding_guidance_subtitle),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, start = 24.dp, end = 24.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    TopicSelection(
-                        onboardingUiState,
-                        onTopicCheckedChanged,
-                        Modifier.padding(bottom = 8.dp),
-                    )
-                    // Done button
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        NtButton(
-                            onClick = saveFollowedTopics,
-                            enabled = onboardingUiState.isDismissable,
-                            modifier = Modifier
-                                .padding(horizontal = 24.dp)
-                                .widthIn(364.dp)
-                                .fillMaxWidth(),
-                        ) {
-                            Text(
-                                text = stringResource(R.string.feature_foryou_api_done),
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun TopicSelection(
-    onboardingUiState: OnboardingUiState.Shown,
-    onTopicCheckedChanged: (String, Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val lazyGridState = rememberLazyGridState()
-    val topicSelectionTestTag = "forYou:topicSelection"
-
-    TrackScrollJank(scrollableState = lazyGridState, stateName = topicSelectionTestTag)
-
-    Box(
-        modifier = modifier
-            .fillMaxWidth(),
-    ) {
-        LazyHorizontalGrid(
-            state = lazyGridState,
-            rows = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(24.dp),
-            modifier = Modifier
-                // LazyHorizontalGrid has to be constrained in height.
-                // However, we can't set a fixed height because the horizontal grid contains
-                // vertical text that can be rescaled.
-                // When the fontScale is at most 1, we know that the horizontal grid will be at most
-                // 240dp tall, so this is an upper bound for when the font scale is at most 1.
-                // When the fontScale is greater than 1, the height required by the text inside the
-                // horizontal grid will increase by at most the same factor, so 240sp is a valid
-                // upper bound for how much space we need in that case.
-                // The maximum of these two bounds is therefore a valid upper bound in all cases.
-                .heightIn(max = max(240.dp, with(LocalDensity.current) { 240.sp.toDp() }))
-                .fillMaxWidth()
-                .testTag(topicSelectionTestTag),
-        ) {
-            items(
-                items = onboardingUiState.topics,
-                key = { it.topic.id },
-            ) {
-                SingleTopicButton(
-                    name = it.topic.name,
-                    topicId = it.topic.id,
-                    imageUrl = it.topic.imageUrl,
-                    isSelected = it.isFollowed,
-                    onClick = onTopicCheckedChanged,
-                )
-            }
-        }
-        lazyGridState.DecorativeScrollbar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)
-                .align(Alignment.BottomStart),
-            state = lazyGridState.scrollbarState(itemsAvailable = onboardingUiState.topics.size),
-            orientation = Orientation.Horizontal,
-        )
-    }
-}
-
-@Composable
-private fun SingleTopicButton(
-    name: String,
-    topicId: String,
-    imageUrl: String,
-    isSelected: Boolean,
-    onClick: (String, Boolean) -> Unit,
-) {
-    Surface(
-        modifier = Modifier
-            .width(312.dp)
-            .heightIn(min = 56.dp),
-        shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-        color = MaterialTheme.colorScheme.surface,
-        selected = isSelected,
-        onClick = {
-            onClick(topicId, !isSelected)
-        },
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 12.dp, end = 8.dp),
-        ) {
-            TopicIcon(
-                imageUrl = imageUrl,
-            )
-            Text(
-                text = name,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .weight(1f),
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            NtIconToggleButton(
-                checked = isSelected,
-                onCheckedChange = { checked -> onClick(topicId, checked) },
-                icon = {
-                    Icon(
-                        imageVector = NtIcons.Add,
-                        contentDescription = name,
-                    )
-                },
-                checkedIcon = {
-                    Icon(
-                        imageVector = NtIcons.Check,
-                        contentDescription = name,
-                    )
-                },
-            )
-        }
-    }
-}
-
-@Composable
-fun TopicIcon(
-    imageUrl: String,
-    modifier: Modifier = Modifier,
-) {
-    DynamicAsyncImage(
-        placeholder = painterResource(R.drawable.feature_foryou_api_ic_icon_placeholder),
-        imageUrl = imageUrl,
-        // decorative
-        contentDescription = null,
-        modifier = modifier
-            .padding(10.dp)
-            .size(32.dp),
-    )
-}
-
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 private fun NotificationPermissionEffect() {
-    // Permission requests should only be made from an Activity Context, which is not present
-    // in previews
     if (LocalInspectionMode.current) return
     if (VERSION.SDK_INT < VERSION_CODES.TIRAMISU) return
     val notificationsPermissionState = rememberPermissionState(
@@ -466,25 +215,6 @@ private fun DeepLinkEffect(
     }
 }
 
-private fun feedItemsSize(
-    feedState: NewsFeedUiState,
-    onboardingUiState: OnboardingUiState,
-): Int {
-    val feedSize = when (feedState) {
-        NewsFeedUiState.Loading -> 0
-        is NewsFeedUiState.Success -> feedState.feed.size
-    }
-    val onboardingSize = when (onboardingUiState) {
-        OnboardingUiState.Loading,
-        OnboardingUiState.LoadFailed,
-        OnboardingUiState.NotShown,
-        -> 0
-
-        is OnboardingUiState.Shown -> 1
-    }
-    return feedSize + onboardingSize
-}
-
 @DevicePreviews
 @Composable
 fun ForYouScreenPopulatedFeed(
@@ -494,64 +224,10 @@ fun ForYouScreenPopulatedFeed(
     NtTheme {
         ForYouScreen(
             isSyncing = false,
-            onboardingUiState = OnboardingUiState.NotShown,
             feedState = NewsFeedUiState.Success(
                 feed = userNewsResources,
             ),
             deepLinkedUserNewsResource = null,
-            onTopicCheckedChanged = { _, _ -> },
-            saveFollowedTopics = {},
-            onNewsResourcesCheckedChanged = { _, _ -> },
-            onNewsResourceViewed = {},
-            onTopicClick = {},
-            onDeepLinkOpened = {},
-        )
-    }
-}
-
-@DevicePreviews
-@Composable
-fun ForYouScreenOfflinePopulatedFeed(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
-    userNewsResources: List<UserNewsResource>,
-) {
-    NtTheme {
-        ForYouScreen(
-            isSyncing = false,
-            onboardingUiState = OnboardingUiState.NotShown,
-            feedState = NewsFeedUiState.Success(
-                feed = userNewsResources,
-            ),
-            deepLinkedUserNewsResource = null,
-            onTopicCheckedChanged = { _, _ -> },
-            saveFollowedTopics = {},
-            onNewsResourcesCheckedChanged = { _, _ -> },
-            onNewsResourceViewed = {},
-            onTopicClick = {},
-            onDeepLinkOpened = {},
-        )
-    }
-}
-
-@DevicePreviews
-@Composable
-fun ForYouScreenTopicSelection(
-    @PreviewParameter(UserNewsResourcePreviewParameterProvider::class)
-    userNewsResources: List<UserNewsResource>,
-) {
-    NtTheme {
-        ForYouScreen(
-            isSyncing = false,
-            onboardingUiState = OnboardingUiState.Shown(
-                topics = userNewsResources.flatMap { news -> news.followableTopics }
-                    .distinctBy { it.topic.id },
-            ),
-            feedState = NewsFeedUiState.Success(
-                feed = userNewsResources,
-            ),
-            deepLinkedUserNewsResource = null,
-            onTopicCheckedChanged = { _, _ -> },
-            saveFollowedTopics = {},
             onNewsResourcesCheckedChanged = { _, _ -> },
             onNewsResourceViewed = {},
             onTopicClick = {},
@@ -566,11 +242,8 @@ fun ForYouScreenLoading() {
     NtTheme {
         ForYouScreen(
             isSyncing = false,
-            onboardingUiState = OnboardingUiState.Loading,
             feedState = NewsFeedUiState.Loading,
             deepLinkedUserNewsResource = null,
-            onTopicCheckedChanged = { _, _ -> },
-            saveFollowedTopics = {},
             onNewsResourcesCheckedChanged = { _, _ -> },
             onNewsResourceViewed = {},
             onTopicClick = {},
@@ -588,13 +261,10 @@ fun ForYouScreenPopulatedAndLoading(
     NtTheme {
         ForYouScreen(
             isSyncing = true,
-            onboardingUiState = OnboardingUiState.Loading,
             feedState = NewsFeedUiState.Success(
                 feed = userNewsResources,
             ),
             deepLinkedUserNewsResource = null,
-            onTopicCheckedChanged = { _, _ -> },
-            saveFollowedTopics = {},
             onNewsResourcesCheckedChanged = { _, _ -> },
             onNewsResourceViewed = {},
             onTopicClick = {},

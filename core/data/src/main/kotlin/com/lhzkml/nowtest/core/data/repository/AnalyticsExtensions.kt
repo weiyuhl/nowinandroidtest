@@ -17,19 +17,6 @@ internal fun AnalyticsHelper.logNewsResourceBookmarkToggled(newsResourceId: Stri
     )
 }
 
-internal fun AnalyticsHelper.logTopicFollowToggled(followedTopicId: String, isFollowed: Boolean) {
-    val eventType = if (isFollowed) "topic_followed" else "topic_unfollowed"
-    val paramKey = if (isFollowed) "followed_topic_id" else "unfollowed_topic_id"
-    logEvent(
-        AnalyticsEvent(
-            type = eventType,
-            extras = listOf(
-                Param(key = paramKey, value = followedTopicId),
-            ),
-        ),
-    )
-}
-
 internal fun AnalyticsHelper.logThemeChanged(themeName: String) =
     logEvent(
         AnalyticsEvent(
