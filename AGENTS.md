@@ -17,7 +17,7 @@ nowtest 是一款使用 Kotlin 编写的原生 Android 移动应用。项目采�
 
 ## 模块
 
-主 Android 应用位于 `app/` 文件夹中。功能模块位于 `feature/` 中，核心和共享模块位于 `core/` 中。
+主 Android 应用位于 `app/` 文件夹中。页面路由模块位于 `route/` 中，核心和共享模块位于 `core/` 中。
 
 ## 构建与测试命令
 

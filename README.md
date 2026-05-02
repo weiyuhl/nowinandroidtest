@@ -7,10 +7,10 @@ nowtest 是一款使用 Kotlin 和 Jetpack Compose 构建的原生 Android 应�
 
 ## 当前能力
 
+- 顶层页面：保留“测试一”“测试二”“测试三”的导航入口和页面壳，用于维持当前产品导航结构。
 - 搜索：使用本地测试内容作为搜索源，覆盖搜索输入、结果展示和 ViewModel 状态流。
 - 设置：通过 DataStore 保存深色模式偏好，并通过 AppCompatDelegate 管理应用语言。
-- 顶层页面：保留 For You、Bookmarks、Interests 的导航入口和页面壳，用于维持当前产品导航结构。
-- 设计系统：集中在 `core:designsystem` 和 `core:ui`，提供主题、图标、预览和截图测试基础能力；页面组件样式直接在使用处通过 Material 3 与主题参数实现。
+- 设计系统：集中在 `core:designsystem` 和 `core:ui`，提供主题、图标、预览和截图测试基础能力。
 - 数据基础设施：保留 Repository 模式、DataStore、Room、Network、DI/Hilt/KSP 等组件。
 
 ## 开发环境
@@ -58,13 +58,13 @@ DataStore / Room / Network
 
 ## 模块化
 
-主应用位于 `app/`，功能模块位于 `feature/`，共享基础设施和通用能力位于 `core/`。
+主应用位于 `app/`，页面路由模块位于 `route/`，共享基础设施和通用能力位于 `core/`。
 
 常见模块类型：
 
 - `app`：应用入口、单 Activity、主题、全局导航和依赖装配。
-- `feature:*:api`：页面导航键和跨模块最小 API。
-- `feature:*:impl`：页面实现和页面级状态管理。
+- `route:*:contract`：页面路由键、轻量资源和跨模块最小契约。
+- `route:*:scene`：页面实现、页面级状态管理和 Navigation entry。
 - `core:*`：数据、数据库、网络、设计系统、测试、分析、通知、导航等共享组件。
 - `build-logic`：项目自定义 Gradle convention plugins。
 
@@ -88,27 +88,3 @@ DataStore / Room / Network
 ```
 
 截图测试基线通常由 CI 生成。非 Linux 环境下截图像素可能存在差异，需要按项目流程重新录制本地基线后再验证。
-
-## UI
-
-屏幕和 UI 元素使用 Jetpack Compose 构建，并使用 Material 3、Jasmine 主题、深色模式和自适应布局能力。`core:designsystem` 保留主题与图标，应用级通用 UI 辅助能力集中在 `core:ui`；组件外观在页面或局部可复用 UI 中直接配置，不再维护独立组件 catalog。
-
-## 性能
-
-`benchmarks` 模块包含 Macrobenchmark 与 Baseline Profile 相关测试。应用的基线配置文件位于：
-
-```text
-app/src/main/baseline-prof.txt
-```
-
-需要分析 Compose 编译器指标时可运行：
-
-```bash
-./gradlew assembleRelease -PenableComposeCompilerMetrics=true -PenableComposeCompilerReports=true
-```
-
-报告会输出到 `build/compose-reports` 和 `build/compose-metrics`。
-
-## 许可证
-
-nowtest 按照 Apache License 2.0 分发。详情见 [LICENSE](LICENSE)。

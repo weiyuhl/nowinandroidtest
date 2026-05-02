@@ -58,14 +58,14 @@ import com.lhzkml.nowtest.R
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.navigation.Navigator
 import com.lhzkml.nowtest.core.navigation.toEntries
-import com.lhzkml.nowtest.feature.bookmarks.impl.navigation.bookmarksEntry
-import com.lhzkml.nowtest.feature.foryou.impl.navigation.forYouEntry
-import com.lhzkml.nowtest.feature.interests.impl.navigation.interestsEntry
-import com.lhzkml.nowtest.feature.search.api.navigation.SearchNavKey
-import com.lhzkml.nowtest.feature.search.impl.navigation.searchEntry
-import com.lhzkml.nowtest.feature.settings.api.navigation.SettingsNavKey
-import com.lhzkml.nowtest.feature.settings.impl.navigation.settingsEntry
 import com.lhzkml.nowtest.navigation.TOP_LEVEL_NAV_ITEMS
+import com.lhzkml.nowtest.route.search.contract.navigation.SearchRoute
+import com.lhzkml.nowtest.route.search.scene.navigation.searchEntry
+import com.lhzkml.nowtest.route.settings.contract.navigation.SettingsRoute
+import com.lhzkml.nowtest.route.settings.scene.navigation.settingsEntry
+import com.lhzkml.nowtest.route.test1.scene.navigation.test1Entry
+import com.lhzkml.nowtest.route.test2.scene.navigation.test2Entry
+import com.lhzkml.nowtest.route.test3.scene.navigation.test3Entry
 
 internal val LocalSnackbarHostState = compositionLocalOf<SnackbarHostState> {
     error("SnackbarHostState should be initialized at runtime")
@@ -210,7 +210,7 @@ internal fun NtAppContent(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                IconButton(onClick = { navigator.navigate(SearchNavKey) }) {
+                                IconButton(onClick = { navigator.navigate(SearchRoute) }) {
                                     Icon(
                                         imageVector = NtIcons.Search,
                                         contentDescription = stringResource(
@@ -219,7 +219,7 @@ internal fun NtAppContent(
                                         tint = MaterialTheme.colorScheme.onSurface,
                                     )
                                 }
-                                IconButton(onClick = { navigator.navigate(SettingsNavKey) }) {
+                                IconButton(onClick = { navigator.navigate(SettingsRoute) }) {
                                     Icon(
                                         imageVector = NtIcons.Settings,
                                         contentDescription = stringResource(
@@ -248,9 +248,9 @@ internal fun NtAppContent(
                         val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
 
                         val entryProvider = entryProvider {
-                            forYouEntry()
-                            bookmarksEntry()
-                            interestsEntry()
+                            test1Entry()
+                            test2Entry()
+                            test3Entry()
                             searchEntry(navigator)
                             settingsEntry(navigator)
                         }

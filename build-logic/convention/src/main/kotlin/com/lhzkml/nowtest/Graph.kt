@@ -82,9 +82,9 @@ internal enum class PluginType(val id: String, val ref: String, val style: Strin
         ref = "android-application",
         style = "fill:#CAFFBF,stroke:#000,stroke-width:2px,color:#000",
     ),
-    AndroidFeature(
-        id = "nowtest.android.feature",
-        ref = "android-feature",
+    AndroidRoute(
+        id = "nowtest.android.route",
+        ref = "android-route",
         style = "fill:#FFD6A5,stroke:#000,stroke-width:2px,color:#000",
     ),
     AndroidLibrary(
@@ -228,7 +228,7 @@ private abstract class GraphDumpTask : DefaultTask() {
         appendLine("graph TB")
         listOf(
             "application" to PluginType.AndroidApplication,
-            "feature" to PluginType.AndroidFeature,
+            "route" to PluginType.AndroidRoute,
             "library" to PluginType.AndroidLibrary,
             "jvm" to PluginType.Jvm,
         ).forEach { (name, type) ->
@@ -236,7 +236,7 @@ private abstract class GraphDumpTask : DefaultTask() {
         }
         appendLine()
         listOf(
-            Dependency("application", "implementation", "feature"),
+            Dependency("application", "implementation", "route"),
             Dependency("library", "api", "jvm"),
         ).forEach {
             appendLine(it.link(indent = 2))

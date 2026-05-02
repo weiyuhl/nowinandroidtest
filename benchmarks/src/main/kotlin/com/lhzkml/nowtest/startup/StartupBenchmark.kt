@@ -9,8 +9,8 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.lhzkml.nowtest.BaselineProfileMetrics
 import com.lhzkml.nowtest.PACKAGE_NAME
 import com.lhzkml.nowtest.allowNotifications
-import com.lhzkml.nowtest.foryou.forYouWaitForContent
 import com.lhzkml.nowtest.startActivityAndAllowNotifications
+import com.lhzkml.nowtest.test1.waitForTest1Content
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,6 +54,6 @@ class StartupBenchmark {
     ) {
         startActivityAndAllowNotifications()
         // Waits until the content is ready to capture Time To Full Display
-        forYouWaitForContent()
+        waitForTest1Content()
     }
 }

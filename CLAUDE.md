@@ -28,9 +28,9 @@
 ## 模块结构
 
 - `app/`：应用模块，包含 `MainActivity`、`NtApp`、顶层导航和应用级依赖装配。
-- `feature/<name>/api`：功能的公开接口，通常只包含导航键。
-- `feature/<name>/impl`：功能实现，可以依赖其他 feature 的 `api` 模块。
-- `core/<name>`：共享库，不依赖 feature 或 app 模块。包括 `data`、`database`、`network`、`model`、`designsystem`、`ui`、`navigation`、`domain`、`testing`、`analytics`、`notifications` 等。
+- `route/<name>/contract`：页面路由契约，通常只包含 typed route key 和轻量资源。
+- `route/<name>/scene`：页面实现，可以依赖当前 route 的 `contract` 模块和 `core` 基础设施。
+- `core/<name>`：共享库，不依赖 route 或 app 模块。包括 `data`、`database`、`network`、`model`、`designsystem`、`ui`、`navigation`、`domain`、`testing`、`analytics`、`notifications` 等。
 - `build-logic/`：包含约定插件的复合构建，例如 `nowtest.android.application`、`nowtest.android.library.compose`。
 - `benchmarks/`：宏基准测试和基线配置文件生成。
 

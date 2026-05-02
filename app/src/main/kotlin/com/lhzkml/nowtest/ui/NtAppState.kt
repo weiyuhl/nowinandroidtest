@@ -9,8 +9,8 @@ import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
 import com.lhzkml.nowtest.core.navigation.NavigationState
 import com.lhzkml.nowtest.core.navigation.rememberNavigationState
 import com.lhzkml.nowtest.core.ui.TrackDisposableJank
-import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
 import com.lhzkml.nowtest.navigation.TOP_LEVEL_NAV_ITEMS
+import com.lhzkml.nowtest.route.test1.contract.navigation.Test1Route
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -23,7 +23,7 @@ fun rememberNtAppState(
     timeZoneMonitor: TimeZoneMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ): NtAppState {
-    val navigationState = rememberNavigationState(ForYouNavKey, TOP_LEVEL_NAV_ITEMS.keys)
+    val navigationState = rememberNavigationState(Test1Route, TOP_LEVEL_NAV_ITEMS.keys)
 
     NavigationTrackingSideEffect(navigationState)
 

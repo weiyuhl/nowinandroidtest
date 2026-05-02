@@ -61,13 +61,17 @@ gradlePlugin {
             id = libs.plugins.nowtest.android.library.asProvider().get().pluginId
             implementationClass = "AndroidLibraryConventionPlugin"
         }
-        register("androidFeatureImpl") {
-            id = libs.plugins.nowtest.android.feature.impl.get().pluginId
-            implementationClass = "AndroidFeatureImplConventionPlugin"
+        register("androidRoute") {
+            id = libs.plugins.nowtest.android.route.asProvider().get().pluginId
+            implementationClass = "AndroidRouteConventionPlugin"
         }
-        register("androidFeatureApi") {
-            id = libs.plugins.nowtest.android.feature.api.get().pluginId
-            implementationClass = "AndroidFeatureApiConventionPlugin"
+        register("androidRouteScene") {
+            id = libs.plugins.nowtest.android.route.scene.get().pluginId
+            implementationClass = "AndroidRouteSceneConventionPlugin"
+        }
+        register("androidRouteContract") {
+            id = libs.plugins.nowtest.android.route.contract.get().pluginId
+            implementationClass = "AndroidRouteContractConventionPlugin"
         }
         register("androidLibraryJacoco") {
             id = libs.plugins.nowtest.android.library.jacoco.get().pluginId

@@ -20,7 +20,7 @@
 | 仓库层模式 | `core/data/src/main/kotlin/.../repository/`, `core/data/di/` | 保留仍被使用的仓库接口、实现和测试替身 |
 | 网络模块 | `core/network/` | 保留网络模块、demo/prod 数据源抽象、OkHttp/Json 配置 |
 | 通知组件 | `core/notifications/` | 保留通知抽象和 flavor 绑定 |
-| 导航基础设施 | `core/navigation/`, `feature/*/api/.../*NavKey.kt` | 保留导航机制；具体页面入口按产品导航结构维护 |
+| 导航基础设施 | `core/navigation/`, `route/*/contract/.../*Route.kt` | 保留导航机制；具体页面入口按产品导航结构维护 |
 | 设计系统与共享 UI | `core/designsystem/`, `core/ui/` | 保留通用组件、主题、图标、预览和 UI 辅助能力 |
 | 测试基础设施 | `core/testing/`, `core:data-test`, `core:datastore-test`, `ui-test-hilt-manifest/` | 保留测试底座；测试替身和测试数据按当前接口维护 |
 

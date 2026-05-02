@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="route_settings_scene_title">设置</string>
+    <string name="route_settings_scene_loading">正在加载...</string>
+    <string name="route_settings_scene_licenses">开源许可</string>
+    <string name="route_settings_scene_dark_mode_preference">深色模式偏好</string>
+    <string name="route_settings_scene_dark_mode_config_system_default">跟随系统</string>
+    <string name="route_settings_scene_dark_mode_config_light">浅色</string>
+    <string name="route_settings_scene_dark_mode_config_dark">深色</string>
+    <string name="route_settings_scene_language_preference">语言</string>
+    <string name="route_settings_scene_language_system_default">跟随系统</string>
+    <string name="route_settings_scene_language_english">英文</string>
+    <string name="route_settings_scene_language_simplified_chinese">简体中文</string>
+</resources>

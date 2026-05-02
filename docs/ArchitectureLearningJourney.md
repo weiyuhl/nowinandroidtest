@@ -4,7 +4,7 @@
 
 ## 当前分层
 
-- UI 层：Jetpack Compose、Material 3、Navigation 3。For You、Bookmarks、Interests 保留为顶层导航页面壳，Search 和 Settings 承载当前主要交互。
+- UI 层：Jetpack Compose、Material 3、Navigation 3。“测试一”“测试二”“测试三”保留为顶层导航页面壳，Search 和 Settings 承载当前主要交互。
 - 状态管理：ViewModel、Kotlin Flow、单向数据流。搜索页面和设置页面通过状态流驱动界面。
 - 数据层：Repository 模式、DataStore、Room 和 Network 模块共同组成数据基础设施。
 - 依赖注入：使用 Hilt/KSP 绑定仓库、数据源和基础设施对象。
@@ -25,7 +25,7 @@
 
 设置页通过 `UserDataRepository.userData` 订阅 DataStore 中的设置项，并调用仓库方法写入设置变化。
 
-顶层页面壳通过各自 feature 模块提供 `NavKey` 和 navigation entry，由 `app` 模块统一装配。
+顶层页面壳通过各自 `route:*:contract` 模块提供 route key，通过 `route:*:scene` 模块提供 Navigation entry，由 `app` 模块统一装配。
 
 ## 维护原则
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="route_settings_scene_title">Settings</string>
+    <string name="route_settings_scene_loading">Loading...</string>
+    <string name="route_settings_scene_licenses">Licenses</string>
+    <string name="route_settings_scene_dark_mode_preference">Dark mode preference</string>
+    <string name="route_settings_scene_dark_mode_config_system_default">System default</string>
+    <string name="route_settings_scene_dark_mode_config_light">Light</string>
+    <string name="route_settings_scene_dark_mode_config_dark">Dark</string>
+    <string name="route_settings_scene_language_preference">Language</string>
+    <string name="route_settings_scene_language_system_default">System default</string>
+    <string name="route_settings_scene_language_english">English</string>
+    <string name="route_settings_scene_language_simplified_chinese">Simplified Chinese</string>
+</resources>

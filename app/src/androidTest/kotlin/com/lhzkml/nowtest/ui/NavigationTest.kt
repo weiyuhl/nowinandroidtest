@@ -18,10 +18,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import com.lhzkml.nowtest.core.ui.R as CoreUiR
-import com.lhzkml.nowtest.feature.bookmarks.api.R as BookmarksR
-import com.lhzkml.nowtest.feature.foryou.api.R as FeatureForyouR
-import com.lhzkml.nowtest.feature.interests.api.R as FeatureInterestsR
-import com.lhzkml.nowtest.feature.settings.impl.R as SettingsR
+import com.lhzkml.nowtest.route.settings.scene.R as SettingsR
+import com.lhzkml.nowtest.route.test1.contract.R as Test1R
+import com.lhzkml.nowtest.route.test2.contract.R as Test2R
+import com.lhzkml.nowtest.route.test3.contract.R as Test3R
 
 /**
  * Tests all the navigation flows that are handled by the navigation library.
@@ -43,23 +43,23 @@ class NavigationTest {
 
     // The strings used for matching in these tests
     private val navigateUp by composeTestRule.stringResource(CoreUiR.string.core_ui_back)
-    private val forYou by composeTestRule.stringResource(FeatureForyouR.string.feature_foryou_api_title)
-    private val interests by composeTestRule.stringResource(FeatureInterestsR.string.feature_interests_api_title)
-    private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_api_title)
+    private val test1 by composeTestRule.stringResource(Test1R.string.route_test1_contract_title)
+    private val test3 by composeTestRule.stringResource(Test3R.string.route_test3_contract_title)
+    private val test2 by composeTestRule.stringResource(Test2R.string.route_test2_contract_title)
     private val search by composeTestRule.stringResource(R.string.top_navigation_search_content_description)
     private val settings by composeTestRule.stringResource(R.string.top_navigation_settings_content_description)
     private val darkModePreference by composeTestRule.stringResource(
-        SettingsR.string.feature_settings_impl_dark_mode_preference,
+        SettingsR.string.route_settings_scene_dark_mode_preference,
     )
 
     @Before
     fun setup() = hiltRule.inject()
 
     @Test
-    fun firstScreen_isForYou() {
+    fun firstScreen_isTest1() {
         composeTestRule.apply {
-            // VERIFY for you is selected
-            onNodeWithText(forYou).assertIsSelected()
+            // VERIFY test 1 is selected
+            onNodeWithText(test1).assertIsSelected()
         }
     }
 
@@ -72,10 +72,10 @@ class NavigationTest {
             // GIVEN the user is on any of the top level destinations, THEN the Up arrow is not shown.
             onNodeWithContentDescription(navigateUp).assertDoesNotExist()
 
-            onNodeWithText(saved).performClick()
+            onNodeWithText(test2).performClick()
             onNodeWithContentDescription(navigateUp).assertDoesNotExist()
 
-            onNodeWithText(interests).performClick()
+            onNodeWithText(test3).performClick()
             onNodeWithContentDescription(navigateUp).assertDoesNotExist()
         }
     }
@@ -86,11 +86,11 @@ class NavigationTest {
             onNodeWithContentDescription(search).assertExists()
             onNodeWithContentDescription(settings).assertExists()
 
-            onNodeWithText(saved).performClick()
+            onNodeWithText(test2).performClick()
             onNodeWithContentDescription(search).assertExists()
             onNodeWithContentDescription(settings).assertExists()
 
-            onNodeWithText(interests).performClick()
+            onNodeWithText(test3).performClick()
             onNodeWithContentDescription(search).assertExists()
             onNodeWithContentDescription(settings).assertExists()
         }
@@ -118,13 +118,13 @@ class NavigationTest {
     @Test
     fun whenSettingsScreenBackPressed_previousScreenIsDisplayed() {
         composeTestRule.apply {
-            // Navigate to the saved screen, open the settings screen, then go back.
-            onNodeWithText(saved).performClick()
+            // Navigate to the test 2 screen, open the settings screen, then go back.
+            onNodeWithText(test2).performClick()
             onNodeWithContentDescription(settings).performClick()
             Espresso.pressBack()
 
-            // Check that the saved screen is still visible and selected.
-            onNode(hasText(saved) and hasTestTag("NtNavItem")).assertIsSelected()
+            // Check that the test 2 screen is still visible and selected.
+            onNode(hasText(test2) and hasTestTag("NtNavItem")).assertIsSelected()
         }
     }
 
@@ -134,10 +134,10 @@ class NavigationTest {
     @Test(expected = NoActivityResumedException::class)
     fun homeDestination_back_quitsApp() {
         composeTestRule.apply {
-            // GIVEN the user navigates to the Interests destination
-            onNodeWithText(interests).performClick()
-            // and then navigates to the For you destination
-            onNodeWithText(forYou).performClick()
+            // GIVEN the user navigates to the Test3 destination
+            onNodeWithText(test3).performClick()
+            // and then navigates to the Test 1 destination
+            onNodeWithText(test1).performClick()
             // WHEN the user uses the system button/gesture to go back
             Espresso.pressBack()
             // THEN the app quits
@@ -145,19 +145,19 @@ class NavigationTest {
     }
 
     /*
-     * When pressing back from any top level destination except "For you", the app navigates back
-     * to the "For you" destination, no matter which destinations you visited in between.
+     * When pressing back from any top level destination except "Test 1", the app navigates back
+     * to the "Test 1" destination, no matter which destinations you visited in between.
      */
     @Test
-    fun navigationBar_backFromAnyDestination_returnsToForYou() {
+    fun navigationBar_backFromAnyDestination_returnsToTest1() {
         composeTestRule.apply {
-            // GIVEN the user navigated to the Interests destination
-            onNodeWithText(interests).performClick()
+            // GIVEN the user navigated to the Test3 destination
+            onNodeWithText(test3).performClick()
             // TODO: Add another destination here to increase test coverage, see b/226357686.
             // WHEN the user uses the system button/gesture to go back,
             Espresso.pressBack()
-            // THEN the app shows the For You destination
-            onNodeWithText(forYou).assertExists()
+            // THEN the app shows the Test 1 destination
+            onNodeWithText(test1).assertExists()
         }
     }
 }

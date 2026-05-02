@@ -1,0 +1,214 @@
+0:46 Activity
+0:46 Activity Compose
+0:46 Activity Kotlin Extensions
+0:46 Annotation
+0:46 Experimental annotation
+0:46 Annotation
+0:46 AppCompat
+0:46 AppCompat Resources
+0:46 Android Arch-Common
+0:46 Android Arch-Runtime
+0:46 AndroidX Autofill
+0:46 collections
+0:46 collections
+0:46 Collections Kotlin Extensions
+0:46 Jetpack Compose Libraries BOM
+0:46 Compose Animation
+0:46 Compose Animation
+0:46 Compose Animation Core
+0:46 Compose Animation Core
+0:46 Compose Foundation
+0:46 Compose Foundation
+0:46 Compose Layouts
+0:46 Compose Layouts
+0:46 Compose Material Icons Core
+0:46 Compose Material Icons Core
+0:46 Compose Material Icons Extended
+0:46 Compose Material Icons Extended
+0:46 Compose Material Ripple
+0:46 Compose Material Ripple
+0:46 Compose Material3 Components
+0:46 Material Adaptive Navigation Suite
+0:46 Material Adaptive Navigation Suite
+0:46 Compose Material3 Components
+0:46 Compose Material 3 Window Size Class
+0:46 Compose Material 3 Window Size Class
+0:46 Material Adaptive
+0:46 Material Adaptive
+0:46 Material Adaptive
+0:46 Material Adaptive
+0:46 Material Adaptive
+0:46 Material Adaptive
+0:46 Material Adaptive
+0:46 Material Adaptive
+0:46 Compose Runtime
+0:46 Compose Runtime
+0:46 Compose Runtime Annotation
+0:46 Compose Runtime Annotation
+0:46 Compose Runtime Retain
+0:46 Compose Runtime Retain
+0:46 Compose Saveable
+0:46 Compose Saveable
+0:46 Compose Runtime: Tracing
+0:46 Compose UI
+0:46 Compose UI
+0:46 Compose Geometry
+0:46 Compose Geometry
+0:46 Compose Graphics
+0:46 Compose Graphics
+0:46 Compose UI Text
+0:46 Compose UI Text
+0:46 Compose UI Preview Tooling
+0:46 Compose UI Preview Tooling
+0:46 Compose Unit
+0:46 Compose Unit
+0:46 Compose Util
+0:46 Compose Util
+0:46 AndroidX Futures
+0:46 Core
+0:46 Core Kotlin Extensions
+0:46 SplashScreen
+0:46 androidx.core:core-viewtree
+0:46 Android Support Library Cursor Adapter
+0:46 Android Support Library Custom View
+0:46 androidx.customview:poolingcontainer
+0:46 DataStore
+0:46 DataStore
+0:46 DataStore Core
+0:46 DataStore Core
+0:46 DataStore Core Okio
+0:46 DataStore Core Okio
+0:46 Android Support Library Document File
+0:46 Android Support Library Drawer Layout
+0:46 Android Support DynamicAnimation
+0:46 Emoji2
+0:46 Emoji2 Views Helper
+0:46 Android Support ExifInterface
+0:46 Android Support Library fragment
+0:46 Android Graphics Path
+0:46 Graphics Shapes
+0:46 Graphics Shapes
+0:46 ViewModel Hilt Extension
+0:46 ViewModel Compose Hilt Extension
+0:46 Android Support Library Interpolators
+0:46 Android Support Library core utils
+0:46 Lifecycle-Common
+0:46 Lifecycle-Common for Java 8
+0:46 Lifecycle-Common
+0:46 Lifecycle LiveData
+0:46 Lifecycle LiveData Core
+0:46 LiveData Core Kotlin Extensions
+0:46 Lifecycle Process
+0:46 Lifecycle Runtime
+0:46 Lifecycle Runtime
+0:46 Lifecycle Runtime Compose
+0:46 Lifecycle Runtime Compose
+0:46 Lifecycle Kotlin Extensions
+0:46 Lifecycle Kotlin Extensions
+0:46 Lifecycle ViewModel
+0:46 Lifecycle ViewModel
+0:46 Lifecycle ViewModel Compose
+0:46 Lifecycle ViewModel Compose
+0:46 Lifecycle ViewModel Kotlin Extensions
+0:46 Androidx Lifecycle Navigation3 ViewModel
+0:46 Androidx Lifecycle Navigation3 ViewModel
+0:46 Lifecycle ViewModel with SavedState
+0:46 Lifecycle ViewModel with SavedState
+0:46 Android Support Library loader
+0:46 Android Support Library Local Broadcast Manager
+0:46 Metrics
+0:46 Androidx Navigation 3 Runtime
+0:46 Androidx Navigation 3 Runtime
+0:46 Androidx Navigation 3 UI
+0:46 Androidx Navigation 3 UI
+0:46 Navigation Event
+0:46 Navigation Event
+0:46 NavigationEvent Compose
+0:46 NavigationEvent Compose
+0:46 Android Support Library Print
+0:46 Profile Installer
+0:46 Android Resource Inspection - Annotations
+0:46 Room-Common
+0:46 Room-Common
+0:46 Room Kotlin Extensions
+0:46 Room-Runtime
+0:46 Room-Runtime
+0:46 Saved State
+0:46 Saved State
+0:46 Saved State Compose
+0:46 Saved State Compose
+0:46 SavedState Kotlin Extensions
+0:46 SQLite
+0:46 SQLite
+0:46 SQLite Framework Integration
+0:46 SQLite Framework Integration
+0:46 Android App Startup Runtime
+0:46 Tracing
+0:46 Tracing Kotlin Extensions
+0:46 Tracing Perfetto
+0:46 Transition
+0:46 Android Support VectorDrawable
+0:46 Android Support AnimatedVectorDrawable
+0:46 VersionedParcelable
+0:46 Android Support Library View Pager
+0:46 WindowManager
+0:46 WindowManager Core
+0:46 WindowManager Core
+0:46 AndroidSVG
+48:47 play-services-base
+97:1096 Animal Sniffer
+1195:1892 Checker Framework Annotations
+3089:11357 Error Prone
+14448:11358 Guava JDK5
+25808:11362 Guava JDK7
+37172:81008 J2ObjC
+118182:1602 JSR 305
+14448:11358 JSpecify
+119786:11307 JsInterop Annotations
+131095:105133 Kotlin
+3089:11357 Kotlin coroutines
+14448:11358 SafeParcelable library
+236230:10695 apksig
+14448:11358 gsfclient
+246927:9116 java_annotations
+256045:11356 kotlinx_atomicfu
+48:47 play-services-basement
+48:47 play-services-oss-licenses
+48:47 play-services-tasks
+0:46 FindBugs-jsr305
+267403:47 Dagger
+267403:47 Dagger Lint Rules AAR Distribution
+267403:47 Hilt Android
+267403:47 Hilt Core
+0:46 error-prone annotations
+0:46 J2ObjC Annotations
+0:46 okhttp-logging-interceptor
+0:46 okhttp
+0:46 okio
+0:46 okio
+267403:47 Converter: kotlinx.serialization
+267403:47 Retrofit
+267403:47 coil
+267403:47 coil-base
+267403:47 coil-svg
+0:46 Jakarta Dependency Injection
+0:46 javax.inject
+267452:34 Checker Qual
+267403:47 JetBrains Java Annotations
+0:46 Kotlin Stdlib
+0:46 Kotlin Stdlib Common
+0:46 Kotlin Stdlib Jdk7
+0:46 Kotlin Stdlib Jdk8
+267403:47 kotlinx-coroutines-android
+267403:47 kotlinx-coroutines-bom
+267403:47 kotlinx-coroutines-core
+267403:47 kotlinx-coroutines-core
+267403:47 kotlinx-coroutines-guava
+0:46 kotlinx-datetime
+0:46 kotlinx-datetime
+267403:47 kotlinx-serialization-bom
+267403:47 kotlinx-serialization-core
+267403:47 kotlinx-serialization-core
+267403:47 kotlinx-serialization-json
+267403:47 kotlinx-serialization-json
+0:46 JSpecify annotations

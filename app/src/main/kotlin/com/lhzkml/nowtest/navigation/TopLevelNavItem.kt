@@ -3,12 +3,12 @@ package com.lhzkml.nowtest.navigation
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
-import com.lhzkml.nowtest.feature.bookmarks.api.navigation.BookmarksNavKey
-import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
-import com.lhzkml.nowtest.feature.interests.api.navigation.InterestsNavKey
-import com.lhzkml.nowtest.feature.bookmarks.api.R as bookmarksR
-import com.lhzkml.nowtest.feature.foryou.api.R as forYouR
-import com.lhzkml.nowtest.feature.interests.api.R as interestsR
+import com.lhzkml.nowtest.route.test1.contract.navigation.Test1Route
+import com.lhzkml.nowtest.route.test2.contract.navigation.Test2Route
+import com.lhzkml.nowtest.route.test3.contract.navigation.Test3Route
+import com.lhzkml.nowtest.route.test1.contract.R as test1R
+import com.lhzkml.nowtest.route.test2.contract.R as test2R
+import com.lhzkml.nowtest.route.test3.contract.R as test3R
 
 /**
  * Type for the top level navigation items in the application. Contains UI information about the
@@ -26,26 +26,26 @@ data class TopLevelNavItem(
     @param:StringRes val iconTextId: Int,
 )
 
-val FOR_YOU = TopLevelNavItem(
+val TEST_1 = TopLevelNavItem(
     selectedIcon = NtIcons.Upcoming,
     unselectedIcon = NtIcons.UpcomingBorder,
-    iconTextId = forYouR.string.feature_foryou_api_title,
+    iconTextId = test1R.string.route_test1_contract_title,
 )
 
-val BOOKMARKS = TopLevelNavItem(
-    selectedIcon = NtIcons.Bookmarks,
-    unselectedIcon = NtIcons.BookmarksBorder,
-    iconTextId = bookmarksR.string.feature_bookmarks_api_title,
+val TEST_2 = TopLevelNavItem(
+    selectedIcon = NtIcons.Bookmark,
+    unselectedIcon = NtIcons.BookmarkBorder,
+    iconTextId = test2R.string.route_test2_contract_title,
 )
 
-val INTERESTS = TopLevelNavItem(
+val TEST_3 = TopLevelNavItem(
     selectedIcon = NtIcons.Grid3x3,
     unselectedIcon = NtIcons.Grid3x3,
-    iconTextId = interestsR.string.feature_interests_api_title,
+    iconTextId = test3R.string.route_test3_contract_title,
 )
 
 val TOP_LEVEL_NAV_ITEMS = mapOf(
-    ForYouNavKey to FOR_YOU,
-    BookmarksNavKey to BOOKMARKS,
-    InterestsNavKey to INTERESTS,
+    Test1Route to TEST_1,
+    Test2Route to TEST_2,
+    Test3Route to TEST_3,
 )

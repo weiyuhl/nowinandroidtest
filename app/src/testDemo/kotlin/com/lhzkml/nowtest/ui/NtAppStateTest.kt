@@ -7,9 +7,9 @@ import com.lhzkml.nowtest.core.navigation.NavigationState
 import com.lhzkml.nowtest.core.navigation.Navigator
 import com.lhzkml.nowtest.core.testing.util.TestNetworkMonitor
 import com.lhzkml.nowtest.core.testing.util.TestTimeZoneMonitor
-import com.lhzkml.nowtest.feature.bookmarks.api.navigation.BookmarksNavKey
-import com.lhzkml.nowtest.feature.foryou.api.navigation.ForYouNavKey
-import com.lhzkml.nowtest.feature.interests.api.navigation.InterestsNavKey
+import com.lhzkml.nowtest.route.test1.contract.navigation.Test1Route
+import com.lhzkml.nowtest.route.test2.contract.navigation.Test2Route
+import com.lhzkml.nowtest.route.test3.contract.navigation.Test3Route
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.flow.collect
@@ -44,11 +44,11 @@ class NtAppStateTest {
     private lateinit var state: NtAppState
 
     private fun testNavigationState() = NavigationState(
-        startKey = ForYouNavKey,
-        topLevelStack = NavBackStack(ForYouNavKey),
+        startKey = Test1Route,
+        topLevelStack = NavBackStack(Test1Route),
         subStacks = mapOf(
-            ForYouNavKey to NavBackStack(ForYouNavKey),
-            BookmarksNavKey to NavBackStack(BookmarksNavKey),
+            Test1Route to NavBackStack(Test1Route),
+            Test2Route to NavBackStack(Test2Route),
         ),
     )
 
@@ -68,16 +68,16 @@ class NtAppStateTest {
             }
         }
 
-        assertEquals(ForYouNavKey, state.navigationState.currentTopLevelKey)
-        assertEquals(ForYouNavKey, state.navigationState.currentKey)
+        assertEquals(Test1Route, state.navigationState.currentTopLevelKey)
+        assertEquals(Test1Route, state.navigationState.currentKey)
 
         // Navigate to another destination once
-        navigator.navigate(BookmarksNavKey)
+        navigator.navigate(Test2Route)
 
         composeTestRule.waitForIdle()
 
-        assertEquals(BookmarksNavKey, state.navigationState.currentTopLevelKey)
-        assertEquals(BookmarksNavKey, state.navigationState.currentKey)
+        assertEquals(Test2Route, state.navigationState.currentTopLevelKey)
+        assertEquals(Test2Route, state.navigationState.currentKey)
     }
 
     @Test
@@ -93,7 +93,7 @@ class NtAppStateTest {
 
         assertEquals(3, navigationState.topLevelKeys.size)
         assertEquals(
-            setOf(ForYouNavKey, BookmarksNavKey, InterestsNavKey),
+            setOf(Test1Route, Test2Route, Test3Route),
             navigationState.topLevelKeys,
         )
     }
