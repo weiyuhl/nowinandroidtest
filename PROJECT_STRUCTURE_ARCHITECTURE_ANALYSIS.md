@@ -13,6 +13,7 @@ nowtest 是一个多模块 Android 项目，使用 Kotlin、Jetpack Compose、Hi
 ```text
 ./
 ├── .github/                     # GitHub issue/PR 模板、Renovate、CI workflow
+├── .claude/                     # Claude Code 本地设置
 ├── app/                         # 主应用模块
 ├── benchmarks/                  # 宏基准测试、Baseline Profile
 ├── build-logic/                 # 自定义 Gradle convention plugins
@@ -21,6 +22,7 @@ nowtest 是一个多模块 Android 项目，使用 Kotlin、Jetpack Compose、Hi
 ├── gradle/                      # Gradle wrapper 与版本目录
 ├── lint/                        # 自定义 lint 规则模块
 ├── route/                       # 页面路由模块
+├── tools/                       # 代码风格、pre-push、环境初始化辅助脚本
 └── ui-test-hilt-manifest/       # UI 测试 Hilt manifest 辅助模块
 ```
 
@@ -42,7 +44,7 @@ nowtest 是一个多模块 Android 项目，使用 Kotlin、Jetpack Compose、Hi
 
 ### 3.2 core 模块
 
-`core/` 保持独立，不依赖 `app/` 或 `route/`。它提供数据、数据库、网络、设计系统、导航、通知、测试等基础设施与共享能力。
+`core/` 保持独立，不依赖 `app/` 或 `route/`。它提供数据、数据库、网络、设计系统、导航、通知、测试等基础设施与共享能力。当前 `core:designsystem` 只承载 Jasmine 主题、颜色和图标，`core:ui` 承载埋点、Jank、预览、时区和返回文案等跨页面辅助能力，不作为单页面组件库使用。
 
 主要模块：
 
@@ -139,6 +141,7 @@ nowtest.root
 当前真实数据使用面较窄：
 
 - 设置页使用 `UserDataRepository` 和 DataStore 保存深色模式偏好。
+- 设置页使用 `AppLanguageRepository` 与 `AppCompatDelegate` 管理应用语言，不新增 DataStore 语言字段。
 - 搜索页使用本地测试内容，不依赖远程搜索接口。
 - Room 和 Network 作为基础设施保留，按后续产品需求接入具体业务。
 
@@ -149,6 +152,7 @@ nowtest.root
 - JUnit / Kotlin Test / Truth / Turbine。
 - Compose UI Test。
 - Roborazzi 截图测试。
+- app 层截图基准存放在 `app/src/testDemo/screenshots/`，预期 UI 变化需要录制并验证新基准。
 - Hilt 测试替身。
 - Macrobenchmark / Baseline Profile。
 - 自定义 lint。
@@ -157,7 +161,7 @@ nowtest.root
 
 ```bash
 ./gradlew spotlessCheck
-./gradlew testDemoDebug
+./gradlew testDemoDebugUnitTest
 ./gradlew :app:assembleDemoDebug
 ./gradlew verifyRoborazziDemoDebug
 ```

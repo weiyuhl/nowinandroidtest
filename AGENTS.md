@@ -19,19 +19,26 @@ nowtest 是一款使用 Kotlin 编写的原生 Android 移动应用。项目采�
 
 主 Android 应用位于 `app/` 文件夹中。页面路由模块位于 `route/` 中，核心和共享模块位于 `core/` 中。
 
+## 开发链路
+
+功能修改按完整链路检查：入口、Route、EntryProvider、Screen、ViewModel/UiState、Repository、DataStore/Room/Network、DI、资源和多语言、Analytics/Jank/通知、测试替身、单元测试、UI 测试、Roborazzi 截图、APK 构建。完整流程见 `DEVELOPMENT_CHANGE_GUIDE.md`，基础设施边界见 `INFRASTRUCTURE_COMPONENTS.md`。
+
+删除或裁剪功能时，只删除业务入口、字段、表、DTO、方法、页面交互和测试数据；DataStore、Room、仓库模式、Hilt/KSP、网络、导航、设计系统和测试底座这些基础设施组件本身要保留。
+
 ## 构建与测试命令
 
 应用和 Android 库有两种产品风味：`demo` 和 `prod`，以及两种构建类型：`debug` 和 `release`。
 
 - 构建：`./gradlew assemble{Variant}`。通常使用 `assembleDemoDebug`。
 - 修复代码格式/检查：`./gradlew spotlessApply`
-- 运行本地测试：`./gradlew {variant}Test`
-- 运行单个测试：`./gradlew {variant}Test --tests "com.example.myapp.MyTestClass"`
+- 运行本地测试：`./gradlew testDemoDebugUnitTest`
+- 运行单个测试：`./gradlew :route:search:scene:testDemoDebugUnitTest --tests "com.example.myapp.MyTestClass"`
 - 运行本地截图测试：`./gradlew verifyRoborazziDemoDebug`
+- 录制本地截图基准：`./gradlew recordRoborazziDemoDebug`
 
 ### 插桩测试
 
-- Gradle 管理的设备用于运行设备测试：`./gradlew pixel6api31aospDebugAndroidTest`。还有 `pixel4api30aospatdDebugAndroidTest` 和 `pixelcapi30aospatdDebugAndroidTest`。
+- Gradle 管理的设备用于运行设备测试：`./gradlew :app:pixel6api31aospDemoDebugAndroidTest`。还有 `:app:pixel4api30aospatdDemoDebugAndroidTest` 和 `:app:pixelcapi30aospatdDemoDebugAndroidTest`。
 
 ### 编写测试
 
@@ -49,7 +56,7 @@ nowtest 是一款使用 Kotlin 编写的原生 Android 移动应用。项目采�
 ## 持续集成
 
 - 工作流定义在 `.github/workflows/*.yaml` 中，包含各种检查。
-- 截图测试由 CI 生成，因此不应从工作站检入仓库。
+- Roborazzi 截图基准位于 `app/src/testDemo/screenshots/`。预期 UI 变化需要录制并验证新基准；非预期差异应修复代码。
 
 ## 版本控制与代码位置
 

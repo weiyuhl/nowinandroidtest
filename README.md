@@ -9,8 +9,8 @@ nowtest 是一款使用 Kotlin 和 Jetpack Compose 构建的原生 Android 应�
 
 - 顶层页面：保留“测试一”“测试二”“测试三”的导航入口和页面壳，用于维持当前产品导航结构。
 - 搜索：使用本地测试内容作为搜索源，覆盖搜索输入、结果展示和 ViewModel 状态流。
-- 设置：通过 DataStore 保存深色模式偏好，并通过 AppCompatDelegate 管理应用语言。
-- 设计系统：集中在 `core:designsystem` 和 `core:ui`，提供主题、图标、预览和截图测试基础能力。
+- 设置：通过 DataStore 保存深色模式偏好，通过 AppCompatDelegate 管理应用语言，并保留开源许可入口。
+- 设计系统：`core:designsystem` 提供 Jasmine 主题、颜色和图标；`core:ui` 提供埋点、Jank、预览、返回文案和时区等跨页面辅助能力。
 - 数据基础设施：保留 Repository 模式、DataStore、Room、Network、DI/Hilt/KSP 等组件。
 
 ## 开发环境
@@ -22,7 +22,7 @@ nowtest 是一款使用 Kotlin 和 Jetpack Compose 构建的原生 Android 应�
 ```bash
 ./gradlew assembleDemoDebug
 ./gradlew spotlessApply
-./gradlew testDemoDebug
+./gradlew testDemoDebugUnitTest
 ./gradlew verifyRoborazziDemoDebug
 ```
 
@@ -82,9 +82,9 @@ DataStore / Room / Network
 常用测试命令：
 
 ```bash
-./gradlew testDemoDebug
+./gradlew testDemoDebugUnitTest
 ./gradlew verifyRoborazziDemoDebug
 ./gradlew connectedDemoDebugAndroidTest
 ```
 
-截图测试基线通常由 CI 生成。非 Linux 环境下截图像素可能存在差异，需要按项目流程重新录制本地基线后再验证。
+Roborazzi 截图基准位于 `app/src/testDemo/screenshots/`。预期 UI 变化需要录制新基准并重新验证；非预期差异应修复代码。

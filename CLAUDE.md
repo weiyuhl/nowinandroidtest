@@ -6,8 +6,8 @@
 
 - 构建：`./gradlew assembleDemoDebug`
 - 修复格式/代码检查：`./gradlew spotlessApply`
-- 运行所有本地测试：`./gradlew testDemoDebug`
-- 运行单个测试类：`./gradlew testDemoDebug --tests "com.lhzkml.nowtest.MyTestClass"`
+- 运行所有本地测试：`./gradlew testDemoDebugUnitTest`
+- 运行单个测试类：`./gradlew :route:search:scene:testDemoDebugUnitTest --tests "com.lhzkml.nowtest.MyTestClass"`
 - 运行所有插桩测试：`./gradlew connectedDemoDebugAndroidTest`
 - 截图测试（验证）：`./gradlew verifyRoborazziDemoDebug`
 - 截图测试（录制新基线）：`./gradlew recordRoborazziDemoDebug`
@@ -24,6 +24,12 @@
 - **数据层：** 使用仓库模式封装 DataStore、Room、Network 等数据源。
 
 核心库：Hilt、Navigation 3、Room、Proto DataStore、Retrofit/OkHttp、Roborazzi、Macrobenchmark、Baseline Profile。
+
+## 开发链路
+
+功能改动按这条链路检查：入口、Route、EntryProvider、Screen、ViewModel/UiState、Repository、DataStore/Room/Network、DI、资源和多语言、Analytics/Jank/通知、测试替身、单元测试、UI 测试、Roborazzi 截图、APK 构建。完整步骤见 `DEVELOPMENT_CHANGE_GUIDE.md`，基础设施边界见 `INFRASTRUCTURE_COMPONENTS.md`。
+
+删除或裁剪功能时，删除业务入口、字段、表、DTO、方法、页面交互和测试数据；保留 DataStore、Room、仓库模式、Hilt/KSP、网络、导航、设计系统和测试底座这些基础设施组件。
 
 ## 模块结构
 
@@ -48,9 +54,9 @@
 
 - 本地测试：JUnit + Turbine + Truth。
 - 插桩测试：使用 `ComposeTestRule` 配合 `ComponentActivity` 测试 UI 功能。`:app` 模块中的更广泛测试可以启动 `MainActivity`。
-- 截图测试：Roborazzi。基线图片在 Linux CI 上录制，在其他平台上可能存在像素差异。
+- 截图测试：Roborazzi。基准图片位于 `app/src/testDemo/screenshots/`；预期 UI 变化需要运行 `recordRoborazziDemoDebug` 更新基准，再运行 `verifyRoborazziDemoDebug` 验证。
 
-UI 测试与源代码同目录存放：`src/testDemo/` 和 `src/androidTestDemo/`。
+UI 测试与源代码同目录存放：`src/testDemo/` 和 `src/androidTest/`。
 
 ## 代码风格
 

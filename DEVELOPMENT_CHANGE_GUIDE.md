@@ -53,6 +53,8 @@
 | `app` | 单 Activity 应用壳、启动、主题注入、顶层导航、全局 snackbar、全局导航测试、app 截图测试 | 新增入口、改顶层导航、改全局壳层行为时必须修改 |
 | `route/*/contract` | 页面导航契约，包含 `NavKey` 和跨模块标题资源 | 新增页面或改页面对外入口时修改 |
 | `route/*/scene` | 页面 UI、ViewModel、页面状态、页面测试 | 具体业务功能的主要修改位置 |
+| `core/common` | 通用 Result、协程调度器、应用级 CoroutineScope DI | 改通用并发、调度器或结果封装时修改 |
+| `core/analytics` | 埋点接口、事件模型、CompositionLocal、demo/prod 绑定 | 页面曝光、交互事件、仓库事件变化时检查 |
 | `core/model` | 跨模块共享数据模型 | 数据要跨 UI、仓库、DataStore、数据库传递时修改 |
 | `core/data` | 仓库接口、仓库实现、数据层 DI、网络/本地组合 | UI 不直接碰 DataStore、Room、Network，统一经过这里 |
 | `core/datastore` | DataStore serializer、DataSource、DI | 用户偏好、设置项、轻量持久化状态使用这里 |
@@ -62,6 +64,8 @@
 | `core/designsystem` | Jasmine 主题、颜色、图标 | 全局视觉、主题、图标从这里统一维护 |
 | `core/ui` | 跨页面 UI 辅助能力、埋点、Jank、预览工具 | 多页面复用能力放这里，单页面组件不要放这里 |
 | `core/navigation` | Navigation 3 状态管理和 `Navigator` | 导航机制本身修改时才动 |
+| `core/domain` | 预留共享 UseCase 模块 | 只有多个调用方复用同一段业务编排逻辑时才新增 |
+| `core/notifications` | 通知抽象、系统通知实现、demo/prod 绑定、通知资源 | 新增或修改本地通知能力时检查 |
 | `core/testing` | 通用测试替身和测试工具 | 仓库接口、全局测试依赖变化时同步 |
 | `core/data-test` | data 层 demo/test 替身 | repository 接口变化时同步 |
 | `core/datastore-test` | DataStore 测试替身 | DataStore 依赖测试时使用 |
@@ -69,6 +73,7 @@
 | `ui-test-hilt-manifest` | Hilt UI 测试 Activity | app/route UI 测试需要 Hilt Activity 时使用 |
 | `benchmarks` | Macrobenchmark 和 Baseline Profile | 改启动、顶层路径、关键性能路径时检查 |
 | `build-logic` | Gradle convention plugins、Spotless、module graph、GMD、Jacoco | 新模块类型、构建规则、格式化规则变化时修改 |
+| `lint` | 自定义 lint 规则 | 修改测试命名、静态检查规则或 lint 发布配置时检查 |
 
 ## 3. 当前功能链路
 
@@ -91,6 +96,8 @@ NtApplication
 关键文件：
 
 - `app/src/main/kotlin/com/lhzkml/nowtest/NtApplication.kt`
+- `app/src/debug/kotlin/com/lhzkml/nowtest/DebugCrashLogInstaller.kt`
+- `app/src/release/kotlin/com/lhzkml/nowtest/DebugCrashLogInstaller.kt`
 - `app/src/main/kotlin/com/lhzkml/nowtest/MainActivity.kt`
 - `app/src/main/kotlin/com/lhzkml/nowtest/MainActivityViewModel.kt`
 - `app/src/main/kotlin/com/lhzkml/nowtest/ui/NtApp.kt`
@@ -101,6 +108,7 @@ NtApplication
 
 - 改启动、Splash、全局主题、深色模式、系统栏颜色、全局 snackbar，都要检查这里。
 - 改 `MainActivityViewModel` 读取的 `UserData` 字段时，要同步 `core/model`、DataStore、Repository 和测试替身。
+- 改全局调试崩溃日志时，要同时检查 debug/release 两个 `DebugCrashLogInstaller`，避免 release 变体误带调试写文件行为。
 
 ### 3.2 顶层导航
 
@@ -129,6 +137,7 @@ TopLevelNavItem.kt
 测试：
 
 - `app/src/androidTest/kotlin/com/lhzkml/nowtest/ui/NavigationTest.kt`
+- `app/src/testDemo/kotlin/com/lhzkml/nowtest/ui/NtAppStateTest.kt`
 - `app/src/testDemo/kotlin/com/lhzkml/nowtest/ui/NtAppScreenSizesScreenshotTests.kt`
 - `app/src/testDemo/screenshots/*.png`
 
@@ -149,6 +158,7 @@ TopLevelNavItem.kt
   -> SavedStateHandle searchQuery
   -> SearchTestContent.localSearchTestContents
   -> SearchResultUiState
+  -> AnalyticsHelper searchQuery event
 ```
 
 关键文件：
@@ -162,11 +172,13 @@ TopLevelNavItem.kt
 - `route/search/scene/src/main/kotlin/.../SearchResultUiState.kt`
 - `route/search/scene/src/main/kotlin/.../SearchTestContent.kt`
 - `route/search/scene/src/test/kotlin/.../SearchViewModelTest.kt`
+- `core/analytics/src/main/kotlin/.../AnalyticsHelper.kt`
 
 修改搜索时：
 
 - 改搜索输入规则：改 `SearchViewModel` 和 `SearchViewModelTest`。
 - 改本地搜索内容：改 `SearchTestContent.kt`、搜索字符串资源、`SearchViewModelTest`。
+- 改搜索提交或埋点事件：改 `SearchViewModel` 的 `onSearchTriggered()` 链路，并同步 `SearchViewModelTest` 中的 analytics 测试替身。
 - 改搜索 UI：改 `SearchScreen.kt`，必要时补 Compose UI 测试或截图测试。
 - 改成远程搜索：新增 `core/network` 方法、demo/prod 实现、`core/data` repository，再改 `SearchViewModel`。
 - 改成数据库搜索：新增 Room Entity/DAO/query、repository，再改 `SearchViewModel`。
@@ -192,8 +204,14 @@ TopLevelNavItem.kt
 - `route/settings/scene/src/main/kotlin/.../SettingsViewModel.kt`
 - `route/settings/scene/src/main/kotlin/.../AppLanguageRepository.kt`
 - `route/settings/scene/src/main/kotlin/.../di/AppLanguageModule.kt`
+- `route/settings/scene/src/main/AndroidManifest.xml`
+- `route/settings/scene/src/main/res/values/themes.xml`
+- `route/settings/scene/src/main/res/values-night/themes.xml`
 - `route/settings/scene/src/main/res/values/strings.xml`
 - `route/settings/scene/src/main/res/values-zh-rCN/strings.xml`
+- `route/settings/scene/build.gradle.kts`
+- `app/src/main/res/raw/third_party_licenses`
+- `app/src/main/res/raw/third_party_license_metadata`
 - `route/settings/scene/src/test/kotlin/.../SettingsViewModelTest.kt`
 - `route/settings/scene/src/androidTest/kotlin/.../SettingsScreenTest.kt`
 
@@ -229,7 +247,19 @@ SettingsScreen radio
 
 - 深色模式 ViewModel 状态：`SettingsViewModelTest`
 - 设置页面选项展示和点击：`SettingsScreenTest`
+- 开源许可入口展示：`SettingsScreenTest`
 - 如果设置入口或返回行为变化：`NavigationTest`
+
+设置里的开源许可链路：
+
+```text
+SettingsScreen Licenses button
+  -> OssLicensesMenuActivity
+  -> route/settings/scene AndroidManifest activity declaration
+  -> route_settings_scene_theme_jasmine_oss_licenses
+  -> google oss licenses dependency
+  -> app raw third_party license resources
+```
 
 ## 4. 新增顶层功能页面的完整步骤
 
@@ -245,6 +275,8 @@ route/<name>/contract/src/main/kotlin/com/lhzkml/nowtest/route/<name>/contract/n
 route/<name>/contract/src/main/res/values/strings.xml
 route/<name>/contract/src/main/res/values-zh-rCN/strings.xml
 ```
+
+顶层页面需要 contract 字符串资源作为导航标题。独立页面如果没有跨模块标题或入口文案，可以只保留 `NavKey`，像当前 `route/settings/contract` 一样不放字符串资源。
 
 `build.gradle.kts` 使用：
 
@@ -372,6 +404,9 @@ implementation(projects.route.<name>.scene)
   - 顶层导航项数量变化通常会影响截图。
   - 如果截图变化是预期，运行 `:app:recordRoborazziDemoDebug` 更新基准图。
 
+- `app/src/testDemo/kotlin/com/lhzkml/nowtest/ui/NtAppStateTest.kt`
+  - 顶层 route 集合、默认 route、离线状态、时区状态变化时同步更新。
+
 - `benchmarks/`
   - 如果新页面替代启动页或关键路径，更新 baseline profile 和 macrobenchmark 路径。
 
@@ -430,7 +465,8 @@ Screen.kt
 - 改页面状态：改 `UiState`、`ViewModel`、ViewModel 单测。
 - 页面需要读写数据：不要在 UI 直接访问 DataStore、Room、Network，先走 repository。
 - 页面功能只属于该页面：代码留在 `route/<name>/scene`。
-- 多页面复用：再考虑下沉到 `core/ui`、`core/model`、`core/data`。
+- 多页面复用：再考虑下沉到 `core/ui`、`core/model`、`core/data`、`core/common`。
+- 不要为了单页面样式新增全局组件库；当前 `core/ui` 只放埋点、Jank、预览、时区、返回文案等跨页面辅助能力。
 
 ## 7. 新增或修改用户偏好的完整数据链路
 
@@ -534,6 +570,7 @@ Entity
 - 删除 repository 中对应方法。
 - 删除测试替身和测试数据。
 - 更新 schema。
+- 当前开发阶段默认卸载重装验证，不为已删除或重置的开发期业务表保留历史迁移；只有明确要求兼容已发布用户数据时，才新增 Room `Migration`。
 - 保留 Room 模块、DatabaseModule、数据库组件本身。
 
 ## 9. 新增或修改网络功能的完整链路
@@ -680,11 +717,14 @@ NtApplication @HiltAndroidApp
 | 设置项变化 | `SettingsViewModelTest`、`SettingsScreenTest` |
 | 搜索规则变化 | `SearchViewModelTest` |
 | 顶层导航变化 | `app/src/androidTest/.../NavigationTest.kt` |
+| app 状态、默认顶层页、离线 snackbar、时区变化 | `app/src/testDemo/.../NtAppStateTest.kt` |
 | Navigation 3 行为变化 | `core/navigation/src/test/.../NavigatorTest.kt` |
+| 通用 Result 或协程 DI 变化 | `core/common/src/test/...` |
 | DataStore 字段变化 | `core/datastore/src/test/.../UserPreferencesSerializerTest.kt` |
 | Repository 接口变化 | `core/data` 测试、`core/testing`、`core/data-test` |
 | Network 数据源变化 | `core/network/src/test/.../NtNetworkDataSourceTest.kt` |
 | 设计系统主题变化 | `core/designsystem/src/test/.../ThemeTest.kt` |
+| 通知抽象或 flavor 绑定变化 | `core/notifications` 编译和相关测试 |
 | lint 规则变化 | `lint/src/test/.../TestMethodNameDetectorTest.kt` |
 
 常用命令：
@@ -694,6 +734,7 @@ NtApplication @HiltAndroidApp
 .\gradlew.bat :route:search:scene:testDemoDebugUnitTest
 .\gradlew.bat :route:settings:scene:testDemoDebugUnitTest
 .\gradlew.bat :core:navigation:testDemoDebugUnitTest
+.\gradlew.bat :core:common:testDemoDebugUnitTest
 .\gradlew.bat :core:datastore:testDemoDebugUnitTest
 .\gradlew.bat :core:designsystem:testDemoDebugUnitTest
 .\gradlew.bat :app:testDemoDebugUnitTest
@@ -757,10 +798,12 @@ NtApplication @HiltAndroidApp
   -> Room table / DAO
   -> Network API / DTO
   -> DI binding
+  -> Analytics / Jank / notification binding
   -> fake/test data
   -> unit tests
   -> UI tests
   -> screenshot baselines
+  -> module README / generated module graph
   -> docs
 ```
 
@@ -792,11 +835,15 @@ NtApplication @HiltAndroidApp
    - `core/database` Entity、DAO、schema
    - `core/network` API、DTO、demo/prod 数据
    - `core/data` repository 方法和实现
+   - `core/analytics` 事件模型和事件触发点
+   - `core/notifications` 通知入口和通知资源
 
 5. DI 和测试替身
    - `DataModule`
    - `DaosModule`
    - `FlavoredNetworkModule`
+   - `AnalyticsModule`
+   - `NotificationsModule`
    - `core/testing`
    - `core/data-test`
    - `core/datastore-test`
@@ -812,8 +859,11 @@ NtApplication @HiltAndroidApp
    - 根目录文档
    - `app/README.md`
    - route/core 模块 README
+   - `docs/` 架构图和架构说明
 
 可以删除业务字段、表、DTO、方法、页面内交互、测试数据。不能误删仍被其他功能使用的基础设施组件。
+
+如果删除的是历史业务链路，可以保留或新增负向回归测试，确认旧 repository、旧 route、旧 DTO 不再存在。例如当前 `core:data` 中保留了已删内容仓库不存在的回归测试。
 
 ## 16. 功能开发完成后的完整验证清单
 

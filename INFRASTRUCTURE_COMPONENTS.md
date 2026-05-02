@@ -4,7 +4,7 @@
 
 核心规则：
 
-- 基础设施是可复用的机制、模块、运行时能力或工程能力，例如 DataStore、Room 数据库组件、仓库模式、DI/Hilt/KSP、网络模块、导航框架、设计系统、测试底座。
+- 基础设施是可复用的机制、模块、运行时能力或工程能力，例如 DataStore、Room 数据库组件、仓库模式、DI/Hilt/KSP、网络模块、导航框架、Jasmine 主题与图标、测试底座。
 - 业务字段、业务表、业务 DTO、业务状态和页面专用交互不是基础设施。即使它们位于 DataStore、Room、Repository、DI 或 Network 模块中，也应按当前功能是否使用来判断是否保留。
 - 页面是否保留取决于产品要求。保留页面壳时，应保留最小导航和页面入口；页面内部交互、状态流、仓库调用和测试数据按当前功能需要维护。
 
@@ -21,12 +21,13 @@
 | 网络模块 | `core/network/` | 保留网络模块、demo/prod 数据源抽象、OkHttp/Json 配置 |
 | 通知组件 | `core/notifications/` | 保留通知抽象和 flavor 绑定 |
 | 导航基础设施 | `core/navigation/`, `route/*/contract/.../*Route.kt` | 保留导航机制；具体页面入口按产品导航结构维护 |
-| 设计系统与共享 UI | `core/designsystem/`, `core/ui/` | 保留通用组件、主题、图标、预览和 UI 辅助能力 |
-| 测试基础设施 | `core/testing/`, `core:data-test`, `core:datastore-test`, `ui-test-hilt-manifest/` | 保留测试底座；测试替身和测试数据按当前接口维护 |
+| 设计系统与共享 UI | `core/designsystem/`, `core/ui/` | 保留 Jasmine 主题、颜色、图标、预览、埋点、Jank、时区和返回文案等跨页面能力；单页面 UI 组件不作为基础设施保留 |
+| 测试基础设施 | `core/testing/`, `core:data-test`, `core:datastore-test`, `core:screenshot-testing`, `ui-test-hilt-manifest/` | 保留测试底座；测试替身、测试数据和截图基准按当前接口与 UI 维护 |
 
 ## 当前仍保留的数据能力
 
 - 用户设置：`dark_theme_config` 及对应的 `UserDataRepository` 方法。
+- 应用语言：当前由 `AppCompatDelegate` 和系统 locale storage 管理，不使用 DataStore 字段。
 - Room 数据库组件本身：当前使用 `database_metadata` 作为基础设施 metadata 表。
 - 网络模块本身：`NtNetworkDataSource` 作为网络数据源抽象，demo/prod 实现按当前需求提供。
 
