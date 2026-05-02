@@ -14,8 +14,8 @@
 
 当前数据层能力：
 
-- `UserDataRepository`：用于设置页读取和写入主题品牌、深色模式、动态取色偏好。
-- `NtPreferencesDataSource`：基于 Proto DataStore 保存 `theme_brand`、`dark_theme_config`、`use_dynamic_color`。
+- `UserDataRepository`：用于设置页读取和写入深色模式偏好。
+- `NtPreferencesDataSource`：基于 Proto DataStore 保存 `dark_theme_config`。
 - `NtDatabase`：Room 数据库组件，当前使用 `database_metadata` 作为基础设施 metadata 表。
 - `NtNetworkDataSource`：网络数据源抽象，demo/prod 可按当前产品需求提供不同实现。
 

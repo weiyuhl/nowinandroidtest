@@ -28,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.lhzkml.nowtest.core.designsystem.component.NtTextButton
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig
@@ -153,20 +153,19 @@ private fun ColumnScope.SettingsPanel(
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeLanguage: (appLanguage: AppLanguage) -> Unit,
 ) {
-    SettingsSectionTitle(text = stringResource(string.feature_settings_impl_theme))
     SettingsSectionTitle(text = stringResource(string.feature_settings_impl_dark_mode_preference))
     Column(Modifier.selectableGroup()) {
-        SettingsThemeChooserRow(
+        SettingsOptionRow(
             text = stringResource(string.feature_settings_impl_dark_mode_config_system_default),
             selected = settings.darkThemeConfig == FOLLOW_SYSTEM,
             onClick = { onChangeDarkThemeConfig(FOLLOW_SYSTEM) },
         )
-        SettingsThemeChooserRow(
+        SettingsOptionRow(
             text = stringResource(string.feature_settings_impl_dark_mode_config_light),
             selected = settings.darkThemeConfig == LIGHT,
             onClick = { onChangeDarkThemeConfig(LIGHT) },
         )
-        SettingsThemeChooserRow(
+        SettingsOptionRow(
             text = stringResource(string.feature_settings_impl_dark_mode_config_dark),
             selected = settings.darkThemeConfig == DARK,
             onClick = { onChangeDarkThemeConfig(DARK) },
@@ -174,17 +173,17 @@ private fun ColumnScope.SettingsPanel(
     }
     SettingsSectionTitle(text = stringResource(string.feature_settings_impl_language_preference))
     Column(Modifier.selectableGroup()) {
-        SettingsThemeChooserRow(
+        SettingsOptionRow(
             text = stringResource(string.feature_settings_impl_language_system_default),
             selected = settings.appLanguage == AppLanguage.SYSTEM_DEFAULT,
             onClick = { onChangeLanguage(AppLanguage.SYSTEM_DEFAULT) },
         )
-        SettingsThemeChooserRow(
+        SettingsOptionRow(
             text = stringResource(string.feature_settings_impl_language_english),
             selected = settings.appLanguage == AppLanguage.ENGLISH,
             onClick = { onChangeLanguage(AppLanguage.ENGLISH) },
         )
-        SettingsThemeChooserRow(
+        SettingsOptionRow(
             text = stringResource(string.feature_settings_impl_language_simplified_chinese),
             selected = settings.appLanguage == AppLanguage.SIMPLIFIED_CHINESE,
             onClick = { onChangeLanguage(AppLanguage.SIMPLIFIED_CHINESE) },
@@ -202,7 +201,7 @@ private fun SettingsSectionTitle(text: String) {
 }
 
 @Composable
-fun SettingsThemeChooserRow(
+fun SettingsOptionRow(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
@@ -238,7 +237,7 @@ private fun LinksPanel() {
         modifier = Modifier.fillMaxWidth(),
     ) {
         val context = LocalContext.current
-        NtTextButton(
+        TextButton(
             onClick = {
                 context.startActivity(Intent(context, OssLicensesMenuActivity::class.java))
             },

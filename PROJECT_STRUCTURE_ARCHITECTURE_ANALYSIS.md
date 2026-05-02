@@ -14,7 +14,6 @@ nowtest 是一个多模块 Android 项目，使用 Kotlin、Jetpack Compose、Hi
 ./
 ├── .github/                     # GitHub issue/PR 模板、Renovate、CI workflow
 ├── app/                         # 主应用模块
-├── app-nt-catalog/              # 组件/设计系统 catalog 应用模块
 ├── benchmarks/                  # 宏基准测试、Baseline Profile
 ├── build-logic/                 # 自定义 Gradle convention plugins
 ├── core/                        # 核心共享模块
@@ -38,13 +37,11 @@ nowtest 是一个多模块 Android 项目，使用 Kotlin、Jetpack Compose、Hi
 
 ```text
 :app
-:app-nt-catalog
 :benchmarks
 :ui-test-hilt-manifest
 ```
 
 - `:app` 是主应用模块，负责应用入口、主题、全局导航和 feature 装配。
-- `:app-nt-catalog` 用于展示或测试设计系统组件。
 - `:benchmarks` 负责 Macrobenchmark 与 Baseline Profile。
 - `:ui-test-hilt-manifest` 用于 UI 测试中补充 Hilt manifest。
 
@@ -80,7 +77,7 @@ nowtest 是一个多模块 Android 项目，使用 Kotlin、Jetpack Compose、Hi
 | `core:datastore` | Proto DataStore 偏好设置读写 |
 | `core:datastore-proto` | DataStore 使用的 protobuf 定义与生成代码 |
 | `core:datastore-test` | DataStore 测试替身 |
-| `core:designsystem` | Compose 设计系统组件、主题、图标、截图基线 |
+| `core:designsystem` | Compose 主题、图标与设计系统基础测试 |
 | `core:domain` | 领域层用例位置，按当前业务需要维护 |
 | `core:model` | 纯数据模型，适合作为 JVM library |
 | `core:navigation` | Navigation 3 状态管理与 Navigator 封装 |
@@ -310,7 +307,6 @@ DataStore / Room / Network
 
 - splash 是否保持显示
 - 是否使用 Android theme
-- 是否禁用动态颜色
 - 是否使用深色主题
 
 状态通过 `StateFlow<MainActivityUiState>` 暴露给 Activity。
@@ -372,14 +368,12 @@ UI 使用 Jetpack Compose 和 Material 3。
 主要结构：
 
 - `NtTheme`：应用主题
-- `NtBackground`：背景容器
-- `NtNavigationSuiteScaffold`：自适应导航栏/导航轨/导航抽屉
-- `NtTopNavigationBar`：顶部导航栏
+页面组件样式直接在使用处基于 Material 3 组件和 `core:designsystem` 主题配置，不再通过 `core:designsystem/component` 维护自建组件封装。
 - `NavDisplay`：导航内容区域
 - `SettingsDialog`：设置弹窗
 - Snackbar：离线提示
 
-UI 设计系统集中在 `core:designsystem`，页面位于 feature impl 模块。
+UI 主题和图标集中在 `core:designsystem`，页面位于 feature impl 模块，组件样式按页面或局部 UI 直接配置。
 
 ## 11. 数据层
 
@@ -390,18 +384,14 @@ UI 设计系统集中在 `core:designsystem`，页面位于 feature impl 模块�
 它负责：
 
 - 暴露用户偏好 `Flow<UserData>`
-- 更新主题品牌
 - 更新深色主题配置
-- 更新动态颜色偏好
 - 记录相关 analytics 事件
 
 ### 11.2 DataStore
 
 `NtPreferencesDataSource` 使用 Proto DataStore 保存用户偏好：
 
-- theme brand
 - dark theme config
-- dynamic color preference
 
 DataStore proto 定义位于 `core:datastore-proto`。
 
@@ -471,7 +461,7 @@ Notifications -> demo/prod flavor 实现
 
 - `feature:settings:impl` 提供 `SettingsDialog` 与 `SettingsViewModel`
 - 通过 `UserDataRepository` 读取和写入用户设置
-- 控制 theme brand、dark theme config、dynamic color preference
+- 控制 dark theme config 和应用语言
 
 ## 14. 测试架构
 

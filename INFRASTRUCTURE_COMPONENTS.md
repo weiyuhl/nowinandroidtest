@@ -26,7 +26,7 @@
 
 ## 当前仍保留的数据能力
 
-- 用户设置：`theme_brand`、`dark_theme_config`、`use_dynamic_color` 及对应的 `UserDataRepository` 方法。
+- 用户设置：`dark_theme_config` 及对应的 `UserDataRepository` 方法。
 - Room 数据库组件本身：当前使用 `database_metadata` 作为基础设施 metadata 表。
 - 网络模块本身：`NtNetworkDataSource` 作为网络数据源抽象，demo/prod 实现按当前需求提供。
 

@@ -3,12 +3,10 @@ package com.lhzkml.nowtest.lint
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.client.api.Vendor
 import com.android.tools.lint.detector.api.CURRENT_API
-import com.lhzkml.nowtest.lint.designsystem.DesignSystemDetector
 
 class NtIssueRegistry : IssueRegistry() {
 
     override val issues = listOf(
-        DesignSystemDetector.ISSUE,
         TestMethodNameDetector.FORMAT,
         TestMethodNameDetector.PREFIX,
     )

@@ -1,5 +1,6 @@
 package com.lhzkml.nowtest.feature.search.impl
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -243,6 +245,9 @@ private fun SearchTextField(
 
     TextField(
         colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            disabledContainerColor = MaterialTheme.colorScheme.surface,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
@@ -279,6 +284,12 @@ private fun SearchTextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(28.dp),
+            )
             .focusRequester(focusRequester)
             .onKeyEvent {
                 if (it.key == Key.Enter) {
@@ -290,7 +301,7 @@ private fun SearchTextField(
                 }
             }
             .testTag("searchTextField"),
-        shape = RoundedCornerShape(32.dp),
+        shape = RoundedCornerShape(28.dp),
         value = searchQuery,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search,

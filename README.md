@@ -8,9 +8,9 @@ nowtest 是一款使用 Kotlin 和 Jetpack Compose 构建的原生 Android 应�
 ## 当前能力
 
 - 搜索：使用本地测试内容作为搜索源，覆盖搜索输入、结果展示和 ViewModel 状态流。
-- 设置：通过 DataStore 保存主题品牌、深色模式和动态取色偏好。
+- 设置：通过 DataStore 保存深色模式偏好，并通过 AppCompatDelegate 管理应用语言。
 - 顶层页面：保留 For You、Bookmarks、Interests 的导航入口和页面壳，用于维持当前产品导航结构。
-- 设计系统：集中在 `core:designsystem` 和 `core:ui`，提供主题、通用组件、预览和截图测试基础能力。
+- 设计系统：集中在 `core:designsystem` 和 `core:ui`，提供主题、图标、预览和截图测试基础能力；页面组件样式直接在使用处通过 Material 3 与主题参数实现。
 - 数据基础设施：保留 Repository 模式、DataStore、Room、Network、DI/Hilt/KSP 等组件。
 
 ## 开发环境
@@ -91,9 +91,7 @@ DataStore / Room / Network
 
 ## UI
 
-屏幕和 UI 元素使用 Jetpack Compose 构建，并使用 Material 3、动态颜色、深色模式和自适应布局能力。设计系统组件集中在 `core:designsystem`，应用级通用 UI 辅助能力集中在 `core:ui`。
-
-`app-nt-catalog` 是独立的组件 catalog 应用，用于展示和检查 nowtest 的通用 UI 组件。
+屏幕和 UI 元素使用 Jetpack Compose 构建，并使用 Material 3、Jasmine 主题、深色模式和自适应布局能力。`core:designsystem` 保留主题与图标，应用级通用 UI 辅助能力集中在 `core:ui`；组件外观在页面或局部可复用 UI 中直接配置，不再维护独立组件 catalog。
 
 ## 性能
 

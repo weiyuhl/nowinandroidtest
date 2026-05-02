@@ -1,11 +1,15 @@
 package com.lhzkml.nowtest
 
+import android.app.UiModeManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +26,7 @@ import com.lhzkml.nowtest.core.analytics.LocalAnalyticsHelper
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
 import com.lhzkml.nowtest.core.data.util.TimeZoneMonitor
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
+import com.lhzkml.nowtest.core.model.data.DarkThemeConfig
 import com.lhzkml.nowtest.core.ui.LocalTimeZone
 import com.lhzkml.nowtest.ui.NtApp
 import com.lhzkml.nowtest.ui.rememberNtAppState
@@ -29,7 +34,6 @@ import com.lhzkml.nowtest.util.isSystemInDarkTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -63,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         var themeSettings by mutableStateOf(
             ThemeSettings(
                 darkTheme = resources.configuration.isSystemInDarkTheme,
+                darkThemeConfig = DarkThemeConfig.FOLLOW_SYSTEM,
             ),
         )
 
@@ -75,12 +80,13 @@ class MainActivity : AppCompatActivity() {
                 ) { systemDark, uiState ->
                     ThemeSettings(
                         darkTheme = uiState.shouldUseDarkTheme(systemDark),
+                        darkThemeConfig = uiState.darkThemeConfig(),
                     )
                 }
                     .onEach { themeSettings = it }
-                    .map { it.darkTheme }
                     .distinctUntilChanged()
-                    .collect { darkTheme ->
+                    .collect { settings ->
+                        applyApplicationNightMode(settings.darkThemeConfig)
                         trace("ntEdgeToEdge") {
                             // Turn off the decor fitting system windows, which allows us to handle insets,
                             // including IME animations, and go edge-to-edge.
@@ -91,11 +97,11 @@ class MainActivity : AppCompatActivity() {
                                 statusBarStyle = SystemBarStyle.auto(
                                     lightScrim = android.graphics.Color.TRANSPARENT,
                                     darkScrim = android.graphics.Color.TRANSPARENT,
-                                ) { darkTheme },
+                                ) { settings.darkTheme },
                                 navigationBarStyle = SystemBarStyle.auto(
                                     lightScrim = lightScrim,
                                     darkScrim = darkScrim,
-                                ) { darkTheme },
+                                ) { settings.darkTheme },
                             )
                         }
                     }
@@ -137,6 +143,27 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         lazyStats.get().isTrackingEnabled = false
     }
+
+    private fun applyApplicationNightMode(darkThemeConfig: DarkThemeConfig) {
+        val appCompatNightMode = when (darkThemeConfig) {
+            DarkThemeConfig.FOLLOW_SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            DarkThemeConfig.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+            DarkThemeConfig.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+        }
+        if (AppCompatDelegate.getDefaultNightMode() != appCompatNightMode) {
+            AppCompatDelegate.setDefaultNightMode(appCompatNightMode)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val platformNightMode = when (darkThemeConfig) {
+                DarkThemeConfig.FOLLOW_SYSTEM -> UiModeManager.MODE_NIGHT_AUTO
+                DarkThemeConfig.LIGHT -> UiModeManager.MODE_NIGHT_NO
+                DarkThemeConfig.DARK -> UiModeManager.MODE_NIGHT_YES
+            }
+            val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+            uiModeManager.setApplicationNightMode(platformNightMode)
+        }
+    }
 }
 
 /**
@@ -157,4 +184,5 @@ private val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
  */
 data class ThemeSettings(
     val darkTheme: Boolean,
+    val darkThemeConfig: DarkThemeConfig,
 )

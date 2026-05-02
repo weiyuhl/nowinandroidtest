@@ -2,9 +2,10 @@ package com.lhzkml.nowtest.feature.interests.impl
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.lhzkml.nowtest.core.designsystem.component.NtBackground
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
 import com.lhzkml.nowtest.core.ui.DevicePreviews
 import com.lhzkml.nowtest.core.ui.TrackScreenViewEvent
@@ -19,7 +20,10 @@ fun InterestsScreen(modifier: Modifier = Modifier) {
 @Composable
 fun InterestsScreenPreview() {
     NtTheme {
-        NtBackground {
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.fillMaxSize(),
+        ) {
             InterestsScreen()
         }
     }

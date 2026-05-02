@@ -48,4 +48,9 @@ sealed interface MainActivityUiState {
      * Returns `true` if dark theme should be used.
      */
     fun shouldUseDarkTheme(isSystemDarkTheme: Boolean) = isSystemDarkTheme
+
+    fun darkThemeConfig() = when (this) {
+        Loading -> DarkThemeConfig.FOLLOW_SYSTEM
+        is Success -> userData.darkThemeConfig
+    }
 }

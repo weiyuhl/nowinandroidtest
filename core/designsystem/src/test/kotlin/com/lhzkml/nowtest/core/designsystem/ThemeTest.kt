@@ -3,14 +3,9 @@ package com.lhzkml.nowtest.core.designsystem
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.unit.dp
-import com.lhzkml.nowtest.core.designsystem.theme.BackgroundTheme
 import com.lhzkml.nowtest.core.designsystem.theme.DarkDefaultColorScheme
 import com.lhzkml.nowtest.core.designsystem.theme.LightDefaultColorScheme
-import com.lhzkml.nowtest.core.designsystem.theme.LocalBackgroundTheme
-import com.lhzkml.nowtest.core.designsystem.theme.LocalTintTheme
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
-import com.lhzkml.nowtest.core.designsystem.theme.TintTheme
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,11 +25,7 @@ class ThemeTest {
     fun darkThemeFalse_usesLightDefaultTheme() {
         composeTestRule.setContent {
             NtTheme(darkTheme = false) {
-                val colorScheme = LightDefaultColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val backgroundTheme = defaultBackgroundTheme(colorScheme)
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                assertEquals(TintTheme(), LocalTintTheme.current)
+                assertColorSchemesEqual(LightDefaultColorScheme, MaterialTheme.colorScheme)
             }
         }
     }
@@ -43,23 +34,11 @@ class ThemeTest {
     fun darkThemeTrue_usesDarkDefaultTheme() {
         composeTestRule.setContent {
             NtTheme(darkTheme = true) {
-                val colorScheme = DarkDefaultColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val backgroundTheme = defaultBackgroundTheme(colorScheme)
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                assertEquals(TintTheme(), LocalTintTheme.current)
+                assertColorSchemesEqual(DarkDefaultColorScheme, MaterialTheme.colorScheme)
             }
         }
     }
 
-    private fun defaultBackgroundTheme(colorScheme: ColorScheme): BackgroundTheme = BackgroundTheme(
-        color = colorScheme.surface,
-        tonalElevation = 2.dp,
-    )
-
-    /**
-     * Workaround for the fact that the Nt design system specify all color scheme values.
-     */
     private fun assertColorSchemesEqual(
         expectedColorScheme: ColorScheme,
         actualColorScheme: ColorScheme,
@@ -89,8 +68,24 @@ class ThemeTest {
         assertEquals(expectedColorScheme.onSurface, actualColorScheme.onSurface)
         assertEquals(expectedColorScheme.surfaceVariant, actualColorScheme.surfaceVariant)
         assertEquals(expectedColorScheme.onSurfaceVariant, actualColorScheme.onSurfaceVariant)
+        assertEquals(expectedColorScheme.outline, actualColorScheme.outline)
+        assertEquals(expectedColorScheme.outlineVariant, actualColorScheme.outlineVariant)
+        assertEquals(expectedColorScheme.scrim, actualColorScheme.scrim)
         assertEquals(expectedColorScheme.inverseSurface, actualColorScheme.inverseSurface)
         assertEquals(expectedColorScheme.inverseOnSurface, actualColorScheme.inverseOnSurface)
-        assertEquals(expectedColorScheme.outline, actualColorScheme.outline)
+        assertEquals(expectedColorScheme.inversePrimary, actualColorScheme.inversePrimary)
+        assertEquals(expectedColorScheme.surfaceDim, actualColorScheme.surfaceDim)
+        assertEquals(expectedColorScheme.surfaceBright, actualColorScheme.surfaceBright)
+        assertEquals(
+            expectedColorScheme.surfaceContainerLowest,
+            actualColorScheme.surfaceContainerLowest,
+        )
+        assertEquals(expectedColorScheme.surfaceContainerLow, actualColorScheme.surfaceContainerLow)
+        assertEquals(expectedColorScheme.surfaceContainer, actualColorScheme.surfaceContainer)
+        assertEquals(expectedColorScheme.surfaceContainerHigh, actualColorScheme.surfaceContainerHigh)
+        assertEquals(
+            expectedColorScheme.surfaceContainerHighest,
+            actualColorScheme.surfaceContainerHighest,
+        )
     }
 }

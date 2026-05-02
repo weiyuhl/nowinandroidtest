@@ -30,7 +30,6 @@ rootProject.name = "nowtest"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
-include(":app-nt-catalog")
 include(":benchmarks")
 include(":core:analytics")
 include(":core:common")

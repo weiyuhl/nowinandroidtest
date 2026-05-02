@@ -1,34 +1,45 @@
 package com.lhzkml.nowtest.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +47,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -43,10 +55,6 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.navigationevent.compose.LocalNavigationEventDispatcherOwner
 import androidx.navigationevent.compose.rememberNavigationEventDispatcherOwner
 import com.lhzkml.nowtest.R
-import com.lhzkml.nowtest.core.designsystem.component.NtBackground
-import com.lhzkml.nowtest.core.designsystem.component.NtNavigationSuiteScaffold
-import com.lhzkml.nowtest.core.designsystem.component.NtTopNavigationBar
-import com.lhzkml.nowtest.core.designsystem.component.NtTopNavigationDestination
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.navigation.Navigator
 import com.lhzkml.nowtest.core.navigation.toEntries
@@ -69,7 +77,10 @@ fun NtApp(
     modifier: Modifier = Modifier,
     windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
 ) {
-    NtBackground(modifier = modifier) {
+    Surface(
+        color = MaterialTheme.colorScheme.background,
+        modifier = modifier.fillMaxSize(),
+    ) {
         val snackbarHostState = remember { SnackbarHostState() }
 
         val isOffline by appState.isOffline.collectAsStateWithLifecycle()
@@ -109,7 +120,10 @@ internal fun NtAppContent(
     val navigationEventDispatcherOwner = rememberNavigationEventDispatcherOwner(parent = null)
 
     CompositionLocalProvider(LocalNavigationEventDispatcherOwner provides navigationEventDispatcherOwner) {
-        NtNavigationSuiteScaffold(
+        val layoutType = NavigationSuiteScaffoldDefaults
+            .calculateFromAdaptiveInfo(windowAdaptiveInfo)
+
+        NavigationSuiteScaffold(
             navigationSuiteItems = {
                 TOP_LEVEL_NAV_ITEMS.forEach { (navKey, navItem) ->
                     val selected = navKey == appState.navigationState.currentTopLevelKey
@@ -118,13 +132,11 @@ internal fun NtAppContent(
                         onClick = { navigator.navigate(navKey) },
                         icon = {
                             Icon(
-                                imageVector = navItem.unselectedIcon,
-                                contentDescription = null,
-                            )
-                        },
-                        selectedIcon = {
-                            Icon(
-                                imageVector = navItem.selectedIcon,
+                                imageVector = if (selected) {
+                                    navItem.selectedIcon
+                                } else {
+                                    navItem.unselectedIcon
+                                },
                                 contentDescription = null,
                             )
                         },
@@ -134,7 +146,16 @@ internal fun NtAppContent(
                     )
                 }
             },
-            windowAdaptiveInfo = windowAdaptiveInfo,
+            layoutType = layoutType,
+            containerColor = MaterialTheme.colorScheme.background,
+            navigationSuiteColors = NavigationSuiteDefaults.colors(
+                navigationBarContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                navigationBarContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                navigationRailContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                navigationRailContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                navigationDrawerContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                navigationDrawerContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
         ) {
             Scaffold(
                 modifier = modifier.semantics {
@@ -165,44 +186,64 @@ internal fun NtAppContent(
                             ),
                         ),
                 ) {
-                    // Only show the top navigation bar on top level destinations.
-                    var shouldShowTopNavigationBar = false
+                    // Only show the top navigation on top level destinations.
+                    var shouldShowTopNavigation = false
 
                     if (appState.navigationState.currentKey in appState.navigationState.topLevelKeys) {
-                        shouldShowTopNavigationBar = true
+                        shouldShowTopNavigation = true
 
-                        val topNavigationDestinations = listOf<NtTopNavigationDestination<NavKey>>(
-                            NtTopNavigationDestination(
-                                key = SearchNavKey,
-                                icon = NtIcons.Search,
-                                contentDescription = stringResource(
-                                    id = R.string.top_navigation_search_content_description,
-                                ),
-                            ),
-                            NtTopNavigationDestination(
-                                key = SettingsNavKey,
-                                icon = NtIcons.Settings,
-                                contentDescription = stringResource(
-                                    id = R.string.top_navigation_settings_content_description,
-                                ),
-                            ),
-                        )
-
-                        NtTopNavigationBar(
-                            destinations = topNavigationDestinations,
-                            onNavigateToDestination = navigator::navigate,
-                        )
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("ntTopNavigationBar"),
+                            color = MaterialTheme.colorScheme.surface,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .windowInsetsPadding(
+                                        WindowInsets.safeDrawing.only(WindowInsetsSides.Top),
+                                    )
+                                    .height(64.dp)
+                                    .padding(horizontal = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                IconButton(onClick = { navigator.navigate(SearchNavKey) }) {
+                                    Icon(
+                                        imageVector = NtIcons.Search,
+                                        contentDescription = stringResource(
+                                            id = R.string.top_navigation_search_content_description,
+                                        ),
+                                        tint = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                }
+                                IconButton(onClick = { navigator.navigate(SettingsNavKey) }) {
+                                    Icon(
+                                        imageVector = NtIcons.Settings,
+                                        contentDescription = stringResource(
+                                            id = R.string.top_navigation_settings_content_description,
+                                        ),
+                                        tint = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     Box(
                         // Workaround for https://issuetracker.google.com/338478720
-                        modifier = Modifier.consumeWindowInsets(
-                            if (shouldShowTopNavigationBar) {
-                                WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
-                            } else {
-                                WindowInsets(0, 0, 0, 0)
-                            },
-                        ),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface)
+                            .consumeWindowInsets(
+                                if (shouldShowTopNavigation) {
+                                    WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                                } else {
+                                    WindowInsets(0, 0, 0, 0)
+                                },
+                            ),
                     ) {
                         val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
 
