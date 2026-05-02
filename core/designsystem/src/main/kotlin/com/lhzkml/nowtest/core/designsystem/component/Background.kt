@@ -51,23 +51,7 @@ annotation class ThemePreviews
 @ThemePreviews
 @Composable
 fun BackgroundDefault() {
-    NtTheme(disableDynamicTheming = true) {
-        NtBackground(Modifier.size(100.dp), content = {})
-    }
-}
-
-@ThemePreviews
-@Composable
-fun BackgroundDynamic() {
-    NtTheme(disableDynamicTheming = false) {
-        NtBackground(Modifier.size(100.dp), content = {})
-    }
-}
-
-@ThemePreviews
-@Composable
-fun BackgroundAndroid() {
-    NtTheme(androidTheme = true) {
+    NtTheme {
         NtBackground(Modifier.size(100.dp), content = {})
     }
 }

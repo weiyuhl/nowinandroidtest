@@ -48,7 +48,9 @@ class NavigationTest {
     private val saved by composeTestRule.stringResource(BookmarksR.string.feature_bookmarks_api_title)
     private val search by composeTestRule.stringResource(R.string.top_navigation_search_content_description)
     private val settings by composeTestRule.stringResource(R.string.top_navigation_settings_content_description)
-    private val brand by composeTestRule.stringResource(SettingsR.string.feature_settings_impl_brand_android)
+    private val darkModePreference by composeTestRule.stringResource(
+        SettingsR.string.feature_settings_impl_dark_mode_preference,
+    )
 
     @Before
     fun setup() = hiltRule.inject()
@@ -109,7 +111,7 @@ class NavigationTest {
             onNodeWithContentDescription(settings).performClick()
 
             // Check that one of the settings is actually displayed.
-            onNodeWithText(brand).assertExists()
+            onNodeWithText(darkModePreference).assertExists()
         }
     }
 

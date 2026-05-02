@@ -1,21 +1,11 @@
 package com.lhzkml.nowtest.core.designsystem
 
-import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import com.lhzkml.nowtest.core.designsystem.theme.BackgroundTheme
-import com.lhzkml.nowtest.core.designsystem.theme.DarkAndroidBackgroundTheme
-import com.lhzkml.nowtest.core.designsystem.theme.DarkAndroidColorScheme
 import com.lhzkml.nowtest.core.designsystem.theme.DarkDefaultColorScheme
-import com.lhzkml.nowtest.core.designsystem.theme.LightAndroidBackgroundTheme
-import com.lhzkml.nowtest.core.designsystem.theme.LightAndroidColorScheme
 import com.lhzkml.nowtest.core.designsystem.theme.LightDefaultColorScheme
 import com.lhzkml.nowtest.core.designsystem.theme.LocalBackgroundTheme
 import com.lhzkml.nowtest.core.designsystem.theme.LocalTintTheme
@@ -28,11 +18,7 @@ import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertEquals
 
 /**
- * Tests [NtTheme] using different combinations of the theme mode parameters:
- * darkTheme, disableDynamicTheming, and androidTheme.
- *
- * It verifies that the various composition locals — [MaterialTheme] and [LocalBackgroundTheme] —
- * have the expected values for a given theme mode, as specified by the design system.
+ * Tests [NtTheme] using the supported light and dark theme modes.
  */
 @RunWith(RobolectricTestRunner::class)
 class ThemeTest {
@@ -41,172 +27,35 @@ class ThemeTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun darkThemeFalse_dynamicColorFalse_androidThemeFalse() {
+    fun darkThemeFalse_usesLightDefaultTheme() {
         composeTestRule.setContent {
-            NtTheme(
-                darkTheme = false,
-                disableDynamicTheming = true,
-                androidTheme = false,
-            ) {
+            NtTheme(darkTheme = false) {
                 val colorScheme = LightDefaultColorScheme
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
                 val backgroundTheme = defaultBackgroundTheme(colorScheme)
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
+                assertEquals(TintTheme(), LocalTintTheme.current)
             }
         }
     }
 
     @Test
-    fun darkThemeTrue_dynamicColorFalse_androidThemeFalse() {
+    fun darkThemeTrue_usesDarkDefaultTheme() {
         composeTestRule.setContent {
-            NtTheme(
-                darkTheme = true,
-                disableDynamicTheming = true,
-                androidTheme = false,
-            ) {
+            NtTheme(darkTheme = true) {
                 val colorScheme = DarkDefaultColorScheme
                 assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
                 val backgroundTheme = defaultBackgroundTheme(colorScheme)
                 assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
+                assertEquals(TintTheme(), LocalTintTheme.current)
             }
         }
-    }
-
-    @Test
-    fun darkThemeFalse_dynamicColorTrue_androidThemeFalse() {
-        composeTestRule.setContent {
-            NtTheme(
-                darkTheme = false,
-                disableDynamicTheming = false,
-                androidTheme = false,
-            ) {
-                val colorScheme = dynamicLightColorSchemeWithFallback()
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val backgroundTheme = defaultBackgroundTheme(colorScheme)
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = dynamicTintThemeWithFallback(colorScheme)
-                assertEquals(tintTheme, LocalTintTheme.current)
-            }
-        }
-    }
-
-    @Test
-    fun darkThemeTrue_dynamicColorTrue_androidThemeFalse() {
-        composeTestRule.setContent {
-            NtTheme(
-                darkTheme = true,
-                disableDynamicTheming = false,
-                androidTheme = false,
-            ) {
-                val colorScheme = dynamicDarkColorSchemeWithFallback()
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val backgroundTheme = defaultBackgroundTheme(colorScheme)
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = dynamicTintThemeWithFallback(colorScheme)
-                assertEquals(tintTheme, LocalTintTheme.current)
-            }
-        }
-    }
-
-    @Test
-    fun darkThemeFalse_dynamicColorFalse_androidThemeTrue() {
-        composeTestRule.setContent {
-            NtTheme(
-                darkTheme = false,
-                disableDynamicTheming = true,
-                androidTheme = true,
-            ) {
-                val colorScheme = LightAndroidColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val backgroundTheme = LightAndroidBackgroundTheme
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
-            }
-        }
-    }
-
-    @Test
-    fun darkThemeTrue_dynamicColorFalse_androidThemeTrue() {
-        composeTestRule.setContent {
-            NtTheme(
-                darkTheme = true,
-                disableDynamicTheming = true,
-                androidTheme = true,
-            ) {
-                val colorScheme = DarkAndroidColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val backgroundTheme = DarkAndroidBackgroundTheme
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
-            }
-        }
-    }
-
-    @Test
-    fun darkThemeFalse_dynamicColorTrue_androidThemeTrue() {
-        composeTestRule.setContent {
-            NtTheme(
-                darkTheme = false,
-                disableDynamicTheming = false,
-                androidTheme = true,
-            ) {
-                val colorScheme = LightAndroidColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val backgroundTheme = LightAndroidBackgroundTheme
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
-            }
-        }
-    }
-
-    @Test
-    fun darkThemeTrue_dynamicColorTrue_androidThemeTrue() {
-        composeTestRule.setContent {
-            NtTheme(
-                darkTheme = true,
-                disableDynamicTheming = false,
-                androidTheme = true,
-            ) {
-                val colorScheme = DarkAndroidColorScheme
-                assertColorSchemesEqual(colorScheme, MaterialTheme.colorScheme)
-                val backgroundTheme = DarkAndroidBackgroundTheme
-                assertEquals(backgroundTheme, LocalBackgroundTheme.current)
-                val tintTheme = defaultTintTheme()
-                assertEquals(tintTheme, LocalTintTheme.current)
-            }
-        }
-    }
-
-    @Composable
-    private fun dynamicLightColorSchemeWithFallback(): ColorScheme = when {
-        SDK_INT >= VERSION_CODES.S -> dynamicLightColorScheme(LocalContext.current)
-        else -> LightDefaultColorScheme
-    }
-
-    @Composable
-    private fun dynamicDarkColorSchemeWithFallback(): ColorScheme = when {
-        SDK_INT >= VERSION_CODES.S -> dynamicDarkColorScheme(LocalContext.current)
-        else -> DarkDefaultColorScheme
     }
 
     private fun defaultBackgroundTheme(colorScheme: ColorScheme): BackgroundTheme = BackgroundTheme(
         color = colorScheme.surface,
         tonalElevation = 2.dp,
     )
-
-    private fun defaultTintTheme(): TintTheme = TintTheme()
-
-    private fun dynamicTintThemeWithFallback(colorScheme: ColorScheme): TintTheme = when {
-        SDK_INT >= VERSION_CODES.S -> TintTheme(colorScheme.primary)
-        else -> TintTheme()
-    }
 
     /**
      * Workaround for the fact that the Nt design system specify all color scheme values.

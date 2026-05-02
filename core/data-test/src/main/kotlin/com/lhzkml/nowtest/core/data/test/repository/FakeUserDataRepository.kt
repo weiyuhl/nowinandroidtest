@@ -3,7 +3,6 @@ package com.lhzkml.nowtest.core.data.test.repository
 import com.lhzkml.nowtest.core.data.repository.UserDataRepository
 import com.lhzkml.nowtest.core.datastore.NtPreferencesDataSource
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig
-import com.lhzkml.nowtest.core.model.data.ThemeBrand
 import com.lhzkml.nowtest.core.model.data.UserData
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -21,15 +20,7 @@ class FakeUserDataRepository @Inject constructor(
     override val userData: Flow<UserData> =
         ntPreferencesDataSource.userData
 
-    override suspend fun setThemeBrand(themeBrand: ThemeBrand) {
-        ntPreferencesDataSource.setThemeBrand(themeBrand)
-    }
-
     override suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         ntPreferencesDataSource.setDarkThemeConfig(darkThemeConfig)
-    }
-
-    override suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
-        ntPreferencesDataSource.setDynamicColorPreference(useDynamicColor)
     }
 }

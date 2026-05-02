@@ -134,43 +134,30 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
 }
 
 /**
- * Takes six screenshots combining light/dark and default/Android themes and whether dynamic color
- * is enabled.
+ * Takes screenshots combining light and dark themes.
  */
 fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.captureMultiTheme(
     name: String,
     overrideFileName: String? = null,
     shouldCompareDarkMode: Boolean = true,
-    shouldCompareDynamicColor: Boolean = true,
-    shouldCompareAndroidTheme: Boolean = true,
     content: @Composable (desc: String) -> Unit,
 ) {
     val darkModeValues = if (shouldCompareDarkMode) listOf(true, false) else listOf(false)
-    val dynamicThemingValues = if (shouldCompareDynamicColor) listOf(true, false) else listOf(false)
-    val androidThemeValues = if (shouldCompareAndroidTheme) listOf(true, false) else listOf(false)
 
     var darkMode by mutableStateOf(true)
-    var dynamicTheming by mutableStateOf(false)
-    var androidTheme by mutableStateOf(false)
 
     this.setContent {
         CompositionLocalProvider(
             LocalInspectionMode provides true,
         ) {
             NtTheme(
-                androidTheme = androidTheme,
                 darkTheme = darkMode,
-                disableDynamicTheming = !dynamicTheming,
             ) {
                 // Keying is necessary in some cases (e.g. animations)
-                key(androidTheme, darkMode, dynamicTheming) {
+                key(darkMode) {
                     val description = generateDescription(
                         shouldCompareDarkMode,
                         darkMode,
-                        shouldCompareAndroidTheme,
-                        androidTheme,
-                        shouldCompareDynamicColor,
-                        dynamicTheming,
                     )
                     content(description)
                 }
@@ -183,31 +170,16 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
         darkMode = isDarkMode
         val darkModeDesc = if (isDarkMode) "dark" else "light"
 
-        androidThemeValues.forEach { isAndroidTheme ->
-            androidTheme = isAndroidTheme
-            val androidThemeDesc = if (isAndroidTheme) "androidTheme" else "defaultTheme"
+        val filename = overrideFileName ?: name
 
-            dynamicThemingValues.forEach dynamicTheme@{ isDynamicTheming ->
-                // Skip tests with both Android Theme and Dynamic color as they're incompatible.
-                if (isAndroidTheme && isDynamicTheming) return@dynamicTheme
-
-                dynamicTheming = isDynamicTheming
-                val dynamicThemingDesc = if (isDynamicTheming) "dynamic" else "notDynamic"
-
-                val filename = overrideFileName ?: name
-
-                this.onRoot()
-                    .captureRoboImage(
-                        "src/test/screenshots/" +
-                            "$name/$filename" +
-                            "_$darkModeDesc" +
-                            "_$androidThemeDesc" +
-                            "_$dynamicThemingDesc" +
-                            ".png",
-                        roborazziOptions = DefaultRoborazziOptions,
-                    )
-            }
-        }
+        this.onRoot()
+            .captureRoboImage(
+                "src/test/screenshots/" +
+                    "$name/$filename" +
+                    "_$darkModeDesc" +
+                    ".png",
+                roborazziOptions = DefaultRoborazziOptions,
+            )
     }
 }
 
@@ -215,24 +187,10 @@ fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.c
 private fun generateDescription(
     shouldCompareDarkMode: Boolean,
     darkMode: Boolean,
-    shouldCompareAndroidTheme: Boolean,
-    androidTheme: Boolean,
-    shouldCompareDynamicColor: Boolean,
-    dynamicTheming: Boolean,
 ): String {
     val description = "" +
         if (shouldCompareDarkMode) {
             if (darkMode) "Dark" else "Light"
-        } else {
-            ""
-        } +
-        if (shouldCompareAndroidTheme) {
-            if (androidTheme) " Android" else " Default"
-        } else {
-            ""
-        } +
-        if (shouldCompareDynamicColor) {
-            if (dynamicTheming) " Dynamic" else ""
         } else {
             ""
         }

@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.metrics.performance.JankStats
 import androidx.tracing.trace
-import com.lhzkml.nowtest.MainActivityUiState.Loading
 import com.lhzkml.nowtest.core.analytics.AnalyticsHelper
 import com.lhzkml.nowtest.core.analytics.LocalAnalyticsHelper
 import com.lhzkml.nowtest.core.data.util.NetworkMonitor
@@ -64,8 +63,6 @@ class MainActivity : AppCompatActivity() {
         var themeSettings by mutableStateOf(
             ThemeSettings(
                 darkTheme = resources.configuration.isSystemInDarkTheme,
-                androidTheme = Loading.shouldUseAndroidTheme,
-                disableDynamicTheming = Loading.shouldDisableDynamicTheming,
             ),
         )
 
@@ -78,8 +75,6 @@ class MainActivity : AppCompatActivity() {
                 ) { systemDark, uiState ->
                     ThemeSettings(
                         darkTheme = uiState.shouldUseDarkTheme(systemDark),
-                        androidTheme = uiState.shouldUseAndroidTheme,
-                        disableDynamicTheming = uiState.shouldDisableDynamicTheming,
                     )
                 }
                     .onEach { themeSettings = it }
@@ -126,8 +121,6 @@ class MainActivity : AppCompatActivity() {
             ) {
                 NtTheme(
                     darkTheme = themeSettings.darkTheme,
-                    androidTheme = themeSettings.androidTheme,
-                    disableDynamicTheming = themeSettings.disableDynamicTheming,
                 ) {
                     NtApp(appState)
                 }
@@ -164,6 +157,4 @@ private val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
  */
 data class ThemeSettings(
     val darkTheme: Boolean,
-    val androidTheme: Boolean,
-    val disableDynamicTheming: Boolean,
 )

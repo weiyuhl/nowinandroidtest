@@ -1,7 +1,6 @@
 package com.lhzkml.nowtest.feature.settings.impl
 
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig.DARK
-import com.lhzkml.nowtest.core.model.data.ThemeBrand.ANDROID
 import com.lhzkml.nowtest.core.testing.repository.TestUserDataRepository
 import com.lhzkml.nowtest.core.testing.util.MainDispatcherRule
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Loading
@@ -41,15 +40,12 @@ class SettingsViewModelTest {
     fun stateIsSuccessAfterUserDataLoaded() = runTest {
         backgroundScope.launch(UnconfinedTestDispatcher()) { viewModel.settingsUiState.collect() }
 
-        userDataRepository.setThemeBrand(ANDROID)
         userDataRepository.setDarkThemeConfig(DARK)
 
         assertEquals(
             Success(
                 UserEditableSettings(
-                    brand = ANDROID,
                     darkThemeConfig = DARK,
-                    useDynamicColor = false,
                 ),
             ),
             viewModel.settingsUiState.value,

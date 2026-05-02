@@ -23,7 +23,7 @@ class UserPreferencesSerializerTest {
     @Test
     fun writingAndReadingUserPreferences_outputsCorrectValue() = runTest {
         val expectedUserPreferences = userPreferences {
-            useDynamicColor = true
+            darkThemeConfig = DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
         }
 
         val outputStream = ByteArrayOutputStream()

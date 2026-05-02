@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lhzkml.nowtest.core.data.repository.UserDataRepository
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig
-import com.lhzkml.nowtest.core.model.data.ThemeBrand
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Loading
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,8 +27,6 @@ class SettingsViewModel @Inject constructor(
         ) { userData, appLanguage ->
             Success(
                 settings = UserEditableSettings(
-                    brand = userData.themeBrand,
-                    useDynamicColor = userData.useDynamicColor,
                     darkThemeConfig = userData.darkThemeConfig,
                     appLanguage = appLanguage,
                 ),
@@ -41,21 +38,9 @@ class SettingsViewModel @Inject constructor(
                 initialValue = Loading,
             )
 
-    fun updateThemeBrand(themeBrand: ThemeBrand) {
-        viewModelScope.launch {
-            userDataRepository.setThemeBrand(themeBrand)
-        }
-    }
-
     fun updateDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         viewModelScope.launch {
             userDataRepository.setDarkThemeConfig(darkThemeConfig)
-        }
-    }
-
-    fun updateDynamicColorPreference(useDynamicColor: Boolean) {
-        viewModelScope.launch {
-            userDataRepository.setDynamicColorPreference(useDynamicColor)
         }
     }
 
@@ -68,8 +53,6 @@ class SettingsViewModel @Inject constructor(
  * Represents the settings which the user can edit within the app.
  */
 data class UserEditableSettings(
-    val brand: ThemeBrand,
-    val useDynamicColor: Boolean,
     val darkThemeConfig: DarkThemeConfig,
     val appLanguage: AppLanguage = AppLanguage.SYSTEM_DEFAULT,
 )

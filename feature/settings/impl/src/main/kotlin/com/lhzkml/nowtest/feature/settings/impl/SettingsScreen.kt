@@ -3,7 +3,6 @@
 package com.lhzkml.nowtest.feature.settings.impl
 
 import android.content.Intent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -34,7 +33,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,14 +43,10 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.lhzkml.nowtest.core.designsystem.component.NtTextButton
 import com.lhzkml.nowtest.core.designsystem.icon.NtIcons
 import com.lhzkml.nowtest.core.designsystem.theme.NtTheme
-import com.lhzkml.nowtest.core.designsystem.theme.supportsDynamicTheming
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig.DARK
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig.FOLLOW_SYSTEM
 import com.lhzkml.nowtest.core.model.data.DarkThemeConfig.LIGHT
-import com.lhzkml.nowtest.core.model.data.ThemeBrand
-import com.lhzkml.nowtest.core.model.data.ThemeBrand.ANDROID
-import com.lhzkml.nowtest.core.model.data.ThemeBrand.DEFAULT
 import com.lhzkml.nowtest.core.ui.TrackScreenViewEvent
 import com.lhzkml.nowtest.feature.settings.impl.R.string
 import com.lhzkml.nowtest.feature.settings.impl.SettingsUiState.Loading
@@ -70,8 +64,6 @@ fun SettingsScreen(
         modifier = modifier,
         settingsUiState = settingsUiState,
         onBackClick = onBackClick,
-        onChangeThemeBrand = viewModel::updateThemeBrand,
-        onChangeDynamicColorPreference = viewModel::updateDynamicColorPreference,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
         onChangeLanguage = viewModel::updateLanguage,
     )
@@ -80,10 +72,7 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreen(
     settingsUiState: SettingsUiState,
-    supportDynamicColor: Boolean = supportsDynamicTheming(),
     onBackClick: () -> Unit = {},
-    onChangeThemeBrand: (themeBrand: ThemeBrand) -> Unit,
-    onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeLanguage: (appLanguage: AppLanguage) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -95,9 +84,6 @@ fun SettingsScreen(
         HorizontalDivider()
         SettingsContent(
             settingsUiState = settingsUiState,
-            supportDynamicColor = supportDynamicColor,
-            onChangeThemeBrand = onChangeThemeBrand,
-            onChangeDynamicColorPreference = onChangeDynamicColorPreference,
             onChangeDarkThemeConfig = onChangeDarkThemeConfig,
             onChangeLanguage = onChangeLanguage,
         )
@@ -130,9 +116,6 @@ private fun SettingsToolbar(
 @Composable
 private fun ColumnScope.SettingsContent(
     settingsUiState: SettingsUiState,
-    supportDynamicColor: Boolean,
-    onChangeThemeBrand: (themeBrand: ThemeBrand) -> Unit,
-    onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeLanguage: (appLanguage: AppLanguage) -> Unit,
 ) {
@@ -153,9 +136,6 @@ private fun ColumnScope.SettingsContent(
             is Success -> {
                 SettingsPanel(
                     settings = settingsUiState.settings,
-                    supportDynamicColor = supportDynamicColor,
-                    onChangeThemeBrand = onChangeThemeBrand,
-                    onChangeDynamicColorPreference = onChangeDynamicColorPreference,
                     onChangeDarkThemeConfig = onChangeDarkThemeConfig,
                     onChangeLanguage = onChangeLanguage,
                 )
@@ -170,42 +150,10 @@ private fun ColumnScope.SettingsContent(
 @Composable
 private fun ColumnScope.SettingsPanel(
     settings: UserEditableSettings,
-    supportDynamicColor: Boolean,
-    onChangeThemeBrand: (themeBrand: ThemeBrand) -> Unit,
-    onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeLanguage: (appLanguage: AppLanguage) -> Unit,
 ) {
     SettingsSectionTitle(text = stringResource(string.feature_settings_impl_theme))
-    Column(Modifier.selectableGroup()) {
-        SettingsThemeChooserRow(
-            text = stringResource(string.feature_settings_impl_brand_default),
-            selected = settings.brand == DEFAULT,
-            onClick = { onChangeThemeBrand(DEFAULT) },
-        )
-        SettingsThemeChooserRow(
-            text = stringResource(string.feature_settings_impl_brand_android),
-            selected = settings.brand == ANDROID,
-            onClick = { onChangeThemeBrand(ANDROID) },
-        )
-    }
-    AnimatedVisibility(visible = settings.brand == DEFAULT && supportDynamicColor) {
-        Column {
-            SettingsSectionTitle(text = stringResource(string.feature_settings_impl_dynamic_color_preference))
-            Column(Modifier.selectableGroup()) {
-                SettingsThemeChooserRow(
-                    text = stringResource(string.feature_settings_impl_dynamic_color_yes),
-                    selected = settings.useDynamicColor,
-                    onClick = { onChangeDynamicColorPreference(true) },
-                )
-                SettingsThemeChooserRow(
-                    text = stringResource(string.feature_settings_impl_dynamic_color_no),
-                    selected = !settings.useDynamicColor,
-                    onClick = { onChangeDynamicColorPreference(false) },
-                )
-            }
-        }
-    }
     SettingsSectionTitle(text = stringResource(string.feature_settings_impl_dark_mode_preference))
     Column(Modifier.selectableGroup()) {
         SettingsThemeChooserRow(
@@ -289,12 +237,6 @@ private fun LinksPanel() {
         ),
         modifier = Modifier.fillMaxWidth(),
     ) {
-        val uriHandler = LocalUriHandler.current
-        NtTextButton(
-            onClick = { uriHandler.openUri(PRIVACY_POLICY_URL) },
-        ) {
-            Text(text = stringResource(string.feature_settings_impl_privacy_policy))
-        }
         val context = LocalContext.current
         NtTextButton(
             onClick = {
@@ -302,16 +244,6 @@ private fun LinksPanel() {
             },
         ) {
             Text(text = stringResource(string.feature_settings_impl_licenses))
-        }
-        NtTextButton(
-            onClick = { uriHandler.openUri(BRAND_GUIDELINES_URL) },
-        ) {
-            Text(text = stringResource(string.feature_settings_impl_brand_guidelines))
-        }
-        NtTextButton(
-            onClick = { uriHandler.openUri(FEEDBACK_URL) },
-        ) {
-            Text(text = stringResource(string.feature_settings_impl_feedback))
         }
     }
 }
@@ -323,13 +255,9 @@ private fun PreviewSettingsScreen() {
         SettingsScreen(
             settingsUiState = Success(
                 UserEditableSettings(
-                    brand = DEFAULT,
                     darkThemeConfig = FOLLOW_SYSTEM,
-                    useDynamicColor = false,
                 ),
             ),
-            onChangeThemeBrand = {},
-            onChangeDynamicColorPreference = {},
             onChangeDarkThemeConfig = {},
         )
     }
@@ -341,13 +269,7 @@ private fun PreviewSettingsScreenLoading() {
     NtTheme {
         SettingsScreen(
             settingsUiState = Loading,
-            onChangeThemeBrand = {},
-            onChangeDynamicColorPreference = {},
             onChangeDarkThemeConfig = {},
         )
     }
 }
-
-private const val PRIVACY_POLICY_URL = "https://policies.google.com/privacy"
-private const val BRAND_GUIDELINES_URL = "https://developer.android.com/distribute/marketing-tools/brand-guidelines"
-private const val FEEDBACK_URL = "https://goo.gle/nt-app-feedback"
