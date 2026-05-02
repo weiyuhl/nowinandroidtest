@@ -6,7 +6,11 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(ls -d d:/nowinandroid-test/core/*/)",
-      "Bash(ls -d d:/nowinandroid-test/route/*/)"
+      "Bash(ls -d d:/nowinandroid-test/route/*/)",
+      "Bash(rustup --version)",
+      "Bash(rustc --version)",
+      "Bash(rustup show:*)",
+      "Bash(rustup target:*)"
     ]
   }
 }
