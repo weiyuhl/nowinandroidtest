@@ -4,7 +4,9 @@
       "Bash(git -C D:/nowinandroid-test status)",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(ls -d d:/nowinandroid-test/core/*/)",
+      "Bash(ls -d d:/nowinandroid-test/route/*/)"
     ]
   }
 }
